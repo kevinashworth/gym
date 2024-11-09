@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HelloWorld",
-    "slug": "expo-template-default",
+    "name": "GYM",
+    "slug": "gym",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -13,13 +13,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kevinexpoworth.gym"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.kevinexpoworth.gym"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +33,18 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a61a0877-db72-4ce8-801c-aa0042069956"
+      }
+    },
+    "owner": "kevinexpoworth",
+    "updates": {
+      "url": "https://u.expo.dev/a61a0877-db72-4ce8-801c-aa0042069956"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
