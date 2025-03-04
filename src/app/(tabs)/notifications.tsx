@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function DashboardTab() {
+export default function NotificationsTab() {
   return (
     <View style={styles.container}>
-      <Text>Dashboard</Text>
+      <Text>Notifications</Text>
     </View>
   );
 }

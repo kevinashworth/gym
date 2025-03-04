@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function DashboardTab() {
+export default function WalletTab() {
   return (
     <View style={styles.container}>
-      <Text>Dashboard</Text>
+      <Text>Wallet</Text>
     </View>
   );
 }
