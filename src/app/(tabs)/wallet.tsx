@@ -4,6 +4,7 @@ export default function WalletTab() {
   return (
     <View style={styles.container}>
       <Text>Wallet</Text>
+      <Text>File is currently in src app (tabs) wallet.tsx</Text>
     </View>
   );
 }
