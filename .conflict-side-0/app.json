@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "GYM",
+    "slug": "gym",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/images/app_icon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./src/assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0047BA"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kevinexpoworth.gym"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/app_icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.kevinexpoworth.gym"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./src/assets/images/favicon.png"
+    },
+    "plugins": ["expo-router", "expo-font"],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a61a0877-db72-4ce8-801c-aa0042069956"
+      }
+    },
+    "owner": "kevinexpoworth",
+    "updates": {
+      "url": "https://u.expo.dev/a61a0877-db72-4ce8-801c-aa0042069956"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
+  }
+}
