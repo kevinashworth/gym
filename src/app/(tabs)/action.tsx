@@ -3,7 +3,8 @@ import { View, Text, StyleSheet } from "react-native";
 export default function ActionTab() {
   return (
     <View style={styles.container}>
-      <Text>Action</Text>
+      <Text>Action will go here</Text>
+      <Text>File is currently in src app (tabs) action.tsx</Text>
     </View>
   );
 }

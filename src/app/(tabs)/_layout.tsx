@@ -5,25 +5,36 @@ import { Tabs } from "expo-router";
 import BottomGet from "@/assets/svgs/bottom-get";
 import { spectrum } from "@/theme";
 
+const iosDefaultHeight = 49; // TODO: varies by device, should be dynamic ?
+const bottomMarginAdjustment = 6;
+const tabBarHeight = iosDefaultHeight - bottomMarginAdjustment;
+
 export default function TabLayout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: spectrum.primary }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: spectrum.primary,
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          height: tabBarHeight,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Dashboard",
+          title: "Dashboard (Title)",
+          tabBarAccessibilityLabel: "Dashboard",
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="home" color={color} />
           ),
-          tabBarLabelStyle: {
-            letterSpacing: -0.15,
-          },
         }}
       />
       <Tabs.Screen
         name="wallet"
         options={{
           title: "Wallet",
+          tabBarAccessibilityLabel: "Wallet",
           tabBarIcon: ({ color }) => (
             <Ionicons size={28} name="wallet" color={color} />
           ),
@@ -33,40 +44,38 @@ export default function TabLayout() {
         name="action"
         options={{
           title: "Action",
-          tabBarIcon: () => <BottomGet size={48} style={{ marginTop: -20 }} />,
+          tabBarAccessibilityLabel: "Action",
+          tabBarIcon: () => <BottomGet size={48} />,
+          tabBarIconStyle: {
+            marginTop: -10,
+          },
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
           title: "Notifications",
+          tabBarAccessibilityLabel: "Notifications",
           tabBarIcon: ({ color }) => (
             <Ionicons size={28} name="notifications" color={color} />
           ),
-          tabBarLabelStyle: {
-            letterSpacing: -0.85,
-          },
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
           title: "Search",
+          tabBarAccessibilityLabel: "Search",
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="search" color={color} />
           ),
-          // tabBarLabelStyle: {
-          //   fontSize: 9,
-          // },
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="cog" color={color} />
-          ),
+          tabBarItemStyle: { display: "none" },
         }}
       />
     </Tabs>
