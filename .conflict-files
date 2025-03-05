@@ -1,3 +1,0 @@
-ancestorEntries = []
-ourEntries = ["src/components/Collapsible.tsx", "src/components/ExternalLink.tsx", "src/components/HelloWave.tsx", "src/components/ParallaxScrollView.tsx", "src/components/__tests__/ThemedText-test.tsx", "src/components/__tests__/__snapshots__/ThemedText-test.tsx.snap", "src/components/navigation/TabBarIcon.tsx"]
-theirEntries = ["src/components/Collapsible.tsx", "src/components/ExternalLink.tsx", "src/components/HelloWave.tsx", "src/components/ParallaxScrollView.tsx", "src/components/__tests__/ThemedText-test.tsx", "src/components/__tests__/__snapshots__/ThemedText-test.tsx.snap", "src/components/navigation/TabBarIcon.tsx"]
