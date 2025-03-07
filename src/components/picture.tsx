@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: "absolute",
-    zIndex: 100,
   },
   fallback: {
     justifyContent: "center",

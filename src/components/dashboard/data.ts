@@ -156,8 +156,8 @@ const data = data5;
 const locals = [
   {
     name: "Riverwoods",
-    // image:
-    //   "https://gotyou.s3.us-west-2.amazonaws.com/media/Riverwoods640x480.png",
+    image:
+      "https://gotyou.s3.us-west-2.amazonaws.com/media/Riverwoods640x480.png",
   },
   {
     name: "University Place",

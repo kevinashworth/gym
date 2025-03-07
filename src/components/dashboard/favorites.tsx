@@ -27,7 +27,7 @@ export default function Favorites() {
                 fallback={
                   <FontAwesome
                     name="heart-o"
-                    size={56}
+                    size={width - 16}
                     style={styles.fallbackIcon}
                   />
                 }
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     wordWrap: "break-word",
   },
-  fallback: { backgroundColor: "#e0e0e0" },
+  fallback: { backgroundColor: spectrum.gray5 },
   fallbackIcon: {
     color: spectrum.base3Content,
     marginTop: 6,

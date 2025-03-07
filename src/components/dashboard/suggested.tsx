@@ -8,7 +8,7 @@ import { spectrum } from "@/theme";
 
 import { data10 as data } from "./data";
 
-const width = 76;
+const width = 72;
 
 export default function Favorites() {
   return (
@@ -19,20 +19,27 @@ export default function Favorites() {
             <View style={styles.favoriteContainer}>
               <Picture
                 source={{ uri: thumbnail }}
-                badge={<BottomGet size={18} />}
-                showBadge={has_campaign}
                 height={width}
                 width={width}
                 fallback={
                   <Placeholder
-                    size={56}
                     color={spectrum.base3Content}
-                    style={styles.fallbackIcon}
+                    size={width - 20}
                   />
                 }
                 fallbackStyle={styles.fallback}
                 imageStyle={styles.image}
               />
+              {has_campaign && (
+                <BottomGet
+                  style={{
+                    position: "absolute",
+                    right: -6,
+                    top: -6,
+                  }}
+                  size={18}
+                />
+              )}
               <Text style={styles.text} numberOfLines={2}>
                 {name}
               </Text>
@@ -51,8 +58,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   favoriteContainer: {
-    flex: 1,
     alignItems: "center",
+    flex: 1,
+    marginTop: 6,
     position: "relative",
   },
   text: {
@@ -63,21 +71,10 @@ const styles = StyleSheet.create({
     wordWrap: "break-word",
   },
   image: {
-    borderRadius: 8,
-    height: width - 4,
-    margin: 2,
-    padding: 2,
-    width: width - 4,
+    borderRadius: 6,
   },
   fallback: {
-    backgroundColor: "#e0e0e0",
-    borderRadius: 8,
-    height: width - 4,
-    margin: 2,
-    padding: 2,
-    width: width - 4,
-  },
-  fallbackIcon: {
-    marginTop: 6,
+    backgroundColor: spectrum.gray5,
+    borderRadius: 6,
   },
 });
