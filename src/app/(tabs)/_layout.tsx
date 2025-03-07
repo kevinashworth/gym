@@ -5,19 +5,12 @@ import { Tabs } from "expo-router";
 import BottomGet from "@/assets/svgs/bottom-get";
 import { spectrum } from "@/theme";
 
-const iosDefaultHeight = 49; // TODO: varies by device, should be dynamic ?
-const bottomMarginAdjustment = 6;
-const tabBarHeight = iosDefaultHeight - bottomMarginAdjustment;
-
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: spectrum.primary,
         tabBarShowLabel: false,
-        tabBarStyle: {
-          height: tabBarHeight,
-        },
       }}
     >
       <Tabs.Screen
