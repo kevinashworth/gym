@@ -1,12 +1,11 @@
 import { Dimensions, StyleSheet, View } from "react-native";
 
-import Placeholder from "@/assets/svgs/placeholder";
+import Placeholder from "@/assets/svg/placeholder";
 import Picture from "@/components/picture";
 // import ResponsiveImage from "@/components/responsive-image"
+import { locals } from "@/mocks/fixtures";
 import { spectrum } from "@/theme";
 import chunk from "@/utils/chunk";
-
-import { locals } from "./data";
 
 const window = Dimensions.get("window");
 const halfScreenWidthMinusPadding = window.width / 2 - 16;

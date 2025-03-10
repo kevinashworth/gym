@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
 
-import BottomGet from "@/assets/svgs/bottom-get";
+import BottomGet from "@/assets/svg/bottom-get";
 import { spectrum } from "@/theme";
 
 export default function TabLayout() {

@@ -2,19 +2,18 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import BottomGet from "@/assets/svgs/bottom-get";
+import BottomGet from "@/assets/svg/bottom-get";
 import Picture from "@/components/picture";
+import { favorites } from "@/mocks/fixtures";
 import { spectrum } from "@/theme";
-
-import { data5 as data } from "./data";
 
 const width = 72;
 
 export default function Favorites() {
   return (
     <View style={styles.container}>
-      {data.map(({ uuid, name, thumbnail, has_campaign }) => (
-        <Link href="/" asChild key={uuid}>
+      {favorites.map(({ uuid, name, thumbnail, has_campaign }) => (
+        <Link href={`/location/${uuid}`} asChild key={uuid}>
           <Pressable>
             <View style={styles.favoriteContainer}>
               <Picture
