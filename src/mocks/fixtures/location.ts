@@ -78,23 +78,24 @@ const location: Location = {
   description:
     "Utah County's premier modern brewery, offering great food, fun, and beer in a nostalgic Harley Davidson factory setting. A unique destination for craft-beer enthusiasts in Lehi, Utah.",
   category: [],
-  // business_logo: null,
-  business_logo:
-    "https://gotyou-test.s3.amazonaws.com/media/location/7bf25c72-abc0-4d38-a55f-8269c6a99064/WechatIMG19094.jpg",
+  business_logo: null,
+  // business_logo:
+  //   "https://gotyou-test.s3.amazonaws.com/media/location/7bf25c72-abc0-4d38-a55f-8269c6a99064/WechatIMG19094.jpg",
   photo_1:
     "https://gotyou-test.s3.amazonaws.com/media/location/9bc2128c-8663-4ee1-ace1-2ca2ea374df4/inside-2.jpg",
-  photo_2:
-    "https://gotyou-test.s3.amazonaws.com/media/location/9bc2128c-8663-4ee1-ace1-2ca2ea374df4/inside-2.jpg",
-  photo_3:
-    "https://gotyou-test.s3.amazonaws.com/media/location/7bf25c72-abc0-4d38-a55f-8269c6a99064/bidding-5.png",
-  photo_4:
-    "https://gotyou-test.s3.amazonaws.com/media/location/9bc2128c-8663-4ee1-ace1-2ca2ea374df4/inside-2.jpg",
+  photo_2: null,
+  photo_3: null,
+  photo_4: null,
   photo_5:
-    "https://gotyou-test.s3.amazonaws.com/media/location/9bc2128c-8663-4ee1-ace1-2ca2ea374df4/inside-2.jpg",
-  photo_6: null,
-  photo_7: null,
-  photo_8: null,
-  photo_9: null,
+    "https://gotyou-test.s3.amazonaws.com/media/location/dc65969d-e738-4162-b702-2861db402760/bathroom-2.jpg",
+  photo_6:
+    "https://gotyou-test.s3.amazonaws.com/media/location/dc65969d-e738-4162-b702-2861db402760/bathroom-1.jpg",
+  photo_7:
+    "https://gotyou-test.s3.amazonaws.com/media/location/dc65969d-e738-4162-b702-2861db402760/outside-2.jpg",
+  photo_8:
+    "https://gotyou-test.s3.amazonaws.com/media/location/dc65969d-e738-4162-b702-2861db402760/menu-1.jpg",
+  photo_9:
+    "https://gotyou-test.s3.amazonaws.com/media/location/dc65969d-e738-4162-b702-2861db402760/crumbl-cookies-logo.png",
   photo_10: null,
   twitter_link: "",
   facebook_link: "",
