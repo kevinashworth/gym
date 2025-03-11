@@ -1,28 +1,59 @@
 import { Stack } from "expo-router";
-import { View, Text, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
+import NotificationItem from "@/components/notification-item";
 import { spectrum } from "@/theme";
 
 export default function NotificationsTab() {
   return (
-    <View style={styles.container}>
-      <Stack.Screen
-        options={{
-          headerStyle: { backgroundColor: spectrum.primary },
-          headerTintColor: spectrum.primaryContent,
-        }}
-      />
-      <Text>Notifications will go here</Text>
-      <Text>File is currently in src app (tabs) notifications.tsx</Text>
-      <Text>The title should have a blue background</Text>
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} edges={["top"]}>
+        <ScrollView>
+          <Stack.Screen options={{ headerShown: false }} />
+          <View style={styles.main}>
+            <NotificationItem
+              title="Coming Soon"
+              subtitle={`This feature is progress.\nCheck back soon for more updates`}
+            />
+            <NotificationItem
+              title="Coming Soon, We Promise"
+              subtitle="Notifications are stiiiillllll in progress."
+              color={spectrum.warning}
+            />
+            <Text style={styles.pageInfo}>
+              src/app/(tabs)/notifications.tsx
+            </Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+  },
+  main: {
     alignItems: "center",
+    flex: 1,
+    gap: 6,
+    justifyContent: "center",
+    padding: 8,
+  },
+  text: {
+    fontSize: 29,
+    padding: 12,
+  },
+  pageInfo: {
+    borderTopColor: spectrum.base3Content,
+    borderTopWidth: 1,
+    color: spectrum.base1Content,
+    fontSize: 11,
+    fontWeight: 300,
+    marginVertical: 12,
+    paddingVertical: 12,
+    textAlign: "center",
   },
 });
