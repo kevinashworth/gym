@@ -1,13 +1,14 @@
 // https://docs.expo.dev/guides/using-eslint/
 module.exports = {
   extends: ["expo", "prettier"],
-  ignorePatterns: ["/dist/*"],
+  // plugins: ["prettier"],
+  ignorePatterns: [".eslintrc.js"],
   settings: {
     "import/resolver": {
       node: {
         alias: {
           map: [["@", "./src"]],
-          extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
+          extensions: [".js", ".jsx", ".ts", ".tsx"],
         },
       },
     },
