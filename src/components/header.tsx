@@ -44,7 +44,7 @@ function WalletDisplay() {
 
 function LogoDisplay() {
   return (
-    <Link href="/(tabs)/dashboard" asChild>
+    <Link href="/(tabs)" asChild>
       <Pressable>
         <LogoLightSmall />
       </Pressable>
