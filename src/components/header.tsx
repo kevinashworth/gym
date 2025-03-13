@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import LogoLightSmall from "@/assets/svgs/logo-light-sm";
+import LogoLightSmall from "@/assets/svg/logo-light-sm";
 import { spectrum } from "@/theme";
 
 function WalletDisplay() {
@@ -44,7 +44,7 @@ function WalletDisplay() {
 
 function LogoDisplay() {
   return (
-    <Link href="/(tabs)/dashboard" asChild>
+    <Link href="/(tabs)" asChild>
       <Pressable>
         <LogoLightSmall />
       </Pressable>

@@ -23,7 +23,9 @@ export default function DashboardTab() {
           </ScrollView>
         </View>
         <View>
-          <Text style={styles.heading}>Suggested Near Me</Text>
+          <Text style={[styles.heading, { marginBottom: 6 }]}>
+            Suggested Near Me
+          </Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <Suggested />
           </ScrollView>
@@ -36,9 +38,7 @@ export default function DashboardTab() {
           <Text style={styles.heading}>Communities - Coming Soon</Text>
           <Communities />
         </View>
-        <Text style={styles.text}>
-          src/app/(tabs)/index.tsx
-        </Text>
+        <Text style={styles.text}>src/app/(tabs)/index.tsx</Text>
       </View>
     </ScrollView>
   );

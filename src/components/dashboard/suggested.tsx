@@ -1,38 +1,44 @@
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import BottomGet from "@/assets/svgs/bottom-get";
-import Placeholder from "@/assets/svgs/placeholder";
+import BottomGet from "@/assets/svg/bottom-get";
+import Placeholder from "@/assets/svg/placeholder";
 import Picture from "@/components/picture";
+import { suggested } from "@/mocks/fixtures";
 import { spectrum } from "@/theme";
 
-import { data10 as data } from "./data";
-
-const width = 76;
+const width = 72;
 
 export default function Favorites() {
   return (
     <View style={styles.container}>
-      {data.map(({ uuid, name, thumbnail, has_campaign }) => (
+      {suggested.map(({ uuid, name, thumbnail, has_campaign }) => (
         <Link href="/" asChild key={uuid}>
           <Pressable>
             <View style={styles.favoriteContainer}>
               <Picture
                 source={{ uri: thumbnail }}
-                badge={<BottomGet size={18} />}
-                showBadge={has_campaign}
                 height={width}
                 width={width}
                 fallback={
                   <Placeholder
-                    size={56}
                     color={spectrum.base3Content}
-                    style={styles.fallbackIcon}
+                    size={width - 20}
                   />
                 }
                 fallbackStyle={styles.fallback}
                 imageStyle={styles.image}
               />
+              {has_campaign && (
+                <BottomGet
+                  style={{
+                    position: "absolute",
+                    right: -6,
+                    top: -6,
+                  }}
+                  size={18}
+                />
+              )}
               <Text style={styles.text} numberOfLines={2}>
                 {name}
               </Text>
@@ -51,8 +57,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   favoriteContainer: {
-    flex: 1,
     alignItems: "center",
+    flex: 1,
+    marginTop: 6,
     position: "relative",
   },
   text: {
@@ -63,21 +70,10 @@ const styles = StyleSheet.create({
     wordWrap: "break-word",
   },
   image: {
-    borderRadius: 8,
-    height: width - 4,
-    margin: 2,
-    padding: 2,
-    width: width - 4,
+    borderRadius: 6,
   },
   fallback: {
-    backgroundColor: "#e0e0e0",
-    borderRadius: 8,
-    height: width - 4,
-    margin: 2,
-    padding: 2,
-    width: width - 4,
-  },
-  fallbackIcon: {
-    marginTop: 6,
+    backgroundColor: spectrum.gray5,
+    borderRadius: 6,
   },
 });

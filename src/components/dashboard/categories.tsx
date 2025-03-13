@@ -11,11 +11,10 @@ import {
 } from "lucide-react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
+import { categories } from "@/mocks/fixtures";
 import { spectrum } from "@/theme";
 
-import { categories as data } from "./data";
-
-import type { Category } from "./data";
+import type { Category } from "@/mocks/fixtures";
 import type { LucideIcon } from "lucide-react-native";
 
 const IconComponent: Record<Category, LucideIcon> = {
@@ -41,7 +40,7 @@ function getCategoryIcon(category: Category) {
 export default function Categories() {
   return (
     <View style={styles.container}>
-      {data.map((category) => (
+      {categories.map((category) => (
         <Link href="/" asChild key={category}>
           <Pressable>
             <View style={styles.favoriteContainer}>

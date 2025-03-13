@@ -2,19 +2,18 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import BottomGet from "@/assets/svgs/bottom-get";
+import BottomGet from "@/assets/svg/bottom-get";
 import Picture from "@/components/picture";
+import { favorites } from "@/mocks/fixtures";
 import { spectrum } from "@/theme";
-
-import { data5 as data } from "./data";
 
 const width = 72;
 
 export default function Favorites() {
   return (
     <View style={styles.container}>
-      {data.map(({ uuid, name, thumbnail, has_campaign }) => (
-        <Link href="/" asChild key={uuid}>
+      {favorites.map(({ uuid, name, thumbnail, has_campaign }) => (
+        <Link href={`/location/${uuid}`} asChild key={uuid}>
           <Pressable>
             <View style={styles.favoriteContainer}>
               <Picture
@@ -27,7 +26,7 @@ export default function Favorites() {
                 fallback={
                   <FontAwesome
                     name="heart-o"
-                    size={56}
+                    size={width - 16}
                     style={styles.fallbackIcon}
                   />
                 }
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     wordWrap: "break-word",
   },
-  fallback: { backgroundColor: "#e0e0e0" },
+  fallback: { backgroundColor: spectrum.gray5 },
   fallbackIcon: {
     color: spectrum.base3Content,
     marginTop: 6,

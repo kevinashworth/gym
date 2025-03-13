@@ -2,7 +2,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
 
-import BottomGet from "@/assets/svgs/bottom-get";
+import BottomGet from "@/assets/svg/bottom-get";
 import { spectrum } from "@/theme";
 
 export default function TabLayout() {
@@ -16,7 +16,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Dashboard (Title)",
+          title: "Dashboard",
           tabBarAccessibilityLabel: "Dashboard",
           tabBarIcon: ({ color }) => (
             <FontAwesome size={28} name="home" color={color} />

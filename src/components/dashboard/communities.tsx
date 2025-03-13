@@ -1,12 +1,10 @@
 import { Dimensions, StyleSheet, View } from "react-native";
 
-import Placeholder from "@/assets/svgs/placeholder";
+import Placeholder from "@/assets/svg/placeholder";
 import Picture from "@/components/picture";
-// import ResponsiveImage from "@/components/responsive-image"
+import { locals } from "@/mocks/fixtures";
 import { spectrum } from "@/theme";
 import chunk from "@/utils/chunk";
-
-import { locals } from "./data";
 
 const window = Dimensions.get("window");
 const halfScreenWidthMinusPadding = window.width / 2 - 16;
@@ -18,10 +16,6 @@ export default function Communities() {
         <View key={index} style={styles.innerContainer}>
           {arr.map((item: any) => (
             <View key={item.name} style={styles.communityContainer}>
-              {/* <ResponsiveImage
-                source={{ uri: item.image }}
-                imageStyle={styles.imageStyle}
-              /> */}
               <Picture
                 source={{ uri: item.image }}
                 height={128}
@@ -70,7 +64,4 @@ const styles = StyleSheet.create({
   fallbackIcon: {
     marginTop: 6,
   },
-  // imageStyle: {
-  //   aspectRatio: 1.333,
-  // }
 });

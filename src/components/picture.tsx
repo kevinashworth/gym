@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Image, View, StyleSheet, ImageStyle, ViewStyle } from "react-native";
 
@@ -8,12 +8,14 @@ interface PictureProps {
   containerStyle?: ViewStyle;
   fallback: React.ReactElement<{ size: number }>;
   fallbackStyle?: ViewStyle;
-  height: number;
+  height?: number;
   imageStyle?: ImageStyle;
   showBadge?: boolean;
-  source: { uri: string };
+  source: { uri: string | null | undefined };
   width?: number;
 }
+
+const defaultSize = 144;
 
 const Picture: React.FC<PictureProps> = ({
   badge,
@@ -21,18 +23,19 @@ const Picture: React.FC<PictureProps> = ({
   containerStyle,
   fallback,
   fallbackStyle,
-  height,
+  height: heightProp = defaultSize,
   imageStyle,
   showBadge = false,
   source,
-  width: widthProp,
+  width: widthProp = defaultSize,
 }) => {
-  const width = widthProp || height;
-  const w = circular ? Math.min(height, width) : width;
-  const h = circular ? Math.min(height, width) : height;
+  const w = circular ? Math.min(heightProp, widthProp) : widthProp;
+  const h = circular ? Math.min(heightProp, widthProp) : heightProp;
   const borderRadius = circular ? "50%" : 0;
 
-  const [imageError, setImageError] = React.useState(false);
+  const [imageError, setImageError] = useState(
+    source.uri === null || source.uri === undefined,
+  );
 
   const handleImageError = () => {
     setImageError(true);
@@ -67,9 +70,9 @@ const Picture: React.FC<PictureProps> = ({
   return (
     <View style={styles.picture}>
       <View style={containerStyles}>
-        {!imageError ? (
+        {source && source.uri && !imageError ? (
           <Image
-            source={source}
+            source={source as { uri: string }}
             style={imageStyles}
             onError={handleImageError}
           />
@@ -95,7 +98,6 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: "absolute",
-    zIndex: 100,
   },
   fallback: {
     justifyContent: "center",
