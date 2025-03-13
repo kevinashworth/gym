@@ -41,7 +41,7 @@ const campaignTypes: {
 
 export default function CampaignActions() {
   return (
-    <View style={{ gap: 8 }}>
+    <View style={{ gap: 8, marginBottom: 16, marginTop: 8 }}>
       {chunk(campaignTypes, 2).map((arr: any[], index: number) => (
         <View key={index} style={{ gap: 8, flexDirection: "row" }}>
           {arr.map(({ type, name, icon, iconComponent }) => (

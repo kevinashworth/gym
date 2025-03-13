@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
-import {
-  // Link,
-  Stack,
-  useGlobalSearchParams,
-  // useLocalSearchParams,
-  useRouter,
-} from "expo-router";
+import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
 import {
   Dimensions,
   Image,
@@ -29,23 +23,28 @@ import CustomHeader from "@/components/header";
 import Picture from "@/components/picture";
 import XStack from "@/components/x-stack";
 import YStack from "@/components/y-stack";
-import { location, photos } from "@/mocks/fixtures";
+import { location, photoKeys } from "@/mocks/fixtures";
 import { spectrum } from "@/theme";
 import { clamp } from "@/utils/clamp";
 import { phoneFormatter, phoneFormatterAsLink } from "@/utils/phone";
 
 import type { Location } from "@/mocks/fixtures";
 
-type ImageWithSizes = {
-  photo: string;
+type ImageWithSize = {
+  url: string;
   width: number;
   height: number;
 };
 
+type ImagesWithSize = ImageWithSize[];
+
 const window = Dimensions.get("window");
 const halfScreenWidthMinusPadding = window.width / 2 - 16;
 
-function formattedAddress(location: Location) {
+const defaultSize = 164;
+const defaultDimensions = { width: defaultSize, height: defaultSize };
+
+function formatAddressForMaps(location: Location) {
   return (
     location.address1 +
     (location.address2 ? ` ${location.address2}, ` : " ") +
@@ -61,14 +60,17 @@ export default function LocationScreen() {
   const router = useRouter();
   const { uuid } = useGlobalSearchParams<{ uuid: string }>();
 
-  const [imagesWithSizes, setImagesWithSizes] = useState<ImageWithSizes[]>([
-    { photo: "", width: 164, height: 164 },
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [imagesWithSizes, setImagesWithSizes] = useState<ImagesWithSize>([
+    { url: "", width: 164, height: 164 },
   ]);
 
-  const [mainImageWithSizes, setMainImageWithSizes] = useState<ImageWithSizes>({
-    photo: "",
-    width: 164,
-    height: 164,
+  const mainImage =
+    location.business_logo || location.external_thumbnail_1 || "";
+  const [mainImageWithSize, setMainImageWithSize] = useState<ImageWithSize>({
+    ...defaultDimensions,
+    url: mainImage,
   });
 
   const callNumber = (phoneNumber: string | null) => {
@@ -81,63 +83,57 @@ export default function LocationScreen() {
     router.canGoBack() ? router.back() : router.replace("/(tabs)");
 
   useEffect(() => {
-    const nonNullImages = photos
+    const nonNullImages = photoKeys
       .filter((photo) => location[photo])
       .map((photo) => location[photo]);
-    setImagesWithSizes([]);
-    nonNullImages.forEach((photo) => {
-      Image.getSize(photo, (width, height) => {
-        const aspectRatio = clamp(0.75, width / height, 1.25);
-        // let w = width;
-        // let h = height;
-        const w = halfScreenWidthMinusPadding;
-        const h = halfScreenWidthMinusPadding / aspectRatio;
-        setImagesWithSizes((prev) => [...prev, { photo, width: w, height: h }]);
+
+    if (nonNullImages.length === 0) {
+      setImagesWithSizes([]);
+    } else if (nonNullImages.length > 0) {
+      setImagesWithSizes([]);
+      nonNullImages.forEach((photo) => {
+        Image.getSize(photo, (width, height) => {
+          const aspectRatio = clamp(0.75, width / height, 1.25);
+          const w = halfScreenWidthMinusPadding;
+          const h = halfScreenWidthMinusPadding / aspectRatio;
+          setImagesWithSizes((prev) => [
+            ...prev,
+            { url: photo, width: w, height: h },
+          ]);
+        });
       });
-    });
-  }, []);
+    }
+  }, []); // , [location]);
 
   useEffect(() => {
-    setMainImageWithSizes({ photo: "", width: 164, height: 164 });
-    const mainImage = location.business_logo || location.external_thumbnail_1;
-    if (!mainImage) return;
-    Image.getSize(mainImage, (width, height) => {
-      const aspectRatio = clamp(0.75, width / height, 1.25);
-      // let w = width;
-      // let h = height;
-      const w = halfScreenWidthMinusPadding;
-      const h = halfScreenWidthMinusPadding / aspectRatio;
-      setMainImageWithSizes({ photo: mainImage, width: w, height: h });
-    });
-  }, []);
-
-  console.log("mainImageWithSizes", mainImageWithSizes);
+    if (mainImage) {
+      Image.getSize(mainImage, (width, height) => {
+        const aspectRatio = clamp(0.75, width / height, 1.25);
+        const w = halfScreenWidthMinusPadding;
+        const h = halfScreenWidthMinusPadding / aspectRatio;
+        setMainImageWithSize({ url: mainImage, width: w, height: h });
+      });
+    }
+  }, [mainImage]);
 
   const colWrap = Math.ceil(imagesWithSizes.length / 2);
 
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container} edges={["top"]}>
+        <Stack.Screen
+          options={{
+            header: () => <CustomHeader />,
+          }}
+        />
+        <XStack style={styles.titleRow}>
+          <TouchableOpacity onPress={handleGoBack}>
+            <Ionicons name="chevron-back" size={32} color={spectrum.primary} />
+          </TouchableOpacity>
+          <Text style={styles.h3}>{location.name}</Text>
+        </XStack>
         <ScrollView>
-          <Stack.Screen
-            options={{
-              // headerShown: false,
-              // animation: "slide_from_right",
-              header: () => <CustomHeader />,
-            }}
-          />
-          {/* X with Title Row */}
-          <XStack style={styles.titleRow}>
-            <TouchableOpacity onPress={handleGoBack}>
-              <Ionicons
-                name="chevron-back"
-                size={32}
-                color={spectrum.primary}
-              />
-            </TouchableOpacity>
-            <Text style={styles.h3}>{location.name}</Text>
-          </XStack>
-          {/* Y with rest of screen */}
+          {/* Y with top portion, down until images */}
           <YStack style={{ paddingHorizontal: 16 }}>
             {/* Y with basic business info */}
             <YStack>
@@ -150,14 +146,14 @@ export default function LocationScreen() {
               >
                 <Picture
                   source={{
-                    uri: mainImageWithSizes.photo,
+                    uri: mainImageWithSize.url,
                   }}
-                  height={mainImageWithSizes.height}
-                  width={mainImageWithSizes.width}
+                  height={mainImageWithSize.height}
+                  width={mainImageWithSize.width}
                   fallback={
                     <Placeholder
                       color={spectrum.base3Content}
-                      size={mainImageWithSizes.width * 0.75}
+                      size={mainImageWithSize.width * 0.75}
                     />
                   }
                   fallbackStyle={styles.fallback}
@@ -180,7 +176,7 @@ export default function LocationScreen() {
                     <Pressable
                       onPress={() =>
                         showLocation({
-                          address: formattedAddress(location),
+                          address: formatAddressForMaps(location),
                         })
                       }
                     >
@@ -198,6 +194,20 @@ export default function LocationScreen() {
                           >
                             {location.address1}
                           </Text>
+                          {location.address2 && (
+                            <Text
+                              style={[
+                                styles.address,
+                                {
+                                  textDecorationLine: pressed
+                                    ? "underline"
+                                    : "none",
+                                },
+                              ]}
+                            >
+                              {location.address2}
+                            </Text>
+                          )}
                           <Text
                             style={[
                               styles.address,
@@ -228,26 +238,25 @@ export default function LocationScreen() {
                 </Text>
               </YStack>
             </YStack>
-
-            {/* Y with 'earnrewards' then pictures */}
+            {/* Y with 'Earn  Rewards' */}
             <YStack style={{ alignItems: "center", gap: 8 }}>
               <Text style={styles.h6}>Earn Rewards From This Business</Text>
               <CampaignActions />
             </YStack>
           </YStack>
-
+          {/* View with images */}
           <View
             style={{
               flexDirection: "row",
               gap: 6,
-              padding: 12,
+              padding: 8,
             }}
           >
             <View style={{ flex: 1, flexDirection: "column", gap: 6 }}>
               {imagesWithSizes.slice(0, colWrap).map((photo, i: number) => (
                 <Image
                   key={i}
-                  source={{ uri: photo.photo }}
+                  source={{ uri: photo.url }}
                   height={photo.height}
                   width={photo.width}
                   style={styles.image}
@@ -256,13 +265,17 @@ export default function LocationScreen() {
             </View>
             <View style={{ flex: 1, flexDirection: "column", gap: 6 }}>
               {imagesWithSizes.slice(colWrap).map((photo, i: number) => (
-                <Image
+                <Pressable
                   key={i + colWrap}
-                  source={{ uri: photo.photo }}
-                  height={photo.height}
-                  width={photo.width}
-                  style={styles.image}
-                />
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Image
+                    source={{ uri: photo.url }}
+                    height={photo.height}
+                    width={photo.width}
+                    style={styles.image}
+                  />
+                </Pressable>
               ))}
             </View>
           </View>
@@ -275,9 +288,6 @@ export default function LocationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#fff",
-    // alignItems: "center",
-    // justifyContent: "center",
   },
   titleRow: {
     alignItems: "center",
@@ -296,21 +306,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 400,
   },
-  contentContainer: {
-    backgroundColor: "gainsboro",
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    width: "100%",
-  },
-  infoContainer: {
-    alignItems: "center",
-    backgroundColor: "lightcyan",
-    marginTop: 20,
-  },
-  reviewScore: {
-    fontSize: 12,
-    fontWeight: 500,
-  },
   address: {
     fontSize: 16,
     fontWeight: 500,
@@ -318,37 +313,18 @@ const styles = StyleSheet.create({
   phone: {
     fontSize: 16,
     fontWeight: 400,
-    marginLeft: -2, // {/* I just eyeballed the marginLeft={-2} offset for opening parenthesis. */}
+    marginLeft: -2, // I just eyeballed marginLeft to better offset the phone's opening parenthesis
   },
   description: {
     fontSize: 14,
     marginBottom: 20,
     color: spectrum.base2Content,
   },
-  imagesContainer: {
-    backgroundColor: "yellow",
-    alignItems: "flex-start",
-    flexDirection: "row",
-    // gap: 6,
-    justifyContent: "center",
-    marginTop: 20,
-    // width: fullScreenWidthMinusPadding,
-  },
-  imagesInnerContainer: {
-    backgroundColor: "cyan",
-    alignItems: "center",
-    flex: 1,
-    // justifyContent: "flex-start",
-    gap: 6,
-  },
   fallback: {
     backgroundColor: spectrum.gray5,
     borderRadius: 6,
-    // width: halfScreenWidthMinusPadding,
-    // height: halfScreenWidthMinusPadding,
   },
   image: {
-    // backgroundColor: "green",
     borderRadius: 6,
   },
 });

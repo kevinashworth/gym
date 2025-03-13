@@ -1,7 +1,7 @@
 import { categories } from "./categories";
 import { favorites } from "./favorites";
 import { locals } from "./locals";
-import { location, photos } from "./location";
+import { location, photoKeys } from "./location";
 import { suggested } from "./suggested";
 
 import type { Category } from "./categories";
@@ -13,7 +13,7 @@ export {
   favorites,
   locals,
   location,
-  photos,
+  photoKeys,
   suggested,
   type Category,
   type RawLocation,

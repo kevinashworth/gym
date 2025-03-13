@@ -2,7 +2,7 @@ type Location = {
   name: string;
   uuid: string;
   address1: string;
-  address2: string;
+  address2: string | null;
   city: string;
   state: string;
   zip: string;
@@ -66,21 +66,22 @@ type Location = {
 const location: Location = {
   name: "R K Cycle Center",
   uuid: "7bf25c72-abc0-4d38-a55f-8269c6a99064",
-  address1: "99 South 600 West Street",
-  address2: "",
-  city: "Lindon",
-  state: "Utah",
+  address1: "99 S 600 West St",
+  address2: null, // "Unit 1000",
+  city: "Lehi",
+  state: "UT",
   zip: "84042",
   business_phone: "+1 801-796-7400",
   business_hours: null,
   website: null,
   support_email: null,
+  // description: null,
   description:
     "Utah County's premier modern brewery, offering great food, fun, and beer in a nostalgic Harley Davidson factory setting. A unique destination for craft-beer enthusiasts in Lehi, Utah.",
   category: [],
-  business_logo: null,
-  // business_logo:
-  //   "https://gotyou-test.s3.amazonaws.com/media/location/7bf25c72-abc0-4d38-a55f-8269c6a99064/WechatIMG19094.jpg",
+  // business_logo: null,
+  business_logo:
+    "https://gotyou-test.s3.amazonaws.com/media/location/7bf25c72-abc0-4d38-a55f-8269c6a99064/WechatIMG19094.jpg",
   photo_1:
     "https://gotyou-test.s3.amazonaws.com/media/location/9bc2128c-8663-4ee1-ace1-2ca2ea374df4/inside-2.jpg",
   photo_2: null,
@@ -94,6 +95,7 @@ const location: Location = {
     "https://gotyou-test.s3.amazonaws.com/media/location/dc65969d-e738-4162-b702-2861db402760/outside-2.jpg",
   photo_8:
     "https://gotyou-test.s3.amazonaws.com/media/location/dc65969d-e738-4162-b702-2861db402760/menu-1.jpg",
+  // photo_9: null,
   photo_9:
     "https://gotyou-test.s3.amazonaws.com/media/location/dc65969d-e738-4162-b702-2861db402760/crumbl-cookies-logo.png",
   photo_10: null,
@@ -139,7 +141,7 @@ const location: Location = {
 
 type Keys = keyof Location;
 
-const photos: Keys[] = [
+const photoKeys: Keys[] = [
   "photo_1",
   "photo_2",
   "photo_3",
@@ -152,4 +154,4 @@ const photos: Keys[] = [
   "photo_10",
 ];
 
-export { location, type Location, photos };
+export { location, type Location, photoKeys };
