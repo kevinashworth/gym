@@ -8,7 +8,6 @@ import {
   TouchableHighlight,
   StyleSheet,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import BottomGet from "@/assets/svg/bottom-get";
 import Empty from "@/components/empty";
@@ -197,9 +196,8 @@ export default function WalletTab() {
           )}
         </Stack>
         </ScrollView> */}
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+      </View>
+    </View>
   );
 }
 
