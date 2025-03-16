@@ -1,0 +1,3 @@
+ancestorEntries = ["src/app/(tabs)/action.tsx"]
+ourEntries = ["src/app/(tabs)/action.tsx", "src/store/dev.ts", "src/utils/qrcode-scan.ts"]
+theirEntries = ["src/app/(tabs)/action.tsx", "src/store/dev.ts", "src/utils/qrcode-scan.ts"]
