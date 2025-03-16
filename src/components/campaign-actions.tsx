@@ -4,7 +4,7 @@ import CampaignCheckIn from "@/assets/svg/campaign-check-in";
 import CampaignReferral from "@/assets/svg/campaign-referral";
 import CampaignReview from "@/assets/svg/campaign-review";
 import CampaignSurvey from "@/assets/svg/campaign-survey";
-import Button from "@/components/button";
+import Button from "@/components/campaign-button";
 import chunk from "@/utils/chunk";
 
 const campaignTypes: {
@@ -46,7 +46,7 @@ export default function CampaignActions() {
         <View key={index} style={{ gap: 8, flexDirection: "row" }}>
           {arr.map(({ type, name, icon, iconComponent }) => (
             <View key={type}>
-              <Button icon={iconComponent} label={name} theme="campaign" />
+              <Button icon={iconComponent} label={name} />
             </View>
           ))}
         </View>
