@@ -1,71 +1,71 @@
 import React from "react";
 
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import {
+  // Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { spectrum } from "@/theme";
 
-type Props = {
-  icon: React.ReactElement;
-  label: string;
-  theme?: "campaign";
-};
+import Icon from "./icon";
 
-export default function Button({ icon, label, theme }: Props) {
-  const Icon = React.cloneElement(icon, { color: spectrum.primary });
+import type { IconName } from "./icon";
+interface Props {
+  icon?: React.ReactElement;
+  iconName?: IconName;
+  label?: string;
+  onPress: () => void;
+}
 
-  if (theme === "campaign") {
-    return (
-      <View
-        style={[
-          styles.buttonContainer,
-          {
-            backgroundColor: spectrum.base1,
-            borderWidth: 1,
-            borderColor: spectrum.primary,
-            borderRadius: 18,
-          },
-        ]}
-      >
-        <Pressable
-          style={[styles.button, { backgroundColor: "#fff" }]}
-          onPress={() => alert(`You pressed the ${label} button.`)}
-        >
-          {Icon}
-          <Text style={[styles.buttonLabel, { color: spectrum.primary }]}>
-            {label}
-          </Text>
-        </Pressable>
-      </View>
-    );
-  }
+export default function Button({ icon, iconName, label, onPress }: Props) {
+  const IconComponent = icon ? (
+    React.cloneElement(icon, { color: spectrum.gray1 })
+  ) : iconName ? (
+    <Icon name={iconName} size={14} color={spectrum.gray1} />
+  ) : null;
 
   return (
     <View style={styles.buttonContainer}>
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={onPress}
         style={styles.button}
-        onPress={() => alert(`You pressed the ${label} button.`)}
       >
-        <Text style={styles.buttonLabel}>{label}</Text>
-      </Pressable>
+        {IconComponent}
+        {label && <Text style={styles.buttonLabel}>{label}</Text>}
+      </TouchableOpacity>
     </View>
   );
+
+  // return (
+  //   <View style={styles.buttonContainer}>
+  //     <Pressable style={styles.button} onPress={onPress}>
+  //       {Icon}
+  //       <Text style={styles.buttonLabel}>{label}</Text>
+  //     </Pressable>
+  //   </View>
+  // );
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 3,
-    width: 128,
-  },
+  buttonContainer: {},
   button: {
     alignItems: "center",
-    borderRadius: 10,
+    backgroundColor: spectrum.primary,
+    borderRadius: 12,
+    elevation: 8,
     flexDirection: "row",
     gap: 8,
-    justifyContent: "center",
+    padding: 6,
+    paddingHorizontal: 12,
   },
   buttonLabel: {
+    alignSelf: "center",
+    color: spectrum.gray1,
     fontSize: 14,
+    fontWeight: 700,
   },
 });
