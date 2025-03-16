@@ -9,43 +9,51 @@ import { spectrum } from "@/theme";
 
 const width = 72;
 
-export default function Favorites() {
+interface SuggestedProps {
+  numToDisplay?: number;
+}
+
+export default function Suggested({
+  numToDisplay = suggested.length,
+}: SuggestedProps) {
   return (
     <View style={styles.container}>
-      {suggested.map(({ uuid, name, thumbnail, has_campaign }) => (
-        <Link href="/" asChild key={uuid}>
-          <Pressable>
-            <View style={styles.favoriteContainer}>
-              <Picture
-                source={{ uri: thumbnail }}
-                height={width}
-                width={width}
-                fallback={
-                  <Placeholder
-                    color={spectrum.base3Content}
-                    size={width - 20}
-                  />
-                }
-                fallbackStyle={styles.fallback}
-                imageStyle={styles.image}
-              />
-              {has_campaign && (
-                <BottomGet
-                  style={{
-                    position: "absolute",
-                    right: -6,
-                    top: -6,
-                  }}
-                  size={18}
+      {suggested
+        .slice(0, numToDisplay)
+        .map(({ uuid, name, thumbnail, has_campaign }) => (
+          <Link href="/" asChild key={uuid}>
+            <Pressable>
+              <View style={styles.favoriteContainer}>
+                <Picture
+                  source={{ uri: thumbnail }}
+                  height={width}
+                  width={width}
+                  fallback={
+                    <Placeholder
+                      color={spectrum.base3Content}
+                      size={width - 20}
+                    />
+                  }
+                  fallbackStyle={styles.fallback}
+                  imageStyle={styles.image}
                 />
-              )}
-              <Text style={styles.text} numberOfLines={2}>
-                {name}
-              </Text>
-            </View>
-          </Pressable>
-        </Link>
-      ))}
+                {has_campaign && (
+                  <BottomGet
+                    style={{
+                      position: "absolute",
+                      right: -6,
+                      top: -6,
+                    }}
+                    size={18}
+                  />
+                )}
+                <Text style={styles.text} numberOfLines={2}>
+                  {name}
+                </Text>
+              </View>
+            </Pressable>
+          </Link>
+        ))}
     </View>
   );
 }
