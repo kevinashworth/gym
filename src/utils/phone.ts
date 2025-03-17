@@ -1,47 +1,44 @@
-import { phone } from "phone";
+import parsePhoneNumber from "libphonenumber-js/mobile";
 import { Platform } from "react-native";
 
-// 'phone' docs: "phone number will be treated as USA or Canada by default"
+function isValidMobilePhone(value: string) {
+  if (!value) return false;
+  const phoneNumber = parsePhoneNumber(value, "US");
+  if (phoneNumber?.isValid()) {
+    if (phoneNumber.getType() === "MOBILE") {
+      return true;
+    }
+  }
+  return false;
+}
 
 function isValidPhone(value: string) {
-  if (!value) {
-    return false;
+  if (!value) return false;
+  const phoneNumber = parsePhoneNumber(value, "US");
+  if (phoneNumber?.isValid()) {
+    return true;
   }
-  const phoneObject = phone(value);
-  if (!phoneObject.isValid) {
-    return false;
-  }
-  return true;
+  return false;
 }
 
-const handledCountryCodes = ["+1"]; // USA, Canada
-
-function isHandledCountryCode(countryCode: string) {
-  return handledCountryCodes.indexOf(countryCode) > -1;
-}
-
-// returns (801) 225-6115
+// returns (801) 225-6115 or null
 function phoneFormatter(inputPhoneNumber: string | null) {
   if (!inputPhoneNumber) return null;
-  const digitsOnly = phoneFormatterDigitsOnly(inputPhoneNumber);
-  const match = digitsOnly.match(/^(\d{3})(\d{3})(\d{4})$/);
-  if (match) {
-    return "(" + match[1] + ") " + match[2] + "-" + match[3];
+  const phoneNumber = parsePhoneNumber(inputPhoneNumber, "US");
+  if (phoneNumber?.isValid()) {
+    return phoneNumber.formatNational();
   }
-  return inputPhoneNumber;
+  return null;
 }
 
-// returns 8012256115
+// returns 8012256115 or null
 function phoneFormatterDigitsOnly(inputPhoneNumber: string) {
-  const phoneObject = phone(inputPhoneNumber);
-  if (!phoneObject.isValid) {
-    return inputPhoneNumber;
+  if (!inputPhoneNumber) return null;
+  const phoneNumber = parsePhoneNumber(inputPhoneNumber, "US");
+  if (phoneNumber?.isValid()) {
+    return phoneNumber.nationalNumber;
   }
-  const { countryCode, phoneNumber } = phoneObject;
-  const digitsOnly = isHandledCountryCode(countryCode)
-    ? phoneNumber.slice(countryCode.length)
-    : phoneNumber.replace(/\D/g, "");
-  return digitsOnly;
+  return null;
 }
 
 // returns link to initiate a native phone call
@@ -50,4 +47,9 @@ function phoneFormatterAsLink(phoneNumber: string) {
   return `${prefix}:${phoneFormatterDigitsOnly(phoneNumber)}`;
 }
 
-export { isValidPhone, phoneFormatter, phoneFormatterAsLink };
+export {
+  isValidMobilePhone,
+  isValidPhone,
+  phoneFormatter,
+  phoneFormatterAsLink,
+};
