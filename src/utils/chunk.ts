@@ -1,5 +1,4 @@
 // https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore?tab=readme-ov-file#_chunk
-
 const chunk = (input: any[], size: number) => {
   return input.reduce((arr, item, idx) => {
     return idx % size === 0

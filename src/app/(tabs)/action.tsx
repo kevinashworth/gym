@@ -55,11 +55,9 @@ export default function ActionTab() {
       qrLock.current = true;
       const url = Linking.parse(data);
       const { result, error } = uriValidator(url);
-      console.log("handleBarCodeScanned", { url, result, error });
       if (error) {
         setScanError(error);
         setScanResult(undefined);
-        // return;
       }
       if (result) {
         setTimeout(() => {
@@ -75,18 +73,48 @@ export default function ActionTab() {
               ? { campaign_short_code: result.campaign_short_code }
               : {},
           );
-          // TODO: push would be better, but keeps this screen on the navigation Stack. hmmm.
-          router.replace({
-            pathname,
-            params,
-          });
+          router.replace({ pathname, params }); // TODO: `push` would be better, but `push` keeps this screen on the navigation Stack. hmmm.
         }, 500);
       }
     }
   }
-  // We need this because the scanning happens again and again
-  // const handleBarcodeScanned = useCallback(handleBarcodeScannedFn, []);
 
+  async function handlePickImage() {
+    let pick = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "images",
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!pick.canceled) {
+      const pickedImage = pick.assets[0].uri;
+      setPickedImage(pickedImage);
+      const scan = await Camera.scanFromURLAsync(pickedImage);
+      const url = Linking.parse(scan[0].data);
+      const { result, error } = uriValidator(url);
+      if (error) {
+        setScanError(error);
+        setScanResult(undefined);
+      }
+      if (result) {
+        setScanError(undefined);
+        setScanResult(result);
+        setTimeout(() => {
+          const pathname = "/location/[uuid]";
+          const params = Object.assign(
+            { uuid: result.locationId },
+            result.type === "referral"
+              ? { referralCode: result.referralCode }
+              : {},
+            result.type === "checkin"
+              ? { campaign_short_code: result.campaign_short_code }
+              : {},
+          );
+          router.push({ pathname, params });
+        }, 500);
+      }
+    }
+  }
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
       if (
@@ -110,118 +138,31 @@ export default function ActionTab() {
     setScanResult(undefined);
   }
 
+  // unmount code
   useEffect(() => {
     return () => {
-      // put unmount code here
       resetState();
     };
   });
-
-  async function handlePickImage() {
-    let pick = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: "images",
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!pick.canceled) {
-      const pickedImage = pick.assets[0].uri;
-      setPickedImage(pickedImage);
-      const scan = await Camera.scanFromURLAsync(pickedImage);
-      const url = Linking.parse(scan[0].data);
-      const { result, error } = uriValidator(url);
-      console.log("handlePickImage", { url, result, error });
-      if (error) {
-        setScanError(error);
-        setScanResult(undefined);
-      }
-      if (result) {
-        setScanError(undefined);
-        setScanResult(result);
-        setTimeout(() => {
-          const pathname = "/location/[uuid]";
-          const params = Object.assign(
-            { uuid: result.locationId },
-            result.type === "referral"
-              ? { referralCode: result.referralCode }
-              : {},
-            result.type === "checkin"
-              ? { campaign_short_code: result.campaign_short_code }
-              : {},
-          );
-          router.push({
-            pathname,
-            params,
-          });
-        }, 500);
-      }
-    }
-  }
-
-  // async function pickImageAsync() {
-  //   // No permissions request is necessary for launching the image library
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: "images",
-  //     allowsEditing: true,
-  //     quality: 1,
-  //   });
-
-  //   if (!result.canceled) {
-  //     setPickedImage(result.assets[0].uri);
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   async function handlePickedImage() {
-  //     console.log("pickedImage:", pickedImage);
-  //     if (pickedImage) {
-  //       const scanResult = await Camera.scanFromURLAsync(pickedImage);
-  //       const url = Linking.parse(scanResult[0].data);
-  //       // const url = scanResult[0].data;
-  //       const { result, error } = uriValidator(url);
-  //       console.log("handleBarCodeScanned", { url, result, error });
-  //       if (error) {
-  //         setScanError(error);
-  //         setScanResult(undefined);
-  //       }
-  //       if (result) {
-  //         setTimeout(() => {
-  //           const pathname = "/location/[uuid]";
-  //           const params = Object.assign(
-  //             { uuid: result.locationId },
-  //             result.type === "referral"
-  //               ? { referralCode: result.referralCode }
-  //               : {},
-  //             result.type === "checkin"
-  //               ? { campaign_short_code: result.campaign_short_code }
-  //               : {},
-  //           );
-  //           // TODO: push would be better, but keeps this screen on the navigation Stack. hmmm.
-  //           router.replace({
-  //             pathname,
-  //             params,
-  //           });
-  //         }, 500);
-  //       }
-  //     }
-  //   }
-  //   handlePickedImage();
-  // }, [pickedImage]);
 
   // Camera permissions are still loading.
   if (!permission) {
     return <View />;
   }
+
   // Camera permissions are not granted yet.
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        q
         <Text style={styles.message}>
           Enable camera permissions for the GotYou&nbsp;app, so you can start
           scanning QR&nbsp;codes
         </Text>
-        <RNButton onPress={requestPermission} title="Grant permission" />
+        <RNButton
+          onPress={requestPermission}
+          title="Grant permission"
+          color={spectrum.primary}
+        />
       </View>
     );
   }
@@ -242,10 +183,6 @@ export default function ActionTab() {
               barcodeTypes: ["qr"],
             }}
             onBarcodeScanned={handleBarcodeScannedFn}
-            // TODO: Remove this once expo-camera v16.0.18 is released
-            // onCameraReady={() => setCameraReady(true)}
-            // onBarcodeScanned={isCameraReady ? handleBarcodeScanned : undefined}
-            // onBarcodeScanned={hasScanned ? undefined : handleBarcodeScannedFn}
             style={[
               styles.camera,
               Platform.OS === "ios" ? styles.cameraIOS : styles.cameraAndroid,
@@ -263,7 +200,6 @@ export default function ActionTab() {
         {enableDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
-            <RNButton title="RN" />
             <Button
               iconName="refresh"
               onPress={resetState}
@@ -297,7 +233,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   message: {
-    fontSize: 18,
+    fontSize: 15,
     padding: 12,
     textAlign: "center",
   },

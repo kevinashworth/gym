@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-// import { useStoreState, useStoreActions } from "easy-peasy";
-
 import Like from "@/components/like";
 
 interface FavoriteLocationProps {
@@ -15,17 +13,8 @@ export default function FavoriteLocation({
   referralCode,
   uuid,
 }: FavoriteLocationProps) {
-  // const {
-  //   status: { [uuid]: { loading } = { loading: false } },
-  //   byIds: { [uuid]: liked },
-  // } = useStoreState((state) => state.favorite);
-  // const { remove, add } = useStoreActions((state) => state.favorite);
-
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  // const handleChangeLike = () =>
-  //   liked ? remove({ uuid }) : add({ uuid, referralCode });
 
   function handleChangeLike() {
     setLoading(true);

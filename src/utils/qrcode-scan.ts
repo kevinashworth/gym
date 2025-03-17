@@ -60,42 +60,6 @@ const getPayload = {
       throw new UriValidatorError("Incorrect data format [checkin]");
     }
   },
-  // referral: (url: ParsedURL): ReferralPayload | undefined => {
-  //   const infoParam = url.queryParams?.["info"];
-  //   const base64Str =
-  //     typeof infoParam === "string"
-  //       ? infoParam
-  //       : Array.isArray(infoParam)
-  //         ? infoParam[0]
-  //         : "";
-  //   if (!base64Str) {
-  //     throw new UriValidatorError("Missing data [referral]");
-  //   }
-  //   try {
-  //     const info = JSON.parse(decode(base64Str));
-  //     if ("locationId" in info && "referralCode" in info) {
-  //       return info;
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     throw new UriValidatorError("Incorrect data format [referral]");
-  //   }
-  // },
-  // checkin: (url: ParsedURL): CheckInPayload | undefined => {
-  //   const payload = url.path?.match(/checkin\/([^/]+)\/?$/)?.[1];
-  //   if (!payload) {
-  //     throw new UriValidatorError("Missing data [checkin]");
-  //   }
-  //   try {
-  //     const info = JSON.parse(decode(payload));
-  //     if ("locationId" in info && "campaign_short_code" in info) {
-  //       return info;
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     throw new UriValidatorError("Incorrect data format [checkin]");
-  //   }
-  // },
 };
 
 export function uriValidator(url: any): UriValidator {
