@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
@@ -9,6 +10,8 @@ import CustomHeader from "@/components/header";
 
 // Keep the splash screen visible while we prepare
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -41,16 +44,17 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            header: () => <CustomHeader />,
-            // title: "Back",
-          }}
-        />
-      </Stack>
-      <StatusBar style="light" />
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style="light" />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              header: () => <CustomHeader />,
+            }}
+          />
+        </Stack>
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 }
