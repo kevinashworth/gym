@@ -12,7 +12,6 @@ export const spectrum = {
   base1Content: "#303030",
   base2Content: "rgba(67, 67, 67, 0.72)",
   base3Content: "rgba(67, 67, 67, 0.5)",
-  // gray5: "hsl(0, 0%, 90.0%)",
   gray1: "hsl(0, 0%, 99.0%)",
   gray2: "hsl(0, 0%, 97.3%)",
   gray3: "hsl(0, 0%, 95.1%)",

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import CustomHeader from "@/components/header";
 
@@ -39,7 +40,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <SafeAreaProvider>
       <Stack>
         <Stack.Screen
           name="(tabs)"
@@ -50,6 +51,6 @@ export default function RootLayout() {
         />
       </Stack>
       <StatusBar style="light" />
-    </>
+    </SafeAreaProvider>
   );
 }

@@ -8,7 +8,6 @@ import {
   TouchableHighlight,
   StyleSheet,
 } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import BottomGet from "@/assets/svg/bottom-get";
 import Empty from "@/components/empty";
@@ -99,73 +98,72 @@ function FlatListItem({
 
 export default function WalletTab() {
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container} edges={["top"]}>
-        <Stack.Screen options={{ headerShown: false }} />
-        <View style={styles.header}>
-          <View style={styles.headerWithIcon}>
-            <Ionicons size={52} name="wallet" color={spectrum.base2Content} />
-            <Text style={styles.h2}>Wallet</Text>
-          </View>
-          <Text style={styles.h2Secondary}>{user_tag}’s Tokens</Text>
+    <View style={styles.container}>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={styles.header}>
+        <View style={styles.headerWithIcon}>
+          <Ionicons size={52} name="wallet" color={spectrum.base2Content} />
+          <Text style={styles.h2}>Wallet</Text>
         </View>
-        <View style={styles.balanceContainer}>
-          <View style={styles.balanceIcon}>
-            <BottomGet size={36} />
-            <Text style={styles.balanceText}>GET</Text>
-          </View>
-          <View style={styles.balanceValue}>
-            {balanceStateLoading === true && <ActivityIndicator />}
-            {balanceStateLoading === false && (
-              <Text style={styles.balanceText}>
-                {new Intl.NumberFormat("en-US").format(
-                  me.token_balance.token_balance_get,
-                )}
-              </Text>
+        <Text style={styles.h2Secondary}>{user_tag}’s Tokens</Text>
+      </View>
+      <View style={styles.balanceContainer}>
+        <View style={styles.balanceIcon}>
+          <BottomGet size={36} />
+          <Text style={styles.balanceText}>GET</Text>
+        </View>
+        <View style={styles.balanceValue}>
+          {balanceStateLoading === true && <ActivityIndicator />}
+          {balanceStateLoading === false && (
+            <Text style={styles.balanceText}>
+              {new Intl.NumberFormat("en-US").format(
+                me.token_balance.token_balance_get,
+              )}
+            </Text>
+          )}
+        </View>
+      </View>
+      <View style={{ flex: 1 }}>
+        <View style={styles.historyHeader}>
+          <Text style={styles.h2}>History</Text>
+        </View>
+        <View style={styles.flatListContainer}>
+          <FlatList
+            data={historyData}
+            initialNumToRender={10}
+            keyExtractor={(item) => item.uuid}
+            ItemSeparatorComponent={({ highlighted }) => (
+              <View
+                style={[styles.separator, highlighted && { marginLeft: 0 }]}
+              />
             )}
-          </View>
+            ListEmptyComponent={
+              <Empty
+                text="No transactions yet"
+                textProps={{ fontSize: 16 }}
+                vertical
+                style={{ marginTop: 20 }}
+              />
+            }
+            ListFooterComponent={
+              <Text style={styles.flatListFooter}>
+                You’ve reached the end of your wallet history
+              </Text>
+            }
+            onEndReachedThreshold={0.2}
+            renderItem={({ item, index, separators }) => (
+              <FlatListItem
+                key={item.id}
+                item={item}
+                index={index}
+                onShowUnderlay={separators.highlight}
+                onHideUnderlay={separators.unhighlight}
+              />
+            )}
+          />
         </View>
-        <View style={{ flex: 1 }}>
-          <View style={styles.historyHeader}>
-            <Text style={styles.h2}>History</Text>
-          </View>
-          <View style={styles.flatListContainer}>
-            <FlatList
-              data={historyData}
-              initialNumToRender={10}
-              keyExtractor={(item) => item.uuid}
-              ItemSeparatorComponent={({ highlighted }) => (
-                <View
-                  style={[styles.separator, highlighted && { marginLeft: 0 }]}
-                />
-              )}
-              ListEmptyComponent={
-                <Empty
-                  text="No transactions yet"
-                  textProps={{ fontSize: 16 }}
-                  vertical
-                  style={{ marginTop: 20 }}
-                />
-              }
-              ListFooterComponent={
-                <Text style={styles.flatListFooter}>
-                  You’ve reached the end of your wallet history
-                </Text>
-              }
-              onEndReachedThreshold={0.2}
-              renderItem={({ item, index, separators }) => (
-                <FlatListItem
-                  key={item.id}
-                  item={item}
-                  index={index}
-                  onShowUnderlay={separators.highlight}
-                  onHideUnderlay={separators.unhighlight}
-                />
-              )}
-            />
-          </View>
 
-          {/* <ScrollView
+        {/* <ScrollView
           // flex={1}
           refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
           onScroll={handleScroll}
@@ -197,9 +195,8 @@ export default function WalletTab() {
           )}
         </Stack>
         </ScrollView> */}
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+      </View>
+    </View>
   );
 }
 

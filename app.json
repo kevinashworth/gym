@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./src/assets/images/app_icon.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    // "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
       "image": "./src/assets/images/splash.png",
@@ -29,7 +29,24 @@
       "output": "static",
       "favicon": "./src/assets/images/favicon.png"
     },
-    "plugins": ["expo-font", "expo-router", "react-native-map-link"],
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "$(PRODUCT_NAME) needs to access your camera to scan QR codes",
+          "recordAudioAndroid": false
+        }
+      ],
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "$(PRODUCT_NAME) needs to access your photos to load any QR codes there"
+        }
+      ],
+      "expo-router",
+      "react-native-map-link"
+    ],
     "experiments": {
       "typedRoutes": true
     },
@@ -42,8 +59,6 @@
     "updates": {
       "url": "https://u.expo.dev/a61a0877-db72-4ce8-801c-aa0042069956"
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    }
+    "runtimeVersion": "exposdk:52.0.0"
   }
 }

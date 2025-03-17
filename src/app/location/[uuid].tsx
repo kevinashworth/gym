@@ -14,16 +14,17 @@ import {
   View,
 } from "react-native";
 import { showLocation } from "react-native-map-link";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import Placeholder from "@/assets/svg/placeholder";
 import CampaignActions from "@/components/campaign-actions";
+import DisplayJSON from "@/components/display-json";
 import FavoriteLocation from "@/components/favorite-location";
 import CustomHeader from "@/components/header";
 import Picture from "@/components/picture";
 import XStack from "@/components/x-stack";
 import YStack from "@/components/y-stack";
 import { location, photoKeys } from "@/mocks/fixtures";
+import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 import { clamp } from "@/utils/clamp";
 import { phoneFormatter, phoneFormatterAsLink } from "@/utils/phone";
@@ -57,14 +58,11 @@ function formatAddressForMaps(location: Location) {
 }
 
 export default function LocationScreen() {
+  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
   const router = useRouter();
   const { uuid } = useGlobalSearchParams<{ uuid: string }>();
 
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const [imagesWithSizes, setImagesWithSizes] = useState<ImagesWithSize>([
-    { url: "", width: 164, height: 164 },
-  ]);
+  const [imagesWithSizes, setImagesWithSizes] = useState<ImagesWithSize>([]);
 
   const mainImage =
     location.business_logo || location.external_thumbnail_1 || "";
@@ -90,20 +88,20 @@ export default function LocationScreen() {
     if (nonNullImages.length === 0) {
       setImagesWithSizes([]);
     } else if (nonNullImages.length > 0) {
-      setImagesWithSizes([]);
+      const images: ImagesWithSize = [];
       nonNullImages.forEach((photo) => {
         Image.getSize(photo, (width, height) => {
           const aspectRatio = clamp(0.75, width / height, 1.25);
           const w = halfScreenWidthMinusPadding;
           const h = halfScreenWidthMinusPadding / aspectRatio;
-          setImagesWithSizes((prev) => [
-            ...prev,
-            { url: photo, width: w, height: h },
-          ]);
+          images.push({ url: photo, width: w, height: h });
+          if (images.length === nonNullImages.length) {
+            setImagesWithSizes(images);
+          }
         });
       });
     }
-  }, []); // , [location]);
+  }, []);
 
   useEffect(() => {
     if (mainImage) {
@@ -119,169 +117,165 @@ export default function LocationScreen() {
   const colWrap = Math.ceil(imagesWithSizes.length / 2);
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container} edges={["top"]}>
-        <Stack.Screen
-          options={{
-            header: () => <CustomHeader />,
-          }}
-        />
-        <XStack style={styles.titleRow}>
-          <TouchableOpacity onPress={handleGoBack}>
-            <Ionicons name="chevron-back" size={32} color={spectrum.primary} />
-          </TouchableOpacity>
-          <Text style={styles.h3}>{location.name}</Text>
-        </XStack>
-        <ScrollView>
-          {/* Y with top portion, down until images */}
-          <YStack style={{ paddingHorizontal: 16 }}>
-            {/* Y with basic business info */}
-            <YStack>
-              {/* X with picture and review score */}
-              <XStack
-                style={{
-                  alignItems: "center",
-                  gap: 8,
+    <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          header: () => <CustomHeader />,
+        }}
+      />
+      <XStack style={styles.titleRow}>
+        <TouchableOpacity onPress={handleGoBack}>
+          <Ionicons name="chevron-back" size={32} color={spectrum.primary} />
+        </TouchableOpacity>
+        <Text style={styles.h3}>{location.name}</Text>
+      </XStack>
+      <ScrollView>
+        <YStack style={{ paddingHorizontal: 16 }}>
+          <YStack>
+            <XStack
+              style={{
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <Picture
+                source={{
+                  uri: mainImageWithSize.url,
                 }}
-              >
-                <Picture
-                  source={{
-                    uri: mainImageWithSize.url,
-                  }}
-                  height={mainImageWithSize.height}
-                  width={mainImageWithSize.width}
-                  fallback={
-                    <Placeholder
-                      color={spectrum.base3Content}
-                      size={mainImageWithSize.width * 0.75}
-                    />
-                  }
-                  fallbackStyle={styles.fallback}
-                  imageStyle={styles.image}
-                />
-                <YStack>
-                  <XStack style={{ gap: 2 }}>
-                    <Text>Review Score:</Text>
-                    <Text style={{ fontWeight: 500 }}>
-                      {location.average_rating
-                        ? Number(location.average_rating).toFixed(1)
-                        : "—"}
-                    </Text>
-                  </XStack>
-                </YStack>
-              </XStack>
+                height={mainImageWithSize.height}
+                width={mainImageWithSize.width}
+                fallback={
+                  <Placeholder
+                    color={spectrum.base3Content}
+                    size={mainImageWithSize.width * 0.75}
+                  />
+                }
+                fallbackStyle={styles.fallback}
+                imageStyle={styles.image}
+              />
               <YStack>
-                <XStack style={{ paddingVertical: 8 }}>
-                  <YStack>
-                    <Pressable
-                      onPress={() =>
-                        showLocation({
-                          address: formatAddressForMaps(location),
-                        })
-                      }
-                    >
-                      {({ pressed }) => (
-                        <>
-                          <Text
-                            style={[
-                              styles.address,
-                              {
-                                textDecorationLine: pressed
-                                  ? "underline"
-                                  : "none",
-                              },
-                            ]}
-                          >
-                            {location.address1}
-                          </Text>
-                          {location.address2 && (
-                            <Text
-                              style={[
-                                styles.address,
-                                {
-                                  textDecorationLine: pressed
-                                    ? "underline"
-                                    : "none",
-                                },
-                              ]}
-                            >
-                              {location.address2}
-                            </Text>
-                          )}
-                          <Text
-                            style={[
-                              styles.address,
-                              {
-                                textDecorationLine: pressed
-                                  ? "underline"
-                                  : "none",
-                              },
-                            ]}
-                          >
-                            {location.city} {location.state} {location.zip}
-                          </Text>
-                        </>
-                      )}
-                    </Pressable>
-                    <TouchableOpacity
-                      onPress={() => callNumber(location.business_phone)}
-                    >
-                      <Text style={styles.phone}>
-                        {phoneFormatter(location.business_phone)}
-                      </Text>
-                    </TouchableOpacity>
-                  </YStack>
-                  <FavoriteLocation uuid={uuid} enableText />
+                <XStack style={{ gap: 2 }}>
+                  <Text>Review Score:</Text>
+                  <Text style={{ fontWeight: 500 }}>
+                    {location.average_rating
+                      ? Number(location.average_rating).toFixed(1)
+                      : "—"}
+                  </Text>
                 </XStack>
-                <Text style={styles.description}>
-                  {location.description || "(No description)"}
-                </Text>
               </YStack>
-            </YStack>
-            {/* Y with 'Earn  Rewards' */}
-            <YStack style={{ alignItems: "center", gap: 8 }}>
-              <Text style={styles.h6}>Earn Rewards From This Business</Text>
-              <CampaignActions />
+            </XStack>
+            <YStack>
+              <XStack style={{ paddingVertical: 8 }}>
+                <YStack>
+                  <Pressable
+                    onPress={() =>
+                      showLocation({
+                        address: formatAddressForMaps(location),
+                      })
+                    }
+                  >
+                    {({ pressed }) => (
+                      <>
+                        <Text
+                          style={[
+                            styles.address,
+                            {
+                              textDecorationLine: pressed
+                                ? "underline"
+                                : "none",
+                            },
+                          ]}
+                        >
+                          {location.address1}
+                        </Text>
+                        {location.address2 && (
+                          <Text
+                            style={[
+                              styles.address,
+                              {
+                                textDecorationLine: pressed
+                                  ? "underline"
+                                  : "none",
+                              },
+                            ]}
+                          >
+                            {location.address2}
+                          </Text>
+                        )}
+                        <Text
+                          style={[
+                            styles.address,
+                            {
+                              textDecorationLine: pressed
+                                ? "underline"
+                                : "none",
+                            },
+                          ]}
+                        >
+                          {location.city} {location.state} {location.zip}
+                        </Text>
+                      </>
+                    )}
+                  </Pressable>
+                  <TouchableOpacity
+                    onPress={() => callNumber(location.business_phone)}
+                  >
+                    <Text style={styles.phone}>
+                      {phoneFormatter(location.business_phone)}
+                    </Text>
+                  </TouchableOpacity>
+                </YStack>
+                <FavoriteLocation uuid={uuid} enableText />
+              </XStack>
+              <Text style={styles.description}>
+                {uuid}
+                {location.description || "(No description)"}
+              </Text>
             </YStack>
           </YStack>
-          {/* View with images */}
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 6,
-              padding: 8,
-            }}
-          >
-            <View style={{ flex: 1, flexDirection: "column", gap: 6 }}>
-              {imagesWithSizes.slice(0, colWrap).map((photo, i: number) => (
-                <Image
-                  key={i}
-                  source={{ uri: photo.url }}
-                  height={photo.height}
-                  width={photo.width}
-                  style={styles.image}
-                />
-              ))}
-            </View>
-            <View style={{ flex: 1, flexDirection: "column", gap: 6 }}>
-              {imagesWithSizes.slice(colWrap).map((photo, i: number) => (
-                <Pressable
-                  key={i + colWrap}
-                  onPress={() => setModalVisible(!modalVisible)}
-                >
-                  <Image
-                    source={{ uri: photo.url }}
-                    height={photo.height}
-                    width={photo.width}
-                    style={styles.image}
-                  />
-                </Pressable>
-              ))}
-            </View>
+          <YStack style={{ alignItems: "center", gap: 8 }}>
+            <Text style={styles.h6}>Earn Rewards From This Business</Text>
+            <CampaignActions />
+          </YStack>
+        </YStack>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 6,
+            padding: 8,
+          }}
+        >
+          <View style={{ flex: 1, flexDirection: "column", gap: 6 }}>
+            {imagesWithSizes.slice(0, colWrap).map((photo, i: number) => (
+              <Image
+                key={photo.url + i}
+                source={{ uri: photo.url }}
+                height={photo.height}
+                width={photo.width}
+                style={styles.image}
+              />
+            ))}
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </SafeAreaProvider>
+          <View style={{ flex: 1, flexDirection: "column", gap: 6 }}>
+            {imagesWithSizes.slice(colWrap).map((photo, i: number) => (
+              <Image
+                key={photo.url + i + colWrap}
+                source={{ uri: photo.url }}
+                height={photo.height}
+                width={photo.width}
+                style={styles.image}
+              />
+            ))}
+          </View>
+        </View>
+        {enableDevToolbox && (
+          <View style={styles.toolbox}>
+            <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
+            <DisplayJSON json={{ imagesWithSizes }} />
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -326,5 +320,25 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: 6,
+  },
+  toolbox: {
+    backgroundColor: spectrum.gray1,
+    borderColor: spectrum.gray8,
+    borderWidth: 2,
+    borderRadius: 8,
+    gap: 8,
+    marginVertical: 8,
+    padding: 8,
+  },
+  toolboxButton: {
+    borderColor: spectrum.gray8,
+    borderWidth: 2,
+    borderRadius: 8,
+  },
+  toolboxHeader: {
+    color: spectrum.primaryLight,
+    fontSize: 14,
+    fontWeight: 700,
+    textAlign: "center",
   },
 });

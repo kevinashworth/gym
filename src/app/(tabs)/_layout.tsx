@@ -38,9 +38,9 @@ export default function TabLayout() {
         options={{
           title: "Action",
           tabBarAccessibilityLabel: "Action",
-          tabBarIcon: () => <BottomGet size={48} />,
+          tabBarIcon: () => <BottomGet size={60} />,
           tabBarIconStyle: {
-            marginTop: -10,
+            marginTop: -16,
           },
         }}
       />

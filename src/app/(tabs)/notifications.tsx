@@ -1,33 +1,28 @@
 import { Stack } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import NotificationItem from "@/components/notification-item";
 import { spectrum } from "@/theme";
 
 export default function NotificationsTab() {
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container} edges={["top"]}>
-        <ScrollView>
-          <Stack.Screen options={{ headerShown: false }} />
-          <View style={styles.main}>
-            <NotificationItem
-              title="Coming Soon"
-              subtitle={`This feature is progress.\nCheck back soon for more updates`}
-            />
-            <NotificationItem
-              title="Coming Soon, We Promise"
-              subtitle="Notifications are stiiiillllll in progress."
-              color={spectrum.warning}
-            />
-            <Text style={styles.pageInfo}>
-              src/app/(tabs)/notifications.tsx
-            </Text>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <View style={styles.container}>
+      <ScrollView>
+        <Stack.Screen options={{ headerShown: false }} />
+        <View style={styles.main}>
+          <NotificationItem
+            title="Coming Soon"
+            subtitle={`This feature is progress.\nCheck back soon for more updates`}
+          />
+          <NotificationItem
+            title="Coming Soon, We Promise"
+            subtitle="Notifications are stiiiillllll in progress."
+            color={spectrum.warning}
+          />
+          <Text style={styles.pageInfo}>src/app/(tabs)/notifications.tsx</Text>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
