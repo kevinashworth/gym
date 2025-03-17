@@ -68,7 +68,11 @@ function FlatListItem({
     >
       <View style={styles.flatListItem}>
         <Icon size={20} color={spectrum.primary} name={icon} />
-        <Text style={[styles.flatListItemText, { width: 72 }]}>
+        <Text
+          style={[styles.flatListItemText, { width: 72 }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+        >
           {new Date(item.updateTimestamp).toLocaleDateString("en-US", {
             year: "2-digit",
             month: "numeric",
