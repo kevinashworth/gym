@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { useReactQueryDevTools } from "@dev-plugins/react-query";
 import {
   focusManager,
   onlineManager,
@@ -45,6 +46,8 @@ export default function RootLayout() {
 
     return () => subscription.remove();
   }, []);
+
+  useReactQueryDevTools(queryClient);
 
   useEffect(() => {
     async function prepare() {
