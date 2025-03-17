@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { useIsFocused } from "@react-navigation/native";
 import {
   BarcodeScanningResult,
   Camera,
@@ -39,10 +40,9 @@ const screenWidthForCamera = window.width * 0.75;
 const borderRadius = 12;
 
 export default function ActionTab() {
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
-
   const [permission, requestPermission] = useCameraPermissions();
-
+  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const isFocused = useIsFocused();
   const qrLock = useRef(false);
   const appState = useRef(AppState.currentState);
 
@@ -50,7 +50,7 @@ export default function ActionTab() {
   const [scanError, setScanError] = useState<UriValidatorError>();
   const [scanResult, setScanResult] = useState<UriValidatorResult>();
 
-  function handleBarcodeScannedFn({ data }: BarcodeScanningResult) {
+  function handleBarcodeScanned({ data }: BarcodeScanningResult) {
     if (data && !qrLock.current) {
       qrLock.current = true;
       const url = Linking.parse(data);
@@ -73,7 +73,7 @@ export default function ActionTab() {
               ? { campaign_short_code: result.campaign_short_code }
               : {},
           );
-          router.replace({ pathname, params }); // TODO: `push` would be better, but `push` keeps this screen on the navigation Stack. hmmm.
+          router.push({ pathname, params }); // TODO: `push` now seems ok with `isFocused`, but if not, `replace` could be better, as `push` keeps this screen on the Stack
         }, 500);
       }
     }
@@ -182,7 +182,7 @@ export default function ActionTab() {
             barcodeScannerSettings={{
               barcodeTypes: ["qr"],
             }}
-            onBarcodeScanned={handleBarcodeScannedFn}
+            onBarcodeScanned={isFocused ? handleBarcodeScanned : undefined}
             style={[
               styles.camera,
               Platform.OS === "ios" ? styles.cameraIOS : styles.cameraAndroid,
@@ -200,13 +200,13 @@ export default function ActionTab() {
         {enableDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
+            <DisplayJSON
+              json={{ pickedImage, qrLock, scanError, scanResult }}
+            />
             <Button
               iconName="refresh"
               onPress={resetState}
               label="Reset local state"
-            />
-            <DisplayJSON
-              json={{ pickedImage, qrLock, scanError, scanResult }}
             />
           </View>
         )}
@@ -276,13 +276,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 8,
     gap: 8,
-    marginVertical: 8,
+    margin: 8,
     padding: 8,
-  },
-  toolboxButton: {
-    borderColor: spectrum.gray8,
-    borderWidth: 2,
-    borderRadius: 8,
   },
   toolboxHeader: {
     color: spectrum.primaryLight,

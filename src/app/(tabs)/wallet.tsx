@@ -258,16 +258,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
   },
-  pageInfo: {
-    borderTopColor: spectrum.base3Content,
-    borderTopWidth: 1,
-    color: spectrum.base1Content,
-    fontSize: 11,
-    fontWeight: 300,
-    marginVertical: 12,
-    paddingVertical: 12,
-    textAlign: "center",
-  },
   flatListContainer: {
     flex: 1,
     margin: 8,
