@@ -70,7 +70,7 @@ const buttonVariantsContainer: ButtonVariantsContainer = {
 };
 
 const buttonSizesLabel: ButtonSizesLabel = {
-  sm: { fontSize: 12, fontWeight: 400 },
+  sm: { fontSize: 12, fontWeight: 500 },
   md: { fontSize: 14, fontWeight: 500 },
   lg: { fontSize: 16, fontWeight: 500 },
   xl: { fontSize: 18, fontWeight: 500 },
@@ -121,11 +121,14 @@ export default function Button({
         onPress={!disabled ? onPress : undefined}
         style={[
           styles.buttonContainer,
-          disabled && { backgroundColor: spectrum.gray10 },
           buttonStyle,
           buttonSizesContainer[size],
           buttonVariantsContainer[variant],
           withoutShadow && { shadowColor: "transparent" },
+          disabled && {
+            backgroundColor: spectrum.gray10,
+            borderColor: spectrum.gray10,
+          },
         ]}
       >
         {IconComponent}

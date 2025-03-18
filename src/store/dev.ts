@@ -10,8 +10,8 @@ interface DevActions {
 }
 
 const initialState: DevState = {
-  enableDevToolbox: false,
-  // enableDevToolbox: process.env.NODE_ENV === "development",
+  // enableDevToolbox: false,
+  enableDevToolbox: process.env.NODE_ENV === "development",
 };
 
 const envAwareDevtools = (

@@ -7,6 +7,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { Amplify } from "aws-amplify";
 import * as Network from "expo-network";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -30,6 +31,14 @@ onlineManager.setEventListener((setOnline) => {
     setOnline(!!state.isConnected);
   });
   return eventSubscription.remove;
+});
+
+Amplify.configure({
+  Auth: {
+    region: "us-west-2",
+    userPoolId: process.env.EXPO_PUBLIC_COGNITO_USER_POOL,
+    userPoolWebClientId: process.env.EXPO_PUBLIC_COGNITO_CLIENT_ID,
+  },
 });
 
 export default function RootLayout() {
@@ -77,23 +86,25 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <StatusBar style="light" />
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            header: () => <CustomHeader />,
-          }}
-        />
-        <Stack.Screen
-          name="entry"
-          options={{
-            header: () => <EntryHeader />,
-          }}
-        />
-        <Stack.Screen name="welcome" />
-      </Stack>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style="light" />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              header: () => <CustomHeader />,
+            }}
+          />
+          <Stack.Screen
+            name="entry"
+            options={{
+              header: () => <EntryHeader />,
+            }}
+          />
+          <Stack.Screen name="welcome" />
+        </Stack>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
