@@ -115,44 +115,52 @@ export default function Button({
   ) : null;
 
   return (
-    <View style={styles.buttonContainer}>
+    <View>
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={onPress}
-        style={styles.button}
+        onPress={!disabled ? onPress : undefined}
+        style={[
+          styles.buttonContainer,
+          disabled && { backgroundColor: spectrum.gray10 },
+          buttonStyle,
+          buttonSizesContainer[size],
+          buttonVariantsContainer[variant],
+          withoutShadow && { shadowColor: "transparent" },
+        ]}
       >
         {IconComponent}
-        {label && <Text style={styles.buttonLabel}>{label}</Text>}
+        {label && (
+          <Text
+            style={[
+              styles.buttonLabel,
+              buttonSizesLabel[size],
+              buttonVariantsLabel[variant],
+            ]}
+          >
+            {label}
+          </Text>
+        )}
       </TouchableOpacity>
     </View>
   );
-
-  // return (
-  //   <View style={styles.buttonContainer}>
-  //     <Pressable style={styles.button} onPress={onPress}>
-  //       {Icon}
-  //       <Text style={styles.buttonLabel}>{label}</Text>
-  //     </Pressable>
-  //   </View>
-  // );
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {},
-  button: {
+  buttonContainer: {
     alignItems: "center",
     backgroundColor: spectrum.primary,
-    borderRadius: 12,
+    // borderRadius: 12,
     elevation: 8,
     flexDirection: "row",
     gap: 8,
-    padding: 6,
-    paddingHorizontal: 12,
+    justifyContent: "center",
+    // padding: 6,
+    // paddingHorizontal: 12,
   },
   buttonLabel: {
     alignSelf: "center",
     color: spectrum.gray1,
-    fontSize: 14,
-    fontWeight: 700,
+    // fontSize: 14,
+    // fontWeight: 700,
   },
 });
