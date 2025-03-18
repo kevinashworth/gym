@@ -86,23 +86,25 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <StatusBar style="light" />
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            header: () => <CustomHeader />,
-          }}
-        />
-        <Stack.Screen
-          name="entry"
-          options={{
-            header: () => <EntryHeader />,
-          }}
-        />
-        <Stack.Screen name="welcome" />
-      </Stack>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style="light" />
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              header: () => <CustomHeader />,
+            }}
+          />
+          <Stack.Screen
+            name="entry"
+            options={{
+              header: () => <EntryHeader />,
+            }}
+          />
+          <Stack.Screen name="welcome" />
+        </Stack>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
