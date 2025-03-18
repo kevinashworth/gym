@@ -217,16 +217,58 @@ export default function SignInScreen() {
       {enableDevToolbox && (
         <View style={styles.toolbox}>
           <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
-          <DisplayJSON json={{ error, loading }} />
+          <DisplayJSON json={{ error, errors, loading }} />
           <Button
+            buttonStyle={{ width: 200 }}
             iconName="refresh"
-            onPress={() => setLoading(!loading)}
             label="Toggle Loading State"
+            onPress={() => setLoading(!loading)}
+            size="sm"
           />
           <Button
+            buttonStyle={{ width: 200 }}
             iconName="refresh"
-            onPress={() => setError(error ? "" : "An error occurred")}
-            label="Toggle Error State"
+            label="Toggle Overall Error State"
+            onPress={() => setError(error ? undefined : "An error occurred")}
+            size="sm"
+            variant="black"
+          />
+          <Button
+            buttonStyle={{ width: 220 }}
+            iconName="refresh"
+            label="Set Error State (account)"
+            onPress={() =>
+              setErrorForm("account", {
+                type: "custom",
+                message: "bad account",
+              })
+            }
+            size="sm"
+            variant="black"
+          />
+          <Button
+            buttonStyle={{ width: 240 }}
+            iconName="refresh"
+            label="Set Error State (password)"
+            onPress={() =>
+              setErrorForm("password", {
+                type: "custom",
+                message: "bad password",
+              })
+            }
+            size="sm"
+            variant="black"
+          />
+          <Button
+            buttonStyle={{ width: 200 }}
+            iconName="refresh"
+            label="Clear Errors"
+            onPress={() => {
+              clearErrors();
+              setError(undefined);
+            }}
+            size="sm"
+            variant="black"
           />
         </View>
       )}
@@ -248,9 +290,10 @@ const styles = StyleSheet.create({
     // marginVertical: 8,
   },
   toolbox: {
+    alignItems: "center",
     backgroundColor: spectrum.gray1,
     borderColor: spectrum.gray8,
-    borderWidth: 2,
+    borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 8,
     gap: 8,
     margin: 8,
@@ -258,8 +301,8 @@ const styles = StyleSheet.create({
   },
   toolboxHeader: {
     color: spectrum.primaryLight,
-    fontSize: 14,
-    fontWeight: 700,
+    fontSize: 12,
+    fontWeight: 400,
     textAlign: "center",
   },
 });

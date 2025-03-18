@@ -21,12 +21,16 @@ import {
 import LogoLight from "@/assets/svg/logo-light";
 import Welcome from "@/assets/svg/welcome";
 import Button from "@/components//button";
+import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
 const window = Dimensions.get("window");
 const { height, width } = window;
 
-export default function WelcomeMain() {
+const buttonWidth = 224;
+
+function WelcomeScreen() {
+  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -86,6 +90,40 @@ export default function WelcomeMain() {
                 size="lg"
                 variant="default"
               />
+              {enableDevToolbox && (
+                <View
+                  style={{
+                    alignItems: "center",
+                    borderColor: spectrum.black,
+                    borderWidth: StyleSheet.hairlineWidth,
+                    justifyContent: "center",
+                    margin: 16,
+                    paddingHorizontal: 8,
+                    paddingTop: 2,
+                    paddingBottom: 8,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: spectrum.black,
+                      fontSize: 12,
+                      fontWeight: 400,
+                      lineHeight: 21,
+                      paddingBottom: 8,
+                      textAlign: "center",
+                    }}
+                  >
+                    Dev Toolbox
+                  </Text>
+                  <Button
+                    buttonStyle={{ width: buttonWidth / 2 }}
+                    label="Dashboard"
+                    onPress={() => router.push("/(tabs)")}
+                    size="sm"
+                    variant="black"
+                  />
+                </View>
+              )}
             </View>
           </View>
           <View
@@ -150,3 +188,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
+export default WelcomeScreen;

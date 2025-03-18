@@ -1,10 +1,14 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
+import Button from "@/components//button";
 import NotificationItem from "@/components/notification-item";
+import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
 export default function NotificationsTab() {
+  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const router = useRouter();
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -21,6 +25,46 @@ export default function NotificationsTab() {
           />
           <Text style={styles.pageInfo}>src/app/(tabs)/notifications.tsx</Text>
         </View>
+        {enableDevToolbox && (
+          <View
+            style={{
+              alignItems: "center",
+              borderColor: spectrum.black,
+              borderRadius: 8,
+              borderWidth: StyleSheet.hairlineWidth,
+              gap: 8,
+              justifyContent: "center",
+              margin: 16,
+              paddingHorizontal: 8,
+              paddingTop: 2,
+              paddingBottom: 8,
+            }}
+          >
+            <Text
+              style={{
+                color: spectrum.black,
+                fontSize: 12,
+                fontWeight: 400,
+                lineHeight: 21,
+                textAlign: "center",
+              }}
+            >
+              Dev Toolbox
+            </Text>
+            <Button
+              label="Welcome Screen"
+              onPress={() => router.push("/welcome")}
+              size="md"
+              variant="black"
+            />
+            <Button
+              label="Sign In Screen"
+              onPress={() => router.push("/entry/sign-in")}
+              size="md"
+              variant="black"
+            />
+          </View>
+        )}
       </ScrollView>
     </View>
   );
