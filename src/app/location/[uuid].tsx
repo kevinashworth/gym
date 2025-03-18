@@ -27,6 +27,7 @@ import { location, photoKeys } from "@/mocks/fixtures";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 import { clamp } from "@/utils/clamp";
+import { formatAddressForMaps } from "@/utils/maps";
 import { phoneFormatter, phoneFormatterAsLink } from "@/utils/phone";
 
 import type { Location } from "@/mocks/fixtures";
@@ -44,18 +45,6 @@ const halfScreenWidthMinusPadding = window.width / 2 - 16;
 
 const defaultSize = 164;
 const defaultDimensions = { width: defaultSize, height: defaultSize };
-
-function formatAddressForMaps(location: Location) {
-  return (
-    location.address1 +
-    (location.address2 ? ` ${location.address2}, ` : " ") +
-    location.city +
-    ", " +
-    location.state +
-    " " +
-    location.zip
-  );
-}
 
 export default function LocationScreen() {
   const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
