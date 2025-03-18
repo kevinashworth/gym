@@ -68,7 +68,11 @@ function FlatListItem({
     >
       <View style={styles.flatListItem}>
         <Icon size={20} color={spectrum.primary} name={icon} />
-        <Text style={[styles.flatListItemText, { width: 72 }]}>
+        <Text
+          style={[styles.flatListItemText, { width: 72 }]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+        >
           {new Date(item.updateTimestamp).toLocaleDateString("en-US", {
             year: "2-digit",
             month: "numeric",
@@ -257,16 +261,6 @@ const styles = StyleSheet.create({
     color: spectrum.base1Content,
     fontSize: 20,
     fontWeight: 500,
-  },
-  pageInfo: {
-    borderTopColor: spectrum.base3Content,
-    borderTopWidth: 1,
-    color: spectrum.base1Content,
-    fontSize: 11,
-    fontWeight: 300,
-    marginVertical: 12,
-    paddingVertical: 12,
-    textAlign: "center",
   },
   flatListContainer: {
     flex: 1,

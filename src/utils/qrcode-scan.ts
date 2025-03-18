@@ -64,8 +64,7 @@ const getPayload = {
 
 export function uriValidator(url: any): UriValidator {
   try {
-    const pathname = url.path.replace(/\/$/, "");
-    console.log("pathname:", pathname);
+    const pathname = url.path.replace(/\/$/, ""); // <-- removes any trailing slash
     if (ALLOW_PATHNAME.some((pathPrefix) => pathname.startsWith(pathPrefix))) {
       const type: "referral" | "checkin" = pathname.match(
         /\/?(referral|checkin)\/?/,
