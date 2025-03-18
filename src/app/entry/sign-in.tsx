@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 
+import { Auth } from "aws-amplify";
 import { useRouter } from "expo-router";
+import ky from "ky";
 import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,
@@ -17,40 +19,37 @@ import Button from "@/components/button";
 import DisplayJSON from "@/components/display-json";
 import ErrorMessage from "@/components/error-message";
 import Input from "@/components/input";
-import { useDevStore } from "@/store";
+import { useAuthStore, useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 import { isValidEmail } from "@/utils/email";
 
-function signIn(data: any) {
-  console.log("signIn function called");
-  console.log(JSON.stringify(data));
-}
-
-// const title = "email";
-const required = "Email Address is required.";
-const placeholder = "Email Address";
-const validate = {
-  isValid: (account: string) =>
-    !account || isValidEmail(account) || "Please enter a valid email",
-};
+import type { FieldError } from "react-hook-form";
 
 type FormData = {
   account: string;
   password: string;
 };
 
-export default function SignIn() {
+type CognitoAuthResponse = {
+  token: string;
+};
+
+export default function SignInScreen() {
+  const setCognitoUser = useAuthStore((s) => s.setCognitoUser);
+  const setToken = useAuthStore((s) => s.setToken);
   const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
-  // const { signIn } = useAuth();
-  //
+
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | Error | FieldError | undefined>(
+    undefined,
+  );
 
   const {
+    clearErrors,
     control,
     formState: { errors },
     handleSubmit,
-    // setValue,
+    setError: setErrorForm,
   } = useForm<FormData>({
     defaultValues: {
       account: "",
@@ -63,9 +62,55 @@ export default function SignIn() {
 
   const router = useRouter();
 
+  // this is the signIn function
   const onSubmit = handleSubmit(async (data) => {
+    const { account, password } = data;
     Keyboard.dismiss();
-    return signIn(data);
+    console.log("signIn function called");
+    console.log(JSON.stringify(data));
+
+    setLoading(true);
+    setError(undefined);
+
+    let user = null;
+    let response: CognitoAuthResponse;
+
+    try {
+      user = await Auth.signIn(account, password);
+    } catch (error) {
+      setLoading(false);
+      setError(error as Error);
+      return;
+    }
+    const accessToken = user.signInUserSession.accessToken.jwtToken;
+    const idToken = user.signInUserSession.idToken.jwtToken;
+
+    try {
+      response = await ky
+        .post<CognitoAuthResponse>(
+          `${process.env.EXPO_PUBLIC_API_BASE_URL}/user/mobile-cognito-auth`,
+          {
+            json: {
+              access_token: accessToken,
+              id_token: idToken,
+            },
+          },
+        )
+        .json();
+      console.log({ response });
+    } catch (error) {
+      setLoading(false);
+      setError(error as Error);
+      return;
+    }
+    const token = response.token;
+    console.log({ token });
+    setCognitoUser(user);
+    setToken(token);
+    // setUser({ ...user, ...data });
+    setLoading(false);
+    console.log({ user, response });
+    router.replace("/(tabs)");
   });
 
   return (
@@ -86,12 +131,11 @@ export default function SignIn() {
                 autoCapitalize="none"
                 autoComplete="email"
                 autoCorrect={false}
-                // error={errors.account}
                 keyboardType="email-address"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 onSubmitEditing={() => passwordInputRef.current?.focus()}
-                placeholder={placeholder}
+                placeholder="Email Address"
                 ref={accountInputRef}
                 returnKeyType="next"
                 textContentType="username"
@@ -100,11 +144,16 @@ export default function SignIn() {
               />
             )}
             rules={{
-              required,
-              validate,
+              required: "Email Address is required.",
+              validate: {
+                isValid: (account: string) =>
+                  !account ||
+                  isValidEmail(account) ||
+                  "Please enter a valid email",
+              },
             }}
           />
-          <ErrorMessage error={errors.account} size="medium" />
+          <ErrorMessage error={errors.account} style={{ paddingTop: 4 }} />
         </View>
         <View>
           <Controller
@@ -117,7 +166,7 @@ export default function SignIn() {
                 autoCorrect={false}
                 onBlur={onBlur}
                 onChangeText={onChange}
-                onSubmitEditing={handleSubmit(signIn)}
+                onSubmitEditing={onSubmit}
                 placeholder="Password"
                 ref={passwordInputRef}
                 returnKeyType="go"
@@ -131,7 +180,7 @@ export default function SignIn() {
               required: "Password is required.",
             }}
           />
-          <ErrorMessage error={errors.password} size="medium" />
+          <ErrorMessage error={errors.password} style={{ paddingTop: 4 }} />
         </View>
       </View>
       <View style={{ alignItems: "center", gap: 16, paddingTop: 20 }}>

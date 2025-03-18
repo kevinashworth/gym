@@ -73,14 +73,14 @@ export default function WelcomeMain() {
               }}
             >
               <Button
-                buttonStyle={{ width: 224 }}
+                buttonStyle={{ width: buttonWidth }}
                 label="Sign In"
                 onPress={() => router.push("/entry/sign-in")}
                 size="lg"
                 variant="primary"
               />
               <Button
-                buttonStyle={{ width: 224 }}
+                buttonStyle={{ width: buttonWidth }}
                 label="Get Started"
                 onPress={() => router.push("/")}
                 size="lg"

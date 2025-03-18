@@ -1,4 +1,4 @@
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, TextStyle } from "react-native";
 
 import { spectrum } from "@/theme";
 
@@ -6,10 +6,16 @@ import type { FieldError } from "react-hook-form";
 
 interface ErrorMessageProps {
   error: string | Error | FieldError | undefined;
-  size?: string;
+  size?: "medium" | "large";
+  style?: TextStyle;
 }
 
-function ErrorMessage({ error, size = "large", ...props }: ErrorMessageProps) {
+function ErrorMessage({
+  error,
+  size = "medium",
+  style: customStyle,
+  ...props
+}: ErrorMessageProps) {
   if (!error) {
     return null;
   }
@@ -27,8 +33,14 @@ function ErrorMessage({ error, size = "large", ...props }: ErrorMessageProps) {
     return null;
   }
 
+  const fontSize = size === "large" ? 16 : 12;
+  const fontWeight = size === "large" ? 600 : 500;
+
   return (
-    <Text style={styles.errorText} {...props}>
+    <Text
+      style={[styles.errorText, { fontSize, fontWeight }, customStyle]}
+      {...props}
+    >
       {errorMessage}
     </Text>
   );
@@ -37,9 +49,6 @@ function ErrorMessage({ error, size = "large", ...props }: ErrorMessageProps) {
 const styles = StyleSheet.create({
   errorText: {
     color: spectrum.error,
-    fontSize: 12,
-    fontWeight: 500,
-    lineHeight: 12,
     paddingHorizontal: 12,
   },
 });
