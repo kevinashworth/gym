@@ -15,6 +15,7 @@ import { AppState, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import CustomHeader from "@/components/header";
+import EntryHeader from "@/components/header-entry";
 
 import type { AppStateStatus } from "react-native";
 
@@ -54,7 +55,7 @@ export default function RootLayout() {
       try {
         // Artificially delay to simulate slow loading.
         // TODO: Remove this!
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        // await new Promise((resolve) => setTimeout(resolve, 1500));
       } catch (e) {
         console.warn(e);
       } finally {
@@ -76,18 +77,23 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <QueryClientProvider client={queryClient}>
-        <StatusBar style="light" />
-        <Stack>
-          <Stack.Screen
-            name="(tabs)"
-            options={{
-              header: () => <CustomHeader />,
-            }}
-          />
-        </Stack>
-      </QueryClientProvider>
-    </SafeAreaProvider>
+    <QueryClientProvider client={queryClient}>
+      <StatusBar style="light" />
+      <Stack>
+        <Stack.Screen
+          name="(tabs)"
+          options={{
+            header: () => <CustomHeader />,
+          }}
+        />
+        <Stack.Screen
+          name="entry"
+          options={{
+            header: () => <EntryHeader />,
+          }}
+        />
+        <Stack.Screen name="welcome" />
+      </Stack>
+    </QueryClientProvider>
   );
 }
