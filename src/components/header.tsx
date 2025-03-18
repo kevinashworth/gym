@@ -20,7 +20,7 @@ function WalletDisplay() {
     (me?.otc_redeemed && (
       <Link href="/(tabs)/wallet" asChild>
         <Pressable>
-          <View style={styles.view}>
+          <View style={styles.walletView}>
             <Text style={styles.text5}>
               USD{" "}
               {new Intl.NumberFormat("en-US", {
@@ -89,12 +89,12 @@ export default function CustomHeader() {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
   },
-  view: {
+  walletView: {
     alignItems: "center",
   },
   text5: {
