@@ -30,8 +30,6 @@ import { clamp } from "@/utils/clamp";
 import { formatAddressForMaps } from "@/utils/maps";
 import { phoneFormatter, phoneFormatterAsLink } from "@/utils/phone";
 
-import type { Location } from "@/mocks/fixtures";
-
 type ImageWithSize = {
   url: string;
   width: number;
