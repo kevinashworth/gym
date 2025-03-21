@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Slot, Stack } from "expo-router";
 import { useForm, FormProvider } from "react-hook-form";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { z } from "zod";
 
 import { isValidEmail } from "@/utils/email";
@@ -14,7 +14,9 @@ const schema = z
     }),
     password: zPassword,
     password2: z.string(),
-    confirmCode: z.string(),
+    confirmCode: z.string().refine((val) => val.length === 6, {
+      message: "Confirmation code must be 6 digits",
+    }),
     firstName: z.string(),
     lastName: z.string(),
     username: z.string(),

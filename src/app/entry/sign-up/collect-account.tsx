@@ -72,130 +72,133 @@ function SignUpWithEmailScreen() {
   return (
     <>
       <View style={styles.container}>
-        <View style={{ gap: 20 }}>
-          <Text style={styles.pageTitleText}>Sign up with email</Text>
-          <ErrorMessage error={signUpError} style={styles.inputContainer} />
-          <View style={styles.inputContainer}>
-            <Controller
-              control={control}
-              name="account"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="email-address"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  onSubmitEditing={() => passwordInputRef.current?.focus()}
-                  placeholder={"Email Address"}
-                  ref={accountInputRef}
-                  returnKeyType="next"
-                  style={styles.textInput}
-                  textContentType="username"
-                  value={value}
-                />
-              )}
-            />
-            <FormErrorsMessage errors={errors} name="account" />
-          </View>
-          <View style={styles.inputContainer}>
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  onSubmitEditing={() => password2InputRef.current?.focus()}
-                  placeholder="Password"
-                  ref={passwordInputRef}
-                  returnKeyType="next"
-                  secureTextEntry
-                  style={styles.textInput}
-                  textContentType="password"
-                  value={value}
-                />
-              )}
-            />
-            <FormErrorsMessage errors={errors} name="password" />
-          </View>
-          <View style={styles.inputContainer}>
-            <Controller
-              control={control}
-              name="password2"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  placeholder="Confirm Password"
-                  ref={password2InputRef}
-                  returnKeyType="done"
-                  secureTextEntry
-                  style={styles.textInput}
-                  textContentType="password"
-                  value={value}
-                />
-              )}
-            />
-            <FormErrorsMessage errors={errors} name="password2" />
-          </View>
-          <View style={{ paddingTop: 12 }}>
-            <Button
-              buttonStyle={{ width: inputWidth }}
-              disabled={signUpLoading}
-              label="Next"
-              onPress={onSubmit}
-              size="lg"
-              variant="primary"
-            />
-          </View>
-          <View style={{ alignItems: "center" }}>
-            <Text style={styles.textHelpful}>Already a user?</Text>
-            <TextLink
-              links={[
-                {
-                  text: "Sign in",
-                  onPress: () => router.push("/entry/sign-in"),
-                },
-              ]}
-              textStyle={styles.textHelpful}
-              textLinkStyle={{
-                color: spectrum.primary,
-                textDecorationLine: "underline",
-              }}
-            >
-              Sign in.
-            </TextLink>
-          </View>
+        <Text style={styles.pageTitleText}>Sign up with email</Text>
+        <ErrorMessage error={signUpError} style={styles.inputContainer} />
+        <View style={styles.inputContainer}>
+          <Controller
+            control={control}
+            name="account"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                onSubmitEditing={() => passwordInputRef.current?.focus()}
+                placeholder={"Email Address"}
+                ref={accountInputRef}
+                returnKeyType="next"
+                style={styles.textInput}
+                textContentType="username"
+                value={value}
+              />
+            )}
+          />
+          <FormErrorsMessage errors={errors} name="account" />
         </View>
-        {accountValue && isValidEmail(accountValue) && !errors.account && (
-          <View style={{ alignItems: "center", paddingTop: 16 }}>
-            <Text style={styles.textHelpful}>Have a code?</Text>
-            <TextLink
-              links={[
-                {
-                  text: "Confirm",
-                  onPress: handleRedirectConfirm,
-                },
-              ]}
-              textStyle={styles.textHelpful}
-              textLinkStyle={{
-                color: spectrum.primary,
-                textDecorationLine: "underline",
-              }}
-            >
-              Confirm your account.
-            </TextLink>
-          </View>
-        )}
+        <View style={styles.inputContainer}>
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                autoCapitalize="none"
+                autoCorrect={false}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                onSubmitEditing={() => password2InputRef.current?.focus()}
+                placeholder="Password"
+                ref={passwordInputRef}
+                returnKeyType="next"
+                secureTextEntry
+                style={styles.textInput}
+                textContentType="password"
+                value={value}
+              />
+            )}
+          />
+          <FormErrorsMessage errors={errors} name="password" />
+        </View>
+        <View style={styles.inputContainer}>
+          <Controller
+            control={control}
+            name="password2"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Input
+                autoCapitalize="none"
+                autoCorrect={false}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                placeholder="Confirm Password"
+                ref={password2InputRef}
+                returnKeyType="done"
+                secureTextEntry
+                style={styles.textInput}
+                textContentType="password"
+                value={value}
+              />
+            )}
+          />
+          <FormErrorsMessage errors={errors} name="password2" />
+        </View>
+        <Button
+          buttonStyle={{ width: inputWidth }}
+          disabled={signUpLoading}
+          label="Next"
+          onPress={onSubmit}
+          size="lg"
+          variant="primary"
+        />
+        <View style={{ alignItems: "center" }}>
+          <Text style={styles.textHelpful}>Already a user?</Text>
+          <TextLink
+            links={[
+              {
+                text: "Sign in",
+                onPress: () => router.push("/entry/sign-in"),
+              },
+            ]}
+            textStyle={styles.textHelpful}
+            textLinkStyle={{
+              color: spectrum.primary,
+              textDecorationLine: "underline",
+            }}
+          >
+            Sign in.
+          </TextLink>
+        </View>
       </View>
+      {accountValue && isValidEmail(accountValue) && !errors.account && (
+        <View style={{ alignItems: "center", paddingTop: 16 }}>
+          <Text style={styles.textHelpful}>Have a code?</Text>
+          <TextLink
+            links={[
+              {
+                text: "Confirm",
+                onPress: handleRedirectConfirm,
+              },
+            ]}
+            textStyle={styles.textHelpful}
+            textLinkStyle={{
+              color: spectrum.primary,
+              textDecorationLine: "underline",
+            }}
+          >
+            Confirm your account.
+          </TextLink>
+        </View>
+      )}
       {enableDevToolbox && (
         <View style={[styles.toolbox, { marginBottom: insets.bottom }]}>
           <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
+          <Button
+            iconName="arrow-right"
+            label="verify-account.tsx"
+            onPress={() => router.push("/entry/sign-up/verify-account")}
+            size="sm"
+            variant="black"
+          />
           <Button
             buttonStyle={{ width: 200 }}
             iconName="refresh"
@@ -280,6 +283,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    gap: 20,
     justifyContent: "center",
   },
   inputContainer: {
