@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import TextLink from "react-native-text-link";
 
 import LogoDark from "@/assets/svg/logo-dark";
 import Button from "@/components/button";
@@ -194,21 +195,23 @@ export default function SignInScreen() {
           }}
         />
 
-        <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ alignItems: "center" }}>
           <Text style={styles.textHelpful}>Forgot password?</Text>
-          <TouchableOpacity onPress={() => router.push("/")}>
-            <Text
-              style={[
-                styles.textHelpful,
-                {
-                  textDecorationStyle: "solid",
-                  textDecorationLine: "underline",
-                },
-              ]}
-            >
-              We got you.
-            </Text>
-          </TouchableOpacity>
+          <TextLink
+            links={[
+              {
+                text: "We got you",
+                onPress: () => router.push("/"),
+              },
+            ]}
+            textStyle={styles.textHelpful}
+            textLinkStyle={{
+              color: spectrum.primary,
+              textDecorationLine: "underline",
+            }}
+          >
+            We got you.
+          </TextLink>
         </View>
 
         <ErrorMessage error={error} />
@@ -287,7 +290,8 @@ const styles = StyleSheet.create({
   },
   textHelpful: {
     color: spectrum.base2Content,
-    // marginVertical: 8,
+    fontSize: 16,
+    fontWeight: 500,
   },
   toolbox: {
     alignItems: "center",

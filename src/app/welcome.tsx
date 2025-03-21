@@ -1,22 +1,10 @@
-// import { useStoreActions } from 'easy-peasy';
 import * as Application from "expo-application";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Linking from "expo-linking";
 import { Stack, useFocusEffect, useRouter } from "expo-router";
-import {
-  Dimensions,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  // SafeAreaView,
-  // SafeAreaProvider,
-  // SafeAreaInsetsContext,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import TextLink from "react-native-text-link";
 
 import LogoLight from "@/assets/svg/logo-light";
 import Welcome from "@/assets/svg/welcome";
@@ -33,8 +21,6 @@ function WelcomeScreen() {
   const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
   const router = useRouter();
   const insets = useSafeAreaInsets();
-
-  // const { resetSignUp } = useStoreActions((state) => state.auth);
 
   const handleRedirectTermsAndConditionsPage = () =>
     Linking.openURL("https://www.gotyou.co/terms-and-conditions");
@@ -86,7 +72,7 @@ function WelcomeScreen() {
               <Button
                 buttonStyle={{ width: buttonWidth }}
                 label="Get Started"
-                onPress={() => router.push("/")}
+                onPress={() => router.push("/entry/sign-up")}
                 size="lg"
                 variant="default"
               />
@@ -96,6 +82,7 @@ function WelcomeScreen() {
                     alignItems: "center",
                     borderColor: spectrum.black,
                     borderWidth: StyleSheet.hairlineWidth,
+                    gap: 2,
                     justifyContent: "center",
                     margin: 16,
                     paddingHorizontal: 8,
@@ -122,6 +109,15 @@ function WelcomeScreen() {
                     size="sm"
                     variant="black"
                   />
+                  <Button
+                    buttonStyle={{ width: buttonWidth / 2 }}
+                    label="Collect Account"
+                    onPress={() =>
+                      router.push("/entry/sign-up/collect-account")
+                    }
+                    size="sm"
+                    variant="black"
+                  />
                 </View>
               )}
             </View>
@@ -136,16 +132,24 @@ function WelcomeScreen() {
             }}
           >
             <Text style={styles.disclaimer}>
-              By using this service you agree to the GotYou{" "}
-              <Pressable onPress={handleRedirectTermsAndConditionsPage}>
-                <Text style={styles.blueLinkText}>Terms and Conditions</Text>
-              </Pressable>{" "}
-              and{" "}
-              <TouchableOpacity onPress={handleRedirectPrivacyPolicyPage}>
-                <Text style={styles.blueLinkText}>Privacy Policy</Text>
-              </TouchableOpacity>
-              .
+              By using this service you agree to the GotYou
             </Text>
+            <TextLink
+              links={[
+                {
+                  text: "Terms and Conditions",
+                  onPress: handleRedirectTermsAndConditionsPage,
+                },
+                {
+                  text: "Privacy Policy",
+                  onPress: handleRedirectPrivacyPolicyPage,
+                },
+              ]}
+              textStyle={styles.disclaimer}
+              textLinkStyle={styles.blueLinkText}
+            >
+              Terms and Conditions and Privacy Policy.
+            </TextLink>
             <Text style={styles.version}>
               Version {Application.nativeApplicationVersion}
             </Text>
@@ -175,10 +179,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   blueLinkText: {
-    color: spectrum.blue10,
-    fontSize: 14,
+    color: spectrum.primary,
     textDecorationLine: "underline",
-    transform: [{ translateY: 5 }], // to overcome TouchableOpacity weirdness
   },
   version: {
     color: spectrum.base2Content,
