@@ -55,5 +55,6 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
 });
+Input.displayName = "MyInput";
 
 export default Input;

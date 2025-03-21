@@ -4,8 +4,8 @@ import { spectrum } from "@/theme";
 
 import type { FieldError } from "react-hook-form";
 
-interface ErrorMessageProps {
-  error: string | Error | FieldError | undefined;
+export interface ErrorMessageProps {
+  error?: string | Error | FieldError | null;
   size?: "medium" | "large";
   style?: TextStyle;
 }
