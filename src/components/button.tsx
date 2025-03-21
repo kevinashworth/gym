@@ -49,7 +49,7 @@ const buttonVariantsContainer: ButtonVariantsContainer = {
   },
   outline: {
     backgroundColor: "transparent",
-    borderColor: spectrum.gray1,
+    borderColor: spectrum.gray9,
     borderWidth: 1,
   },
   black: {
@@ -79,7 +79,7 @@ const buttonSizesLabel: ButtonSizesLabel = {
 const buttonVariantsLabel: ButtonVariantsLabel = {
   primary: { color: spectrum.white },
   secondary: { color: spectrum.gray1 },
-  outline: { color: spectrum.gray1 },
+  outline: { color: spectrum.gray9 },
   black: { color: spectrum.white },
   white: { color: spectrum.black },
   default: { color: spectrum.primary },
