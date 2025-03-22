@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Auth } from "aws-amplify";
 import { useRouter } from "expo-router";
 import ky from "ky";
@@ -13,6 +14,7 @@ import {
   View,
 } from "react-native";
 import TextLink from "react-native-text-link";
+import { z } from "zod";
 
 import LogoDark from "@/assets/svg/logo-dark";
 import Button from "@/components/button";
@@ -22,17 +24,26 @@ import Input from "@/components/input";
 import { useAuthStore, useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 import { isValidEmail } from "@/utils/email";
+import { zPassword } from "@/utils/password";
 
+import type { CognitoUser } from "@/types/auth";
 import type { FieldError } from "react-hook-form";
-
-type FormData = {
-  account: string;
-  password: string;
-};
 
 type CognitoAuthResponse = {
   token: string;
 };
+
+const schema = z.object({
+  account: z
+    .string()
+    .min(1, { message: "Email Address is required" })
+    .refine((val) => isValidEmail(val), {
+      message: "Please enter a valid email",
+    }),
+  password: zPassword,
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export default function SignInScreen() {
   const setCognitoUser = useAuthStore((s) => s.setCognitoUser);
@@ -50,11 +61,12 @@ export default function SignInScreen() {
     formState: { errors },
     handleSubmit,
     setError: setErrorForm,
-  } = useForm<FormData>({
+  } = useForm<FormValues>({
     defaultValues: {
       account: "",
       password: "",
     },
+    resolver: zodResolver(schema),
   });
 
   const accountInputRef = useRef<TextInput>(null);
@@ -64,15 +76,13 @@ export default function SignInScreen() {
 
   // this is the signIn function
   const onSubmit = handleSubmit(async (data) => {
-    const { account, password } = data;
-    Keyboard.dismiss();
-    console.log("signIn function called");
-    console.log(JSON.stringify(data));
-
     setLoading(true);
     setError(undefined);
 
-    let user = null;
+    const { account, password } = data;
+    Keyboard.dismiss();
+
+    let user: CognitoUser | null = null;
     let response: CognitoAuthResponse;
 
     try {
@@ -82,6 +92,15 @@ export default function SignInScreen() {
       setError(error as Error);
       return;
     }
+
+    if (!user) {
+      setError(new Error("No user found"));
+      setLoading(false);
+      return;
+    }
+
+    setCognitoUser(user);
+
     const accessToken = user.signInUserSession.accessToken.jwtToken;
     const idToken = user.signInUserSession.idToken.jwtToken;
 
@@ -97,19 +116,17 @@ export default function SignInScreen() {
           },
         )
         .json();
-      console.log({ response });
     } catch (error) {
       setLoading(false);
       setError(error as Error);
       return;
     }
+
     const token = response.token;
-    console.log({ token });
-    setCognitoUser(user);
+
     setToken(token);
-    // setUser({ ...user, ...data });
     setLoading(false);
-    console.log({ user, response });
+
     router.replace("/(tabs)");
   });
 
@@ -122,6 +139,7 @@ export default function SignInScreen() {
     >
       <View style={styles.container}>
         <LogoDark />
+        <ErrorMessage error={error} />
         <View>
           <Controller
             control={control}
@@ -131,6 +149,7 @@ export default function SignInScreen() {
                 autoCapitalize="none"
                 autoComplete="email"
                 autoCorrect={false}
+                clearButtonMode="always"
                 keyboardType="email-address"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -138,20 +157,11 @@ export default function SignInScreen() {
                 placeholder="Email Address"
                 ref={accountInputRef}
                 returnKeyType="next"
+                style={styles.textInput}
                 textContentType="username"
                 value={value}
-                style={styles.textInput}
               />
             )}
-            rules={{
-              required: "Email Address is required.",
-              validate: {
-                isValid: (account: string) =>
-                  !account ||
-                  isValidEmail(account) ||
-                  "Please enter a valid email",
-              },
-            }}
           />
           <ErrorMessage error={errors.account} style={{ paddingTop: 4 }} />
         </View>
@@ -164,6 +174,7 @@ export default function SignInScreen() {
                 autoCapitalize="none"
                 autoComplete="password"
                 autoCorrect={false}
+                clearButtonMode="always"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 onSubmitEditing={onSubmit}
@@ -176,9 +187,6 @@ export default function SignInScreen() {
                 style={styles.textInput}
               />
             )}
-            rules={{
-              required: "Password is required.",
-            }}
           />
           <ErrorMessage error={errors.password} style={{ paddingTop: 4 }} />
         </View>
@@ -212,8 +220,6 @@ export default function SignInScreen() {
             We got you.
           </TextLink>
         </View>
-
-        <ErrorMessage error={error} />
       </View>
 
       {enableDevToolbox && (

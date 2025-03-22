@@ -1,19 +1,32 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Auth } from "aws-amplify";
 import { useRouter } from "expo-router";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { View, Text, StyleSheet } from "react-native";
 import TextLink from "react-native-text-link";
+import { z } from "zod";
 
 import Button from "@/components/button";
 import ErrorMessage from "@/components/error-message";
 import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
-import { useDevStore } from "@/store";
+import { useAuthStore, useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
 const inputWidth = 244;
+
+const schema = z.object({
+  confirmCode: z
+    .string()
+    .min(1, { message: "Confirmation code is required" })
+    .refine((val) => val.length === 6, {
+      message: "Confirmation code must be 6 digits",
+    }),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 const SignUpVerifyScreen = () => {
   const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
@@ -23,9 +36,17 @@ const SignUpVerifyScreen = () => {
     formState: { errors },
     handleSubmit,
     setError: setErrorForm,
-    watch,
-  } = useFormContext();
-  const accountValue = watch("account");
+    // watch,
+  } = useForm<FormValues>({
+    defaultValues: {
+      confirmCode: "",
+    },
+    resolver: zodResolver(schema),
+  });
+
+  const cognitoUser = useAuthStore((s) => s.cognitoUser);
+  console.log("cognitoUser", cognitoUser);
+  const accountValue = cognitoUser?.attributes?.email;
 
   const router = useRouter();
 
@@ -37,10 +58,17 @@ const SignUpVerifyScreen = () => {
     if (valid) return true;
     setLoading(true);
     setError(null);
-    const { account, confirmCode } = data;
+    const { confirmCode } = data;
+
+    if (!accountValue) {
+      setError(new Error("No account found"));
+      setLoading(false);
+      return false;
+    }
 
     try {
-      await Auth.confirmSignUp(account, confirmCode);
+      const result = await Auth.confirmSignUp(accountValue, confirmCode);
+      console.log("Auth.confirmSignUp result", result);
     } catch (error) {
       setError(error as Error);
       setLoading(false);
@@ -69,7 +97,7 @@ const SignUpVerifyScreen = () => {
             name="confirmCode"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                disabled={valid}
+                disabled={!accountValue}
                 keyboardType="numeric"
                 onBlur={onBlur}
                 onChangeText={onChange}

@@ -1,11 +1,13 @@
 import { useRef, useState } from "react";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Auth } from "aws-amplify";
 import { useRouter } from "expo-router";
-import { useFormContext, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TextLink from "react-native-text-link";
+import { z } from "zod";
 
 import Button from "@/components/button";
 import DisplayJSON from "@/components/display-json";
@@ -14,9 +16,31 @@ import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
 import { useAuthStore, useDevStore } from "@/store";
 import { spectrum } from "@/theme";
+import { CognitoUser } from "@/types/auth";
 import { isValidEmail } from "@/utils/email";
+import { zPassword } from "@/utils/password";
 
 const inputWidth = 244;
+
+const schema = z
+  .object({
+    account: z.string().refine((val) => isValidEmail(val), {
+      message: "Please enter a valid email",
+    }),
+    password: zPassword,
+    confirm: z.string().min(1, { message: "Confirm Password is required" }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirm) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["confirm"],
+        message: `Passwords don’t match`,
+      });
+    }
+  });
+
+type FormValues = z.infer<typeof schema>;
 
 function SignUpWithEmailScreen() {
   const insets = useSafeAreaInsets();
@@ -32,12 +56,19 @@ function SignUpWithEmailScreen() {
     handleSubmit,
     setError,
     watch,
-  } = useFormContext();
+  } = useForm<FormValues>({
+    defaultValues: {
+      account: "",
+      password: "",
+      confirm: "",
+    },
+    resolver: zodResolver(schema),
+  });
   const accountValue = watch("account");
 
   const accountInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
-  const password2InputRef = useRef<TextInput>(null);
+  const confirmInputRef = useRef<TextInput>(null);
 
   const [signUpLoading, setSignUpLoading] = useState(false);
   const [signUpError, setSignUpError] = useState<Error | null>(null);
@@ -49,9 +80,9 @@ function SignUpWithEmailScreen() {
   const onSubmit = handleSubmit(async (data) => {
     setSignUpLoading(true);
     setSignUpError(null);
-    let user;
+    let result;
     try {
-      user = await Auth.signUp({
+      result = await Auth.signUp({
         username: data.account,
         password: data.password,
         attributes: { email: data.account },
@@ -59,11 +90,14 @@ function SignUpWithEmailScreen() {
           enabled: true,
         },
       });
+      console.log("Auth.signUp result", result);
     } catch (error) {
       setSignUpError(error as Error); // TODO: Can we get an AuthError type or such from aws-amplify?
       setSignUpLoading(false);
       return;
     }
+    // @ts-ignore-line user
+    const user: CognitoUser = result.user;
     setCognitoUser(user);
     setSignUpLoading(false);
     router.push("/entry/sign-up/verify-account");
@@ -107,7 +141,7 @@ function SignUpWithEmailScreen() {
                 autoCorrect={false}
                 onBlur={onBlur}
                 onChangeText={onChange}
-                onSubmitEditing={() => password2InputRef.current?.focus()}
+                onSubmitEditing={() => confirmInputRef.current?.focus()}
                 placeholder="Password"
                 ref={passwordInputRef}
                 returnKeyType="next"
@@ -123,7 +157,7 @@ function SignUpWithEmailScreen() {
         <View style={styles.inputContainer}>
           <Controller
             control={control}
-            name="password2"
+            name="confirm"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 autoCapitalize="none"
@@ -131,7 +165,7 @@ function SignUpWithEmailScreen() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 placeholder="Confirm Password"
-                ref={password2InputRef}
+                ref={confirmInputRef}
                 returnKeyType="done"
                 secureTextEntry
                 style={styles.textInput}
@@ -140,7 +174,7 @@ function SignUpWithEmailScreen() {
               />
             )}
           />
-          <FormErrorsMessage errors={errors} name="password2" />
+          <FormErrorsMessage errors={errors} name="confirm" />
         </View>
         <Button
           buttonStyle={{ width: inputWidth }}
@@ -248,15 +282,15 @@ function SignUpWithEmailScreen() {
           />
           <Button
             iconName="refresh"
-            label="Toggle Error State (password2)"
+            label="Toggle Error State (confirm)"
             onPress={() => {
-              if (!errors.password2) {
-                setError("password2", {
+              if (!errors.confirm) {
+                setError("confirm", {
                   type: "custom",
                   message: "Passwords don’t match.",
                 });
               } else {
-                clearErrors("password2");
+                clearErrors("confirm");
               }
             }}
             size="sm"
