@@ -2,12 +2,14 @@ import { Stack, useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import Button from "@/components//button";
+import DisplayJSON from "@/components/display-json";
 import NotificationItem from "@/components/notification-item";
-import { useDevStore } from "@/store";
+import { useDevStore, useTestStore } from "@/store";
 import { spectrum } from "@/theme";
 
 export default function NotificationsTab() {
   const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const { count, message, setCount, setMessage, reset } = useTestStore();
   const router = useRouter();
   return (
     <View style={styles.container}>
@@ -60,6 +62,25 @@ export default function NotificationsTab() {
             <Button
               label="Sign In Screen"
               onPress={() => router.push("/entry/sign-in")}
+              size="md"
+              variant="black"
+            />
+            <DisplayJSON json={{ count, message }} />
+            <Button
+              label="Reset"
+              onPress={() => reset()}
+              size="md"
+              variant="black"
+            />
+            <Button
+              label="Set Count"
+              onPress={() => setCount(10)}
+              size="md"
+              variant="black"
+            />
+            <Button
+              label="Set Message"
+              onPress={() => setMessage("Hello from testing store 3")}
               size="md"
               variant="black"
             />
