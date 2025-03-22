@@ -1,14 +1,18 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
+import { middleware } from "zustand-expo-devtools";
+
+import { CognitoUser } from "@/types/auth";
 
 import { expoFileSystemStorage } from "./expoFileSystemStorage";
 
 // import { isValidMobilePhone } from "@/utils/phone";
 
 interface AuthState {
-  cognitoUser: any;
-  token: string;
+  cognitoUser: CognitoUser | null; // holds user data from AWS Cognito
+  token: string; // holds token data from AWS Cognito
+  // user: any; // holds the `gotme` data: uuid, date_joined, merchants, locations, token_balance, otc_redeemed, staff
   // // isTokenLoading: boolean;
   // // isAuthenticated: boolean;
   // // user: any; // is set to cognitoUser plus token data
@@ -57,7 +61,8 @@ interface AuthState {
 }
 
 interface AuthActions {
-  setCognitoUser: (cognitoUser: any) => void;
+  clearCognitoUser: () => void;
+  setCognitoUser: (cognitoUser: CognitoUser) => void;
   setToken: (token: string) => void;
   // setUser: (user: any) => void;
   // signIn: ({ account, password }: { account: string; password: string }) => void;
@@ -66,7 +71,7 @@ interface AuthActions {
 const initialState: AuthState = {
   cognitoUser: null,
   token: "",
-  // user: void 0,
+  // user: null,
   // tempUser: null,
   // isMobile: false,
   // resendConfirmCodeTimestamp: null,
@@ -144,39 +149,41 @@ const initialState: AuthState = {
 //   actions.set((state) => void (state.signInState.loading = false));
 // }),
 
-const envAwareDevtools = (
-  process.env.NODE_ENV === "production" ? (f) => f : devtools
-) as typeof devtools;
-
 const useAuthStore = create<AuthState & AuthActions>()(
-  envAwareDevtools(
-    persist(
-      immer((set) => ({
-        ...initialState,
-        setCognitoUser: (cognitoUser) =>
-          set((state) => {
-            state.cognitoUser = cognitoUser;
-          }),
-        setToken: (token) =>
-          set((state) => {
-            state.token = token;
-          }),
-        // setUser: (user) =>
-        //   set((state) => {
-        //     state.user = user;
-        //   }),
-        // signIn: () => {
-        //   console.log("signIn");
-        // },
-      })),
-      {
-        name: "auth-storage",
-        version: 1,
-        storage: expoFileSystemStorage,
-      },
-    ),
-    { name: "Auth Store" },
+  persist(
+    immer((set) => ({
+      ...initialState,
+      clearCognitoUser: () =>
+        set((state) => {
+          state.cognitoUser = null;
+        }),
+      setCognitoUser: (cognitoUser) =>
+        set((state) => {
+          state.cognitoUser = cognitoUser;
+        }),
+      setToken: (token) =>
+        set((state) => {
+          state.token = token;
+        }),
+      // setUser: (user) =>
+      //   set((state) => {
+      //     state.user = user;
+      //   }),
+      // signIn: () => {
+      //   console.log("signIn");
+      // },
+    })),
+    {
+      name: "auth-storage",
+      version: 1,
+      storage: expoFileSystemStorage,
+    },
   ),
 );
+
+middleware(useAuthStore, {
+  name: "auth-store",
+  version: 1,
+});
 
 export default useAuthStore;
