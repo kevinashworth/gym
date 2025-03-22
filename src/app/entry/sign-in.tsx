@@ -20,6 +20,7 @@ import LogoDark from "@/assets/svg/logo-dark";
 import Button from "@/components/button";
 import DisplayJSON from "@/components/display-json";
 import ErrorMessage from "@/components/error-message";
+import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
 import { useAuthStore, useDevStore } from "@/store";
 import { spectrum } from "@/theme";
@@ -28,6 +29,8 @@ import { zPassword } from "@/utils/password";
 
 import type { CognitoUser } from "@/types/auth";
 import type { FieldError } from "react-hook-form";
+
+const inputWidth = 284;
 
 type CognitoAuthResponse = {
   token: string;
@@ -140,7 +143,7 @@ export default function SignInScreen() {
       <View style={styles.container}>
         <LogoDark />
         <ErrorMessage error={error} />
-        <View>
+        <View style={styles.inputContainer}>
           <Controller
             control={control}
             name="account"
@@ -149,7 +152,6 @@ export default function SignInScreen() {
                 autoCapitalize="none"
                 autoComplete="email"
                 autoCorrect={false}
-                clearButtonMode="always"
                 keyboardType="email-address"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -163,9 +165,9 @@ export default function SignInScreen() {
               />
             )}
           />
-          <ErrorMessage error={errors.account} style={{ paddingTop: 4 }} />
+          <FormErrorsMessage errors={errors} name="account" />
         </View>
-        <View>
+        <View style={styles.inputContainer}>
           <Controller
             control={control}
             name="password"
@@ -174,7 +176,6 @@ export default function SignInScreen() {
                 autoCapitalize="none"
                 autoComplete="password"
                 autoCorrect={false}
-                clearButtonMode="always"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 onSubmitEditing={onSubmit}
@@ -188,7 +189,7 @@ export default function SignInScreen() {
               />
             )}
           />
-          <ErrorMessage error={errors.password} style={{ paddingTop: 4 }} />
+          <FormErrorsMessage errors={errors} name="password" />
         </View>
       </View>
       <View style={{ alignItems: "center", gap: 16, paddingTop: 20 }}>
@@ -198,10 +199,9 @@ export default function SignInScreen() {
           label={loading ? "Signing In ..." : "Sign In"}
           size="lg"
           buttonStyle={{
-            width: 284,
+            width: inputWidth,
           }}
         />
-
         <View style={{ alignItems: "center" }}>
           <Text style={styles.textHelpful}>Forgot password?</Text>
           <TextLink
@@ -290,8 +290,13 @@ const styles = StyleSheet.create({
     gap: 16,
     paddingTop: 32,
   },
+  inputContainer: {
+    gap: 8,
+    width: inputWidth,
+  },
   textInput: {
-    width: 284,
+    // backgroundColor: "orange",
+    width: inputWidth,
   },
   textHelpful: {
     color: spectrum.base2Content,

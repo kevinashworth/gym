@@ -13,6 +13,8 @@ import type { CognitoUser } from "@/types/auth";
 
 interface AuthContextType {
   cognitoUser: CognitoUser | null;
+  token: string;
+  isUserAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -31,18 +33,18 @@ export function useSession() {
 const unprotectedPrefixes = ["/welcome", "/entry"];
 
 // This hook runs on every route change and will protect the route access based on user authentication.
-function useProtectedRoute(user: CognitoUser | null) {
+function useProtectedRoute(isUserAuthenticated: boolean) {
   const pathname = usePathname();
-  console.log("[useProtectedRoute] pathname:", pathname);
+  console.log("pathname:", pathname);
   const router = useRouter();
 
   useEffect(() => {
-    const isUnprotected = unprotectedPrefixes.some((path) =>
+    const isUnprotectedPath = unprotectedPrefixes.some((path) =>
       pathname.startsWith(path),
     );
 
     // If the user is not signed in and the path is protected, redirect to welcome page.
-    if (!user && !isUnprotected) {
+    if (!isUserAuthenticated && !isUnprotectedPath) {
       console.log("[useProtectedRoute] Redirecting to welcome");
       if (router.canDismiss()) {
         router.dismissAll();
@@ -50,7 +52,7 @@ function useProtectedRoute(user: CognitoUser | null) {
       router.replace("/welcome");
     }
     // If the user is signed in and the path is unprotected, we still redirect to dashboard page. TODO: Just show the current page?
-    else if (user && isUnprotected) {
+    else if (isUserAuthenticated && isUnprotectedPath) {
       console.log("[useProtectedRoute] Redirecting to dashboard");
       if (router.canDismiss()) {
         router.dismissAll();
@@ -59,17 +61,20 @@ function useProtectedRoute(user: CognitoUser | null) {
     }
     // Otherwise, do nothing.
     else {
-      console.log("[useProtectedRoute] Not redirecting");
+      // console.log("[useProtectedRoute] Not redirecting");
     }
-  }, [user, pathname]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isUserAuthenticated, pathname]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const cognitoUser = useAuthStore((s) => s.cognitoUser);
-  useProtectedRoute(cognitoUser);
+  const token = useAuthStore((s) => s.token);
+  const isUserAuthenticated = !!cognitoUser?.attributes?.email && !!token;
+  console.log("[SessionProvider] isUserAuthenticated:", isUserAuthenticated);
+  useProtectedRoute(isUserAuthenticated);
 
   return (
-    <AuthContext.Provider value={{ cognitoUser }}>
+    <AuthContext.Provider value={{ cognitoUser, token, isUserAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

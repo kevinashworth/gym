@@ -45,7 +45,6 @@ const SignUpVerifyScreen = () => {
   });
 
   const cognitoUser = useAuthStore((s) => s.cognitoUser);
-  console.log("cognitoUser", cognitoUser);
   const accountValue = cognitoUser?.attributes?.email;
 
   const router = useRouter();

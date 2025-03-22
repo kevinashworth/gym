@@ -5,6 +5,7 @@ import {
   CircleDollarSign,
   CircleHelp,
   CircleUserRound,
+  CircleX,
   Image,
   UsersRound,
 } from "lucide-react-native";
@@ -43,6 +44,7 @@ const lucideIcons = {
   "circle-dollar-sign": CircleDollarSign,
   "circle-help": CircleHelp,
   "circle-user-round": CircleUserRound,
+  "circle-x": CircleX,
   image: Image,
   notifications: Bell,
   "users-round": UsersRound,

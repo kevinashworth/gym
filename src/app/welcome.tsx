@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   version: {
-    color: spectrum.base2Content,
+    color: spectrum.base1Content,
     fontSize: 12,
     fontWeight: 200,
     lineHeight: 18,
