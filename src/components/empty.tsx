@@ -1,4 +1,4 @@
-import { Text, ViewStyle } from "react-native";
+import { Text, TextStyle, ViewStyle } from "react-native";
 
 import Icon, { FontAwesomeIconName } from "@/components/icon";
 import XStack from "@/components/x-stack";
@@ -9,7 +9,7 @@ interface EmptyProps {
   icon?: FontAwesomeIconName;
   style?: ViewStyle;
   text?: string;
-  textProps?: any;
+  textStyle?: TextStyle;
   vertical?: boolean;
 }
 
@@ -17,7 +17,7 @@ export default function Empty({
   icon = "inbox",
   style,
   text = "No Data",
-  textProps = {},
+  textStyle = {},
   vertical = false,
   ...props
 }: EmptyProps) {
@@ -30,16 +30,16 @@ export default function Empty({
     gap: vertical ? 0 : 8,
   } as ViewStyle;
 
-  const textStyle = {
+  const textStyleCombined = {
     color: spectrum.base3Content,
     fontSize: 10,
-    ...textProps,
+    ...textStyle,
   };
 
   return (
     <Stack style={containerStyle}>
       <Icon name={icon} color={spectrum.base3Content} />
-      <Text style={textStyle}>{text}</Text>
+      <Text style={textStyleCombined}>{text}</Text>
     </Stack>
   );
 }
