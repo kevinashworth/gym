@@ -1,5 +1,14 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { CircleDollarSign, Image } from "lucide-react-native";
+import {
+  Bell,
+  ChevronRight,
+  CircleDollarSign,
+  CircleHelp,
+  CircleUserRound,
+  CircleX,
+  Image,
+  UsersRound,
+} from "lucide-react-native";
 
 import CampaignCheckIn from "@/assets/svg/campaign-check-in";
 import CampaignCheckInQRCode from "@/assets/svg/campaign-check-in-qr-code";
@@ -30,9 +39,15 @@ const localIcons = {
 };
 
 const lucideIcons = {
+  bell: Bell,
+  "chevron-right": ChevronRight,
   "circle-dollar-sign": CircleDollarSign,
-  CircleDollarSign: CircleDollarSign,
+  "circle-help": CircleHelp,
+  "circle-user-round": CircleUserRound,
+  "circle-x": CircleX,
   image: Image,
+  notifications: Bell,
+  "users-round": UsersRound,
 };
 
 export type IconName =

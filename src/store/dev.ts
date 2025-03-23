@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { middleware } from "zustand-expo-devtools";
 
 interface DevState {
   enableDevToolbox: boolean;
@@ -10,36 +11,30 @@ interface DevActions {
 }
 
 const initialState: DevState = {
-  // enableDevToolbox: false,
-  enableDevToolbox: process.env.NODE_ENV === "development",
+  enableDevToolbox: false,
+  // enableDevToolbox: process.env.NODE_ENV === "development",
 };
 
-const envAwareDevtools = (
-  process.env.NODE_ENV === "production" ? (f) => f : devtools
-) as typeof devtools;
-
 const useDevStore = create<DevState & DevActions>()(
-  envAwareDevtools(
-    persist(
-      (set, get) => ({
-        ...initialState,
-        toggleEnableDevToolbox: () =>
-          set(
-            (state) => ({
-              ...state,
-              enableDevToolbox: !state.enableDevToolbox,
-            }),
-            false,
-            "dev/toggleEnableDevToolbox",
-          ),
-      }),
-      {
-        name: "dev-storage",
-        version: 1,
-      },
-    ),
-    { name: "Dev Store" },
+  persist(
+    (set, get) => ({
+      ...initialState,
+      toggleEnableDevToolbox: () =>
+        set((state) => ({
+          ...state,
+          enableDevToolbox: !state.enableDevToolbox,
+        })),
+    }),
+    {
+      name: "dev-storage",
+      version: 1,
+    },
   ),
 );
+
+middleware(useDevStore, {
+  name: "dev-store",
+  version: 1,
+});
 
 export default useDevStore;
