@@ -13,11 +13,16 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { AppState, Platform } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import CustomHeader from "@/components/header";
 import EntryHeader from "@/components/header-entry";
 import { SessionProvider } from "@/context/auth";
+import { toastConfig } from "@/utils/toast";
 
 import type { AppStateStatus } from "react-native";
 
@@ -60,12 +65,14 @@ export default function RootLayout() {
 
   useReactQueryDevTools(queryClient);
 
+  const insets = useSafeAreaInsets();
+
   useEffect(() => {
     async function prepare() {
       try {
         // Artificially delay to simulate slow loading.
         // TODO: Remove this!
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (e) {
         console.warn(e);
       } finally {
@@ -99,6 +106,12 @@ export default function RootLayout() {
               }}
             />
             <Stack.Screen
+              name="settings"
+              options={{
+                header: () => <CustomHeader />,
+              }}
+            />
+            <Stack.Screen
               name="entry"
               options={{
                 header: () => <EntryHeader />,
@@ -106,6 +119,7 @@ export default function RootLayout() {
             />
             <Stack.Screen name="welcome" />
           </Stack>
+          <Toast config={toastConfig} topOffset={insets.top} />
         </SessionProvider>
       </QueryClientProvider>
     </SafeAreaProvider>
