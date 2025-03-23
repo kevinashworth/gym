@@ -1,6 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   Bell,
+  ChevronLeft,
   ChevronRight,
   CircleDollarSign,
   CircleHelp,
@@ -40,6 +41,7 @@ const localIcons = {
 
 const lucideIcons = {
   bell: Bell,
+  "chevron-left": ChevronLeft,
   "chevron-right": ChevronRight,
   "circle-dollar-sign": CircleDollarSign,
   "circle-help": CircleHelp,

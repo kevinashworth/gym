@@ -64,13 +64,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          tabBarItemStyle: { display: "none" },
-        }}
-      />
     </Tabs>
   );
 }

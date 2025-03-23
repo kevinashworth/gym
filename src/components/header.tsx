@@ -54,7 +54,7 @@ function LogoDisplay() {
 
 function SettingsDisplay() {
   return (
-    <Link href="/(tabs)/settings" asChild>
+    <Link href="/settings" asChild>
       <Pressable>
         <Ionicons
           name="menu-outline"

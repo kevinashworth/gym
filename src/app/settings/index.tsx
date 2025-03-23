@@ -1,5 +1,13 @@
 import { router, Stack } from "expo-router";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Toast from "react-native-toast-message";
 
 import Icon, { IconName } from "@/components/icon";
 import { useAuthStore, useUserStore } from "@/store";
@@ -74,19 +82,43 @@ export default function SettingsTab() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: "Settings" }} />
+      <Stack.Screen
+        options={{
+          title: "Settings",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: -16,
+              }}
+            >
+              <Icon name="chevron-left" size={32} color={spectrum.blue10} />
+              <Text style={styles.backText}>Back</Text>
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <View style={styles.section}>
         <SettingItem
           icon="circle-user-round"
           iconColor={spectrum.primary}
-          label="Edit Profile"
-          onPress={() => console.log("Edit Profile")}
+          label="Profile"
+          onPress={() => router.push("/settings/profile")}
         />
         <SettingItem
           icon="notifications"
           iconColor={spectrum.primary}
           label="Notifications"
-          onPress={() => console.log("Notifications")}
+          onPress={() =>
+            Toast.show({
+              position: "bottom",
+              type: "primary",
+              text1: "Notification Settings",
+              text2: "This feature is not yet implemented",
+            })
+          }
         />
         <SettingItem
           icon="users-round"
@@ -98,7 +130,7 @@ export default function SettingsTab() {
           icon="circle-help"
           iconColor={spectrum.primary}
           label="Help"
-          onPress={() => console.log("Help")}
+          onPress={() => router.push("/settings/help")}
         />
         <SettingItem
           label="Logout"
@@ -120,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderTopWidth: StyleSheet.hairlineWidth,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: spectrum.base1,
+    borderColor: spectrum.base3Content,
   },
   settingItem: {
     flexDirection: "row",
@@ -135,7 +167,7 @@ const styles = StyleSheet.create({
     borderColor: spectrum.base3Content,
   },
   settingItemPressed: {
-    backgroundColor: spectrum.base1,
+    backgroundColor: spectrum.gray6,
   },
   settingContent: {
     flexDirection: "row",
@@ -145,5 +177,10 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 16,
     color: spectrum.black,
+  },
+  backText: {
+    color: spectrum.blue10,
+    fontSize: 18,
+    textAlign: "center",
   },
 });
