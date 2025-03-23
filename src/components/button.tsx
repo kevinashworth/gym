@@ -20,6 +20,7 @@ type Variants =
   | "primary"
   | "secondary"
   | "outline"
+  | "error"
   | "black"
   | "white"
   | "default";
@@ -44,28 +45,23 @@ const buttonVariantsContainer: ButtonVariantsContainer = {
   },
   secondary: {
     backgroundColor: spectrum.secondary,
-    borderColor: spectrum.secondary,
-    borderWidth: 1,
   },
   outline: {
-    backgroundColor: "transparent",
-    borderColor: spectrum.gray9,
-    borderWidth: 1,
+    backgroundColor: spectrum.white,
+    borderColor: spectrum.primary,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  error: {
+    backgroundColor: spectrum.error,
   },
   black: {
     backgroundColor: spectrum.black,
-    borderColor: spectrum.black,
-    borderWidth: 1,
   },
   white: {
     backgroundColor: spectrum.white,
-    borderColor: spectrum.white,
-    borderWidth: 1,
   },
   default: {
     backgroundColor: spectrum.base1,
-    borderColor: spectrum.base1,
-    borderWidth: 1,
   },
 };
 
@@ -79,7 +75,8 @@ const buttonSizesLabel: ButtonSizesLabel = {
 const buttonVariantsLabel: ButtonVariantsLabel = {
   primary: { color: spectrum.white },
   secondary: { color: spectrum.gray1 },
-  outline: { color: spectrum.gray9 },
+  outline: { color: spectrum.primary },
+  error: { color: spectrum.white },
   black: { color: spectrum.white },
   white: { color: spectrum.black },
   default: { color: spectrum.primary },
@@ -109,9 +106,15 @@ export default function Button({
   withoutShadow = false,
 }: ButtonProps) {
   const IconComponent = icon ? (
-    React.cloneElement(icon, { color: spectrum.gray1 })
+    React.cloneElement(icon, {
+      color: buttonVariantsLabel[variant].color || spectrum.gray1,
+    })
   ) : iconName ? (
-    <Icon name={iconName} size={14} color={spectrum.gray1} />
+    <Icon
+      name={iconName}
+      size={14}
+      color={buttonVariantsLabel[variant].color || spectrum.gray1}
+    />
   ) : null;
 
   return (
