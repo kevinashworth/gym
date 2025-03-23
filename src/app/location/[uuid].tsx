@@ -208,7 +208,7 @@ export default function LocationScreen() {
                     onPress={() => callNumber(location.business_phone)}
                   >
                     <Text style={styles.phone}>
-                      {phoneFormatter(location.business_phone)}
+                      {phoneFormatter(location.business_phone || "")}
                     </Text>
                   </TouchableOpacity>
                 </YStack>

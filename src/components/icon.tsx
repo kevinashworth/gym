@@ -27,11 +27,6 @@ export type FontAwesomeIconStyle = React.ComponentProps<
 >["style"];
 
 const localIcons = {
-  "campaign-check-in": CampaignCheckIn,
-  "campaign-check-in-qr-code": CampaignCheckInQRCode,
-  "campaign-referral": CampaignReferral,
-  "campaign-review": CampaignReview,
-  "campaign-survey": CampaignSurvey,
   CampaignCheckIn: CampaignCheckIn,
   CampaignCheckInQRCode: CampaignCheckInQRCode,
   CampaignReferral: CampaignReferral,
@@ -53,9 +48,11 @@ const lucideIcons = {
 };
 
 export type IconName =
-  | FontAwesomeIconName
+  | keyof typeof localIcons
   | keyof typeof lucideIcons
-  | keyof typeof localIcons;
+  | FontAwesomeIconName;
+
+export type HistoryIconName = keyof typeof localIcons;
 
 interface IconProps {
   color?: string;
