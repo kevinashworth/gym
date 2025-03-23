@@ -4,16 +4,5 @@ build
 coverage
 dist
 ios
-lib
-node_modules
-tmp
-Path: .prettierignore
-# Ignore artifacts:
-android
-build
-coverage
-dist
-ios
-lib
 node_modules
 tmp
