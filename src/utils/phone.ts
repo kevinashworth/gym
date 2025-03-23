@@ -1,9 +1,12 @@
-import parsePhoneNumber from "libphonenumber-js/mobile";
+import parsePhoneNumber, { AsYouType } from "libphonenumber-js/mobile";
 import { Platform } from "react-native";
 
 function isValidMobilePhone(value: string) {
   if (!value) return false;
-  const phoneNumber = parsePhoneNumber(value, "US");
+  const phoneNumber = parsePhoneNumber(value, {
+    defaultCountry: "US",
+    extract: false,
+  });
   if (phoneNumber?.isValid()) {
     if (phoneNumber.getType() === "MOBILE") {
       return true;
@@ -14,7 +17,10 @@ function isValidMobilePhone(value: string) {
 
 function isValidPhone(value: string) {
   if (!value) return false;
-  const phoneNumber = parsePhoneNumber(value, "US");
+  const phoneNumber = parsePhoneNumber(value, {
+    defaultCountry: "US",
+    extract: false,
+  });
   if (phoneNumber?.isValid()) {
     return true;
   }
@@ -22,9 +28,12 @@ function isValidPhone(value: string) {
 }
 
 // returns (801) 225-6115 or null
-function phoneFormatter(inputPhoneNumber: string | null) {
+function phoneFormatter(inputPhoneNumber: string) {
   if (!inputPhoneNumber) return null;
-  const phoneNumber = parsePhoneNumber(inputPhoneNumber, "US");
+  const phoneNumber = parsePhoneNumber(inputPhoneNumber, {
+    defaultCountry: "US",
+    extract: false,
+  });
   if (phoneNumber?.isValid()) {
     return phoneNumber.formatNational();
   }
@@ -34,9 +43,25 @@ function phoneFormatter(inputPhoneNumber: string | null) {
 // returns 8012256115 or null
 function phoneFormatterDigitsOnly(inputPhoneNumber: string) {
   if (!inputPhoneNumber) return null;
-  const phoneNumber = parsePhoneNumber(inputPhoneNumber, "US");
+  const phoneNumber = parsePhoneNumber(inputPhoneNumber, {
+    defaultCountry: "US",
+    extract: false,
+  });
   if (phoneNumber?.isValid()) {
     return phoneNumber.nationalNumber;
+  }
+  return null;
+}
+
+// returns +18012256115 or null
+function phoneFormatterE164(inputPhoneNumber: string) {
+  if (!inputPhoneNumber) return null;
+  const phoneNumber = parsePhoneNumber(inputPhoneNumber, {
+    defaultCountry: "US",
+    extract: false,
+  });
+  if (phoneNumber?.isValid()) {
+    return phoneNumber.number;
   }
   return null;
 }
@@ -48,8 +73,11 @@ function phoneFormatterAsLink(phoneNumber: string) {
 }
 
 export {
+  AsYouType,
   isValidMobilePhone,
   isValidPhone,
   phoneFormatter,
+  phoneFormatterDigitsOnly,
+  phoneFormatterE164,
   phoneFormatterAsLink,
 };

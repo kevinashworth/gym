@@ -15,8 +15,8 @@ import Icon from "@/components/icon";
 import { data } from "@/mocks/fixtures";
 import { spectrum } from "@/theme";
 
-import type { IconName } from "@/components/icon";
-import type { HistoryItem } from "@/mocks/fixtures";
+import type { HistoryIconName, IconName } from "@/components/icon";
+import type { HistoryItem } from "@/mocks/fixtures"; // TODO: Move types to a types file, instead of mocks.
 
 const user_tag = "SillyUserTag";
 const balanceStateLoading: boolean = false;
@@ -33,14 +33,22 @@ const generateTypeIconValue = (
   item: HistoryItem,
 ): [string, IconName, number] => {
   if (item.type !== "transfer") {
-    return [item.type, `Campaign${item.type}` as IconName, item.rewardGetToken];
+    // The 5 possible values for item.type are "CheckIn", "CheckInQRCode",
+    // "Referral", "Review", "Survey".
+    const iconName: HistoryIconName = `Campaign${item.type}`;
+    return [item.type, iconName, item.rewardGetToken];
   } else {
     if (item.actionDescription.indexOf("redeem") > -1) {
-      return ["Redeem", "CircleDollarSign", -item.rewardGetToken];
+      return ["Redeem", "circle-dollar-sign", -item.rewardGetToken];
     }
     const capitalizedStr =
       item.type.charAt(0).toUpperCase() + item.type.slice(1);
-    return [capitalizedStr, capitalizedStr as IconName, -item.rewardGetToken]; // TODO: "as IconName" here is a lie. I mean, promise to fix it later.
+    // NB: "as IconName" below is a promise with no guarantee. But it won't
+    // break anything and it's not a big deal and it should only come into play
+    // if the backend changes and we don't update the new values here in the
+    // mobile app.
+    // TODO: Fix this later? Is there a possible fix?
+    return [capitalizedStr, capitalizedStr as IconName, -item.rewardGetToken];
   }
 };
 

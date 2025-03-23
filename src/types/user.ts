@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { isValidPhone } from "@/utils/phone";
+
 // const typicalUser = {
 //   user_tag: "SolidScribe",
 //   first_name: "ricky",
@@ -42,29 +44,14 @@ export const UserProfileEditFormSchema = z.object({
   user_tag: z.string().min(1, { message: "User tag is required" }),
   first_name: z.string().min(1, { message: "First name is required" }),
   last_name: z.string().min(1, { message: "Last name is required" }),
-  phone1: z.string().min(1, { message: "Phone number is required" }),
+  phone1: z
+    .string()
+    .min(1, { message: "Phone number is required" })
+    .refine((val) => isValidPhone(val), {
+      message: "Please enter a valid phone number",
+    }),
   email: z.string().email({ message: "Email is required" }),
   global_user_notifications: z.boolean(),
 });
 
 export type UserProfileEditForm = z.infer<typeof UserProfileEditFormSchema>;
-
-// Pick<
-//   UserProfile,
-//   "user_tag" | "first_name" | "last_name" | "phone1" | "email"
-// >;
-
-// user can update these fields in the form
-export const UserProfileEditableSchema = z.object({
-  first_name: z.string().min(1, { message: "First name is required" }),
-  last_name: z.string().min(1, { message: "Last name is required" }),
-  phone1: z.string().min(1, { message: "Phone number is required" }),
-  global_user_notifications: z.boolean(),
-});
-
-export type UserProfileEditable = z.infer<typeof UserProfileEditableSchema>;
-
-// Pick<
-//   UserProfile,
-//   "first_name" | "last_name" | "phone1"
-// >;

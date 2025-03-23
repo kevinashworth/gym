@@ -21,8 +21,14 @@ import {
   UserProfile,
   UserProfileEditForm,
   UserProfileEditFormSchema,
-  UserProfileEditable,
 } from "@/types/user";
+import { AsYouType, phoneFormatter, phoneFormatterE164 } from "@/utils/phone";
+
+/*
+ * Regarding phone1 (and theoretically phone2):
+ * We store phone1 in the db in E.164 format but display it in a formatted way.
+ * When user edits phone1, we convert it to E.164 before sending it to the API.
+ */
 
 const inputWidth = 244;
 const prefixUrl = (
@@ -57,21 +63,27 @@ function UserProfileFormLoadingState() {
 
 interface UserProfileFormProps {
   disableSubmitButton?: boolean;
-  onSubmit: (data: UserProfileEditable) => void;
+  onSubmit: (data: UserProfileEditForm) => void;
   userProfile: UserProfile;
 }
+
 function UserProfileForm({
   disableSubmitButton = false,
   onSubmit,
   userProfile,
 }: UserProfileFormProps) {
+  const phone1Display = phoneFormatter(userProfile.phone1) ?? undefined;
+
   const {
     control,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
     handleSubmit,
   } = useForm<UserProfileEditForm>({
     resolver: zodResolver(UserProfileEditFormSchema),
-    defaultValues: userProfile,
+    defaultValues: {
+      ...userProfile,
+      phone1: phone1Display,
+    },
   });
 
   return (
@@ -172,7 +184,10 @@ function UserProfileForm({
               autoCorrect={false}
               keyboardType="phone-pad"
               onBlur={onBlur}
-              onChangeText={onChange}
+              onChangeText={(val: string) => {
+                const formatted = new AsYouType("US").input(val);
+                onChange(formatted);
+              }}
               placeholder={"Phone Number"}
               returnKeyType="done"
               style={styles.textInput}
@@ -185,7 +200,7 @@ function UserProfileForm({
       </View>
       <Button
         buttonStyle={{ width: inputWidth }}
-        disabled={disableSubmitButton}
+        disabled={disableSubmitButton || !isDirty || !isValid}
         label="Submit Changes"
         onPress={handleSubmit(onSubmit)}
         size="lg"
@@ -207,9 +222,12 @@ const ProfileScreen = () => {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (values: UserProfileEditable) =>
+    mutationFn: async (values: UserProfileEditForm) =>
       await api.put(`${prefixUrl}/user/`, {
-        json: values,
+        json: {
+          ...values,
+          phone1: phoneFormatterE164(values.phone1),
+        },
       }),
     onSuccess: () => {
       Toast.show({
