@@ -3,8 +3,8 @@ import { persist } from "zustand/middleware";
 import { middleware } from "zustand-expo-devtools";
 
 interface DevState {
-  enableApiConsoleLogs: boolean;
   enableDevToolbox: boolean;
+  showApiConsoleLogs: boolean;
 }
 
 interface DevActions {
@@ -13,16 +13,16 @@ interface DevActions {
 }
 
 const initialState: DevState = {
-  enableApiConsoleLogs: process.env.NODE_ENV === "development",
   // enableDevToolbox: false,
   enableDevToolbox: process.env.NODE_ENV === "development",
+  showApiConsoleLogs: process.env.NODE_ENV === "development",
 };
 
 const useDevStore = create<DevState & DevActions>()(
   persist(
     (set, get) => ({
       ...initialState,
-      toggleEnableApiConsoleLogs: () =>
+      toggleShowApiConsoleLogs: () =>
         set((state) => ({
           ...state,
           enableApiConsoleLogs: !state.enableApiConsoleLogs,

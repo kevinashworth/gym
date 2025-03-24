@@ -3,8 +3,6 @@ import ky from "ky";
 import { useAuthStore } from "@/store";
 import { useDevStore } from "@/store";
 
-const enableApiConsoleLogs = useDevStore.getState().enableApiConsoleLogs;
-
 const prefixUrl = (
   process.env.EXPO_PUBLIC_API_BASE_URL || "https://test.api.gotyou.co"
 ).trim();
@@ -24,6 +22,7 @@ const prefixed = ky.create({
     // ],
     afterResponse: [
       async (request, _options, response) => {
+        const enableApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
         if (enableApiConsoleLogs) {
           const json = await response.json();
           const jsonString = JSON.stringify(json);
