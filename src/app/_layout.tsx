@@ -22,6 +22,7 @@ import Toast from "react-native-toast-message";
 import CustomHeader from "@/components/header";
 import EntryHeader from "@/components/header-entry";
 import { SessionProvider } from "@/context/auth";
+import { LocationProvider } from "@/context/location";
 import { toastConfig } from "@/utils/toast";
 
 import type { AppStateStatus } from "react-native";
@@ -97,31 +98,33 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          <StatusBar style="light" />
-          <Stack>
-            <Stack.Screen
-              name="(tabs)"
-              options={{
-                header: () => <CustomHeader />,
-              }}
-            />
-            <Stack.Screen
-              name="settings"
-              options={{
-                header: () => <CustomHeader />,
-              }}
-            />
-            <Stack.Screen
-              name="entry"
-              options={{
-                header: () => <EntryHeader />,
-              }}
-            />
-            <Stack.Screen name="welcome" />
-          </Stack>
-          <Toast config={toastConfig} topOffset={insets.top} />
+          <LocationProvider>
+            <StatusBar style="light" />
+            <Stack>
+              <Stack.Screen
+                name="(tabs)"
+                options={{
+                  header: () => <CustomHeader />,
+                }}
+              />
+              <Stack.Screen
+                name="settings"
+                options={{
+                  header: () => <CustomHeader />,
+                }}
+              />
+              <Stack.Screen
+                name="entry"
+                options={{
+                  header: () => <EntryHeader />,
+                }}
+              />
+              <Stack.Screen name="welcome" />
+            </Stack>
+          </LocationProvider>
         </SessionProvider>
       </QueryClientProvider>
+      <Toast config={toastConfig} topOffset={insets.top} />
     </SafeAreaProvider>
   );
 }
