@@ -1,4 +1,4 @@
-import type { Location } from "@/mocks/fixtures";
+import type { Location } from "@/types/location";
 
 export function formatAddressForMaps(location: Location) {
   return (
