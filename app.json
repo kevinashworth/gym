@@ -49,6 +49,12 @@
           "photosPermission": "$(PRODUCT_NAME) needs to access your photos to load any QR codes there"
         }
       ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "$(PRODUCT_NAME) needs your location to find businesses near you."
+        }
+      ],
       "expo-router",
       "react-native-map-link"
     ],
