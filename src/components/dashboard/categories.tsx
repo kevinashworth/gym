@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import {
@@ -9,13 +10,28 @@ import {
   Soup,
   Store,
 } from "lucide-react-native";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
-import { categories } from "@/mocks/fixtures";
+import Empty from "@/components/empty";
+import ErrorMessage from "@/components/error-message";
+import api from "@/lib/api";
 import { spectrum } from "@/theme";
 
-import type { Category } from "@/mocks/fixtures";
 import type { LucideIcon } from "lucide-react-native";
+
+// This is just the list of categories we expect from the API
+export type Category =
+  | "convenience"
+  | "health"
+  | "restaurants"
+  | "retail"
+  | "services";
 
 const IconComponent: Record<Category, LucideIcon> = {
   convenience: ShoppingBasket,
@@ -38,6 +54,40 @@ function getCategoryIcon(category: Category) {
 }
 
 export default function Categories() {
+  const {
+    data: categories,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => api.get<Category[]>("user/location/categories").json(),
+    staleTime: 1000 * 60 * 60 * 24, // 1 day
+  });
+
+  if (isLoading) {
+    return (
+      <View style={styles.messageContainer}>
+        <ActivityIndicator size="large" color={spectrum.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.messageContainer}>
+        <ErrorMessage error={error} />
+      </View>
+    );
+  }
+
+  if (!categories?.length) {
+    return (
+      <View style={styles.messageContainer}>
+        <Empty />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {categories.map((category) => (
@@ -84,5 +134,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
     textAlign: "center",
     wordWrap: "break-word",
+  },
+  messageContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  messageText: {
+    color: spectrum.base1Content,
+    fontSize: 16,
   },
 });

@@ -31,9 +31,6 @@ import { AsYouType, phoneFormatter, phoneFormatterE164 } from "@/utils/phone";
  */
 
 const inputWidth = 244;
-const prefixUrl = (
-  process.env.EXPO_PUBLIC_API_BASE_URL || "https://test.api.gotyou.co"
-).trim();
 
 function UserProfileFormLoadingState() {
   return (
@@ -215,7 +212,7 @@ const ProfileScreen = () => {
   const { data: userProfile, isLoading } = useQuery<UserProfile>({
     queryKey: ["userProfile"],
     queryFn: async () => {
-      const response: UserProfile = await api.get(`${prefixUrl}/user/`).json();
+      const response: UserProfile = await api.get("user/").json();
       return response;
     },
     staleTime: Infinity, // no background updates, see https://tkdodo.eu/blog/react-query-and-forms#no-background-updates
@@ -223,7 +220,7 @@ const ProfileScreen = () => {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: UserProfileEditForm) =>
-      await api.put(`${prefixUrl}/user/`, {
+      await api.put("user/", {
         json: {
           ...values,
           phone1: phoneFormatterE164(values.phone1),

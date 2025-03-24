@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
+
+import { useQueryClient } from "@tanstack/react-query";
 
 import Like from "@/components/like";
+import api from "@/lib/api";
+import { useFavorites } from "@/queries/useFavorites";
 
 interface FavoriteLocationProps {
   enableText?: boolean;
@@ -13,24 +17,36 @@ export default function FavoriteLocation({
   referralCode,
   uuid,
 }: FavoriteLocationProps) {
-  const [liked, setLiked] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { data: favorites, isLoading } = useFavorites(uuid);
+  const isFavorite = favorites?.some((favorite) => favorite === uuid);
+  const queryClient = useQueryClient();
 
-  function handleChangeLike() {
-    setLoading(true);
-    setTimeout(() => {
-      setLiked(!liked);
-      setLoading(false);
-      console.log(uuid, referralCode);
-    }, 1000);
+  async function add(uuid: string) {
+    await api.post(`user/favorite/add/${uuid}`);
+    queryClient.invalidateQueries({ queryKey: ["favorites", uuid] });
+  }
+
+  async function remove(uuid: string) {
+    await api.post("user/favorite/remove", {
+      searchParams: { uuid },
+    });
+    queryClient.invalidateQueries({ queryKey: ["favorites", uuid] });
+  }
+
+  function toggleFavorite() {
+    if (isFavorite) {
+      remove(uuid);
+    } else {
+      add(uuid);
+    }
   }
 
   return (
     <Like
       enableText={enableText}
-      liked={Boolean(liked)}
-      loading={loading}
-      onChange={handleChangeLike}
+      liked={Boolean(isFavorite)}
+      loading={isLoading}
+      onChange={toggleFavorite}
     />
   );
 }

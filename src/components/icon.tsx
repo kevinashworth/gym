@@ -8,6 +8,7 @@ import {
   CircleUserRound,
   CircleX,
   Image,
+  Inbox,
   UsersRound,
 } from "lucide-react-native";
 
@@ -43,6 +44,7 @@ const lucideIcons = {
   "circle-user-round": CircleUserRound,
   "circle-x": CircleX,
   image: Image,
+  inbox: Inbox,
   notifications: Bell,
   "users-round": UsersRound,
 };
