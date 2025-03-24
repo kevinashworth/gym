@@ -7,7 +7,7 @@ import {
 
 import { usePathname, useRouter } from "expo-router";
 
-import { useAuthStore } from "@/store";
+import { useAuthStore, useDevStore } from "@/store";
 
 import type { CognitoUser } from "@/types/auth";
 
@@ -34,8 +34,9 @@ const unprotectedPrefixes = ["/welcome", "/entry"];
 
 // This hook runs on every route change and will protect the route access based on user authentication.
 function useProtectedRoute(isUserAuthenticated: boolean) {
+  const showPathnameLog = useDevStore((s) => s.showPathnameLog);
   const pathname = usePathname();
-  console.log("pathname:", pathname);
+  if (showPathnameLog) console.log("pathname:", pathname);
   const router = useRouter();
 
   useEffect(() => {
@@ -70,7 +71,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const cognitoUser = useAuthStore((s) => s.cognitoUser);
   const token = useAuthStore((s) => s.token);
   const isUserAuthenticated = !!cognitoUser?.attributes?.email && !!token;
-  console.log("[SessionProvider] isUserAuthenticated:", isUserAuthenticated);
+  if (!isUserAuthenticated)
+    console.log("[SessionProvider] isUserAuthenticated:", isUserAuthenticated);
   useProtectedRoute(isUserAuthenticated);
 
   return (
