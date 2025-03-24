@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useQuery } from "@tanstack/react-query";
 import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   Linking,
@@ -18,17 +20,21 @@ import { showLocation } from "react-native-map-link";
 import Placeholder from "@/assets/svg/placeholder";
 import CampaignActions from "@/components/campaign-actions";
 import DisplayJSON from "@/components/display-json";
+import ErrorMessage from "@/components/error-message";
 import FavoriteLocation from "@/components/favorite-location";
 import CustomHeader from "@/components/header";
 import Picture from "@/components/picture";
 import XStack from "@/components/x-stack";
 import YStack from "@/components/y-stack";
-import { location, photoKeys } from "@/mocks/fixtures";
+import { photoKeys } from "@/constants/photoKeys";
+import api from "@/lib/api";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 import { clamp } from "@/utils/clamp";
 import { formatAddressForMaps } from "@/utils/maps";
 import { phoneFormatter, phoneFormatterAsLink } from "@/utils/phone";
+
+import type { Location } from "@/types/location";
 
 type ImageWithSize = {
   url: string;
@@ -45,32 +51,32 @@ const defaultSize = 164;
 const defaultDimensions = { width: defaultSize, height: defaultSize };
 
 export default function LocationScreen() {
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const params = useGlobalSearchParams();
+  const uuid = params.uuid as string;
   const router = useRouter();
-  const { uuid } = useGlobalSearchParams<{ uuid: string }>();
-
+  const enableDevToolbox = useDevStore((state) => state.enableDevToolbox);
+  const [colWrap, setColWrap] = useState(0);
   const [imagesWithSizes, setImagesWithSizes] = useState<ImagesWithSize>([]);
-
-  const mainImage =
-    location.business_logo || location.external_thumbnail_1 || "";
   const [mainImageWithSize, setMainImageWithSize] = useState<ImageWithSize>({
     ...defaultDimensions,
-    url: mainImage,
+    url: "",
   });
 
-  const callNumber = (phoneNumber: string | null) => {
-    if (!phoneNumber) return;
-    const url = phoneFormatterAsLink(phoneNumber);
-    Linking.openURL(url).catch((e) => console.error(e));
-  };
-
-  const handleGoBack = () =>
-    router.canGoBack() ? router.back() : router.replace("/(tabs)");
+  const {
+    data: location,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["location", uuid],
+    queryFn: () => api.get<Location>(`user/location/${uuid}`).json(),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
   useEffect(() => {
+    if (!location) return;
     const nonNullImages = photoKeys
-      .filter((photo) => location[photo])
-      .map((photo) => location[photo]);
+      .filter((photo) => location[photo as keyof Location])
+      .map((photo) => location[photo as keyof Location] as string);
 
     if (nonNullImages.length === 0) {
       setImagesWithSizes([]);
@@ -88,9 +94,12 @@ export default function LocationScreen() {
         });
       });
     }
-  }, []);
+  }, [location]);
 
   useEffect(() => {
+    if (!location) return;
+    const mainImage =
+      location.business_logo || location.external_thumbnail_1 || "";
     if (mainImage) {
       Image.getSize(mainImage, (width, height) => {
         const aspectRatio = clamp(0.75, width / height, 1.25);
@@ -99,9 +108,49 @@ export default function LocationScreen() {
         setMainImageWithSize({ url: mainImage, width: w, height: h });
       });
     }
-  }, [mainImage]);
+  }, [location]);
 
-  const colWrap = Math.ceil(imagesWithSizes.length / 2);
+  useEffect(() => {
+    setColWrap(Math.ceil(imagesWithSizes.length / 2));
+  }, [imagesWithSizes]);
+
+  if (isLoading) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <Stack.Screen
+          options={{
+            header: () => <CustomHeader />,
+          }}
+        />
+        <ActivityIndicator size="large" color={spectrum.base1Content} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ErrorMessage error={error.message} />
+      </View>
+    );
+  }
+
+  if (!location) {
+    return (
+      <View style={[styles.container, styles.centerContent]}>
+        <ErrorMessage error="Location not found" />
+      </View>
+    );
+  }
+
+  const callNumber = (phoneNumber: string | null) => {
+    if (!phoneNumber) return;
+    const url = phoneFormatterAsLink(phoneNumber);
+    Linking.openURL(url).catch((e) => console.error(e));
+  };
+
+  const handleGoBack = () =>
+    router.canGoBack() ? router.back() : router.replace("/(tabs)");
 
   return (
     <View style={styles.container}>
@@ -215,7 +264,6 @@ export default function LocationScreen() {
                 <FavoriteLocation uuid={uuid} enableText />
               </XStack>
               <Text style={styles.description}>
-                {uuid}
                 {location.description || "(No description)"}
               </Text>
             </YStack>
@@ -269,6 +317,10 @@ export default function LocationScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  centerContent: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   titleRow: {
     alignItems: "center",

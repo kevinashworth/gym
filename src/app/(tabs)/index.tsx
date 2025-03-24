@@ -1,5 +1,8 @@
-import { Stack } from "expo-router";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { useCallback } from "react";
+
+import { useQueryClient } from "@tanstack/react-query";
+import { Stack, useFocusEffect } from "expo-router";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 import Categories from "@/components/dashboard/categories";
 import Communities from "@/components/dashboard/communities";
@@ -8,6 +11,22 @@ import Suggested from "@/components/dashboard/suggested";
 import { spectrum } from "@/theme";
 
 export default function DashboardTab() {
+  const queryClient = useQueryClient();
+
+  useFocusEffect(
+    useCallback(() => {
+      // console.log("DashboardTab was focused");
+      // Refetch queries in Favorites, Suggested
+      queryClient.refetchQueries({
+        queryKey: ["dashboard", "location"],
+        type: "active",
+      });
+      // return () => {
+      //   console.log("DashboardTab was unfocused");
+      // };
+    }, [queryClient]),
+  );
+
   return (
     <ScrollView>
       <Stack.Screen
