@@ -54,7 +54,7 @@ export default function LocationScreen() {
   const params = useLocalSearchParams();
   const uuid = params.uuid as string;
   const router = useRouter();
-  const enableDevToolbox = useDevStore((state) => state.enableDevToolbox);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
   const [colWrap, setColWrap] = useState(0);
   const [imagesWithSizes, setImagesWithSizes] = useState<ImagesWithSize>([]);
   const [mainImageWithSize, setMainImageWithSize] = useState<ImageWithSize>({
@@ -303,7 +303,7 @@ export default function LocationScreen() {
             ))}
           </View>
         </View>
-        {enableDevToolbox && (
+        {showDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
             <DisplayJSON json={{ imagesWithSizes }} />

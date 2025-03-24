@@ -51,7 +51,7 @@ type FormValues = z.infer<typeof schema>;
 export default function SignInScreen() {
   const setCognitoUser = useAuthStore((s) => s.setCognitoUser);
   const setToken = useAuthStore((s) => s.setToken);
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | Error | FieldError | undefined>(
@@ -222,7 +222,7 @@ export default function SignInScreen() {
         </View>
       </View>
 
-      {enableDevToolbox && (
+      {showDevToolbox && (
         <View style={styles.toolbox}>
           <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
           <DisplayJSON json={{ error, errors, loading }} />

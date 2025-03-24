@@ -45,7 +45,7 @@ type FormValues = z.infer<typeof schema>;
 function SignUpWithEmailScreen() {
   const insets = useSafeAreaInsets();
   const setCognitoUser = useAuthStore((s) => s.setCognitoUser);
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
 
   const router = useRouter();
 
@@ -223,7 +223,7 @@ function SignUpWithEmailScreen() {
           </TextLink>
         </View>
       )}
-      {enableDevToolbox && (
+      {showDevToolbox && (
         <View style={[styles.toolbox, { marginBottom: insets.bottom }]}>
           <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
           <Button

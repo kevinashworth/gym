@@ -9,7 +9,7 @@ import { useDevStore, useTestStore } from "@/store";
 import { spectrum } from "@/theme";
 
 export default function NotificationsTab() {
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
   const { count, message, setCount, setMessage, reset } = useTestStore();
   const router = useRouter();
   return (
@@ -28,7 +28,7 @@ export default function NotificationsTab() {
           />
           <Text style={styles.pageInfo}>src/app/(tabs)/notifications.tsx</Text>
         </View>
-        {enableDevToolbox && (
+        {showDevToolbox && (
           <View
             style={{
               alignItems: "center",

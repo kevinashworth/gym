@@ -12,7 +12,8 @@ const prefixed = ky.create({
   hooks: {
     // beforeRequest: [
     //   (request) => {
-    //     if (enableApiConsoleLogs) {
+    //     const showApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
+    //     if (showApiConsoleLogs) {
     //       console.group("API Request:");
     //       console.log(request.method, request.url);
     //       console.log({ headers: request.headers });
@@ -22,8 +23,8 @@ const prefixed = ky.create({
     // ],
     afterResponse: [
       async (request, _options, response) => {
-        const enableApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
-        if (enableApiConsoleLogs) {
+        const showApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
+        if (showApiConsoleLogs) {
           const json = await response.json();
           const jsonString = JSON.stringify(json);
           const jsonFirst100CharsAsString =

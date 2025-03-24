@@ -29,7 +29,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const SignUpVerifyScreen = () => {
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
   const {
     clearErrors,
     control,
@@ -138,7 +138,7 @@ const SignUpVerifyScreen = () => {
           </TextLink>
         </View>
       </View>
-      {enableDevToolbox && (
+      {showDevToolbox && (
         <View
           style={{
             alignItems: "center",

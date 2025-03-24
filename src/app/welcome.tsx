@@ -18,7 +18,7 @@ const { height, width } = window;
 const buttonWidth = 224;
 
 function WelcomeScreen() {
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -76,7 +76,7 @@ function WelcomeScreen() {
                 size="lg"
                 variant="default"
               />
-              {enableDevToolbox && (
+              {showDevToolbox && (
                 <View
                   style={{
                     alignItems: "center",
