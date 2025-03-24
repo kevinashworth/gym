@@ -8,9 +8,11 @@ import Categories from "@/components/dashboard/categories";
 import Communities from "@/components/dashboard/communities";
 import Favorites from "@/components/dashboard/favorites";
 import Suggested from "@/components/dashboard/suggested";
+import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
 export default function DashboardTab() {
+  const showPageInfo = useDevStore((state) => state.showPageInfo);
   const queryClient = useQueryClient();
 
   useFocusEffect(
@@ -57,7 +59,9 @@ export default function DashboardTab() {
           <Text style={styles.heading}>Communities - Coming Soon</Text>
           <Communities />
         </View>
-        <Text style={styles.text}>src/app/(tabs)/index.tsx</Text>
+        {showPageInfo && (
+          <Text style={styles.pageInfo}>src/app/(tabs)/index.tsx</Text>
+        )}
       </View>
     </ScrollView>
   );
@@ -74,7 +78,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     textTransform: "uppercase",
   },
-  text: {
+  pageInfo: {
     borderTopColor: spectrum.base3Content,
     borderTopWidth: 1,
     color: spectrum.base1Content,

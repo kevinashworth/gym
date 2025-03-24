@@ -51,10 +51,14 @@ const defaultSize = 164;
 const defaultDimensions = { width: defaultSize, height: defaultSize };
 
 export default function LocationScreen() {
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
+  const showPageInfo = useDevStore((s) => s.showPageInfo);
+
   const params = useLocalSearchParams();
   const uuid = params.uuid as string;
+
   const router = useRouter();
-  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
+
   const [colWrap, setColWrap] = useState(0);
   const [imagesWithSizes, setImagesWithSizes] = useState<ImagesWithSize>([]);
   const [mainImageWithSize, setMainImageWithSize] = useState<ImageWithSize>({
@@ -303,6 +307,9 @@ export default function LocationScreen() {
             ))}
           </View>
         </View>
+        {showPageInfo && (
+          <Text style={styles.pageInfo}>src/app/location/[uuid].tsx</Text>
+        )}
         {showDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
@@ -378,6 +385,16 @@ const styles = StyleSheet.create({
     color: spectrum.primaryLight,
     fontSize: 14,
     fontWeight: 700,
+    textAlign: "center",
+  },
+  pageInfo: {
+    borderTopColor: spectrum.base3Content,
+    borderTopWidth: 1,
+    color: spectrum.base1Content,
+    fontSize: 11,
+    fontWeight: 300,
+    margin: 12,
+    paddingVertical: 12,
     textAlign: "center",
   },
 });
