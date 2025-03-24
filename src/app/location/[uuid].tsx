@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useQuery } from "@tanstack/react-query";
-import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
   Dimensions,
@@ -51,7 +51,7 @@ const defaultSize = 164;
 const defaultDimensions = { width: defaultSize, height: defaultSize };
 
 export default function LocationScreen() {
-  const params = useGlobalSearchParams();
+  const params = useLocalSearchParams();
   const uuid = params.uuid as string;
   const router = useRouter();
   const enableDevToolbox = useDevStore((state) => state.enableDevToolbox);
