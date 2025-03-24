@@ -1,41 +1,56 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 import { middleware } from "zustand-expo-devtools";
 
+import { expoFileSystemStorage } from "./expoFileSystemStorage";
+
 interface DevState {
-  enableApiConsoleLogs: boolean;
-  enableDevToolbox: boolean;
+  showApiConsoleLogs: boolean;
+  showDevToolbox: boolean;
+  showPageInfo: boolean;
+  showPathnameLog: boolean;
 }
 
 interface DevActions {
-  toggleEnableApiConsoleLogs: () => void;
-  toggleEnableDevToolbox: () => void;
+  toggleShowApiConsoleLogs: () => void;
+  toggleShowDevToolbox: () => void;
+  toggleShowPageInfo: () => void;
+  toggleShowPathnameLog: () => void;
 }
 
 const initialState: DevState = {
-  enableApiConsoleLogs: process.env.NODE_ENV === "development",
-  // enableDevToolbox: false,
-  enableDevToolbox: process.env.NODE_ENV === "development",
+  showApiConsoleLogs: process.env.NODE_ENV === "development",
+  showDevToolbox: process.env.NODE_ENV === "development",
+  showPageInfo: process.env.NODE_ENV === "development",
+  showPathnameLog: process.env.NODE_ENV === "development",
 };
 
 const useDevStore = create<DevState & DevActions>()(
   persist(
-    (set, get) => ({
+    immer((set) => ({
       ...initialState,
-      toggleEnableApiConsoleLogs: () =>
+      toggleShowApiConsoleLogs: () =>
         set((state) => ({
-          ...state,
-          enableApiConsoleLogs: !state.enableApiConsoleLogs,
+          showApiConsoleLogs: !state.showApiConsoleLogs,
         })),
-      toggleEnableDevToolbox: () =>
+      toggleShowDevToolbox: () =>
         set((state) => ({
-          ...state,
-          enableDevToolbox: !state.enableDevToolbox,
+          showDevToolbox: !state.showDevToolbox,
         })),
-    }),
+      toggleShowPageInfo: () =>
+        set((state) => ({
+          showPageInfo: !state.showPageInfo,
+        })),
+      toggleShowPathnameLog: () =>
+        set((state) => ({
+          showPathnameLog: !state.showPathnameLog,
+        })),
+    })),
     {
       name: "dev-storage",
       version: 1,
+      storage: expoFileSystemStorage,
     },
   ),
 );

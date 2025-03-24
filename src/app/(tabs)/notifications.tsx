@@ -9,9 +9,12 @@ import { useDevStore, useTestStore } from "@/store";
 import { spectrum } from "@/theme";
 
 export default function NotificationsTab() {
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
+  const showPageInfo = useDevStore((s) => s.showPageInfo);
+
   const { count, message, setCount, setMessage, reset } = useTestStore();
   const router = useRouter();
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -26,9 +29,13 @@ export default function NotificationsTab() {
             subtitle="Notifications are stiiiillllll in progress."
             color={spectrum.warning}
           />
-          <Text style={styles.pageInfo}>src/app/(tabs)/notifications.tsx</Text>
+          {showPageInfo && (
+            <Text style={styles.pageInfo}>
+              src/app/(tabs)/notifications.tsx
+            </Text>
+          )}
         </View>
-        {enableDevToolbox && (
+        {showDevToolbox && (
           <View
             style={{
               alignItems: "center",

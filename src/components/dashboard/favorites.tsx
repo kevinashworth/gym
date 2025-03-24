@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     color: spectrum.base1Content,
   },
   fallback: {
-    backgroundColor: spectrum.base1Content,
+    backgroundColor: spectrum.gray5,
   },
   fallbackIcon: {
     color: spectrum.base3Content,

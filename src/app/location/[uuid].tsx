@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useQuery } from "@tanstack/react-query";
-import { Stack, useGlobalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
   Dimensions,
@@ -51,10 +51,14 @@ const defaultSize = 164;
 const defaultDimensions = { width: defaultSize, height: defaultSize };
 
 export default function LocationScreen() {
-  const params = useGlobalSearchParams();
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
+  const showPageInfo = useDevStore((s) => s.showPageInfo);
+
+  const params = useLocalSearchParams();
   const uuid = params.uuid as string;
+
   const router = useRouter();
-  const enableDevToolbox = useDevStore((state) => state.enableDevToolbox);
+
   const [colWrap, setColWrap] = useState(0);
   const [imagesWithSizes, setImagesWithSizes] = useState<ImagesWithSize>([]);
   const [mainImageWithSize, setMainImageWithSize] = useState<ImageWithSize>({
@@ -303,7 +307,10 @@ export default function LocationScreen() {
             ))}
           </View>
         </View>
-        {enableDevToolbox && (
+        {showPageInfo && (
+          <Text style={styles.pageInfo}>src/app/location/[uuid].tsx</Text>
+        )}
+        {showDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
             <DisplayJSON json={{ imagesWithSizes }} />
@@ -378,6 +385,16 @@ const styles = StyleSheet.create({
     color: spectrum.primaryLight,
     fontSize: 14,
     fontWeight: 700,
+    textAlign: "center",
+  },
+  pageInfo: {
+    borderTopColor: spectrum.base3Content,
+    borderTopWidth: 1,
+    color: spectrum.base1Content,
+    fontSize: 11,
+    fontWeight: 300,
+    margin: 12,
+    paddingVertical: 12,
     textAlign: "center",
   },
 });

@@ -139,6 +139,17 @@ export default function SettingsTab() {
           isLast
         />
       </View>
+      {process.env.NODE_ENV === "development" && (
+        <View style={styles.devSettings}>
+          <SettingItem
+            icon="wrench"
+            label="Dev"
+            onPress={() => router.push("/settings/dev")}
+            textColor={spectrum.success}
+            isLast
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -182,5 +193,9 @@ const styles = StyleSheet.create({
     color: spectrum.blue10,
     fontSize: 18,
     textAlign: "center",
+  },
+  devSettings: {
+    marginTop: 16,
+    paddingTop: 16,
   },
 });

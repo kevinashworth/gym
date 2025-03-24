@@ -41,7 +41,7 @@ const borderRadius = 12;
 
 export default function ActionTab() {
   const [permission, requestPermission] = useCameraPermissions();
-  const enableDevToolbox = useDevStore((s) => s.enableDevToolbox);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
   const isFocused = useIsFocused();
   const qrLock = useRef(false);
   const appState = useRef(AppState.currentState);
@@ -197,7 +197,7 @@ export default function ActionTab() {
           </View>
         </View>
 
-        {enableDevToolbox && (
+        {showDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
             <DisplayJSON
