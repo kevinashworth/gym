@@ -13,13 +13,11 @@ import BottomGet from "@/assets/svg/bottom-get";
 import Empty from "@/components/empty";
 import ErrorMessage from "@/components/error-message";
 import Picture from "@/components/picture";
+import { useLocation } from "@/context/location";
 import api from "@/lib/api";
 import { spectrum } from "@/theme";
 
 const width = 72;
-const prefixUrl = (
-  process.env.EXPO_PUBLIC_API_BASE_URL || "https://test.api.gotyou.co"
-).trim();
 
 interface Favorite {
   uuid: string;
@@ -29,9 +27,17 @@ interface Favorite {
 }
 
 export default function Favorites() {
+  const { lat, lng } = useLocation();
+
   const { data, isLoading, error } = useQuery<Favorite[]>({
-    queryKey: ["favorites"],
-    queryFn: () => api.get(`${prefixUrl}/user/location/favorites/`).json(),
+    queryKey: ["dashboard", "location", "favorites"], // "dashboard" and "location" are used for cache invalidation
+    queryFn: () =>
+      api
+        .get("user/location/favorites", {
+          searchParams: { lat, lng },
+        })
+        .json(),
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   // const data = favorites;
