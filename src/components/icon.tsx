@@ -9,7 +9,9 @@ import {
   CircleX,
   Image,
   Inbox,
+  SearchX,
   UsersRound,
+  X,
 } from "lucide-react-native";
 
 import CampaignCheckIn from "@/assets/svg/campaign-check-in";
@@ -46,7 +48,9 @@ const lucideIcons = {
   image: Image,
   inbox: Inbox,
   notifications: Bell,
+  "search-x": SearchX,
   "users-round": UsersRound,
+  x: X,
 };
 
 export type IconName =

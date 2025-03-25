@@ -1,12 +1,14 @@
 import { Text, TextStyle, ViewStyle } from "react-native";
 
-import Icon, { FontAwesomeIconName } from "@/components/icon";
+import Icon, { IconName } from "@/components/icon";
 import XStack from "@/components/x-stack";
 import YStack from "@/components/y-stack";
 import { spectrum } from "@/theme";
 
 interface EmptyProps {
-  icon?: FontAwesomeIconName;
+  icon?: IconName;
+  iconColor?: string;
+  iconSize?: number;
   style?: ViewStyle;
   text?: string;
   textStyle?: TextStyle;
@@ -15,6 +17,8 @@ interface EmptyProps {
 
 export default function Empty({
   icon = "inbox",
+  iconColor,
+  iconSize,
   style,
   text = "No Data",
   textStyle = {},
@@ -27,7 +31,7 @@ export default function Empty({
     ...style,
     alignItems: "center",
     justifyContent: "center",
-    gap: vertical ? 0 : 8,
+    gap: vertical ? 4 : 8,
   } as ViewStyle;
 
   const textStyleCombined = {
@@ -38,7 +42,11 @@ export default function Empty({
 
   return (
     <Stack style={containerStyle}>
-      <Icon name={icon} color={spectrum.base3Content} />
+      <Icon
+        name={icon}
+        color={iconColor || spectrum.base3Content}
+        size={iconSize}
+      />
       <Text style={textStyleCombined}>{text}</Text>
     </Stack>
   );
