@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TextStyle } from "react-native";
+import { StyleSheet, Text, TextProps, TextStyle } from "react-native";
 
 import { spectrum } from "@/theme";
 
 import type { FieldError } from "react-hook-form";
 
-export interface ErrorMessageProps {
+export interface ErrorMessageProps extends TextProps {
   error?: string | Error | FieldError | null;
   size?: "medium" | "large";
   style?: TextStyle;
