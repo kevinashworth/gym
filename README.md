@@ -17,10 +17,6 @@ TanStack Query with ky, and sometimes just ky, for network requests
 
 ### Not built yet
 
-Wallet history -- connect to API
-
-Search
-
 Pull-down to refresh
 
 Categories screen
@@ -38,3 +34,7 @@ Favorites in store
 ### Recently built
 
 Dev-only settings on Settings screen
+
+Search
+
+Wallet history -- connect to API

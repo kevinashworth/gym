@@ -1,4 +1,11 @@
+import { useLayoutEffect, useRef, useState } from "react";
+
 import Ionicons from "@expo/vector-icons/Ionicons";
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import {
   ActivityIndicator,
@@ -11,23 +18,14 @@ import {
 
 import BottomGet from "@/assets/svg/bottom-get";
 import Empty from "@/components/empty";
+import ErrorMessage from "@/components/error-message";
 import Icon from "@/components/icon";
-import { data } from "@/mocks/fixtures";
+import api from "@/lib/api";
+import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
 import type { HistoryIconName, IconName } from "@/components/icon";
-import type { HistoryItem } from "@/mocks/fixtures"; // TODO: Move types to a types file, instead of mocks.
-
-const user_tag = "SillyUserTag";
-const balanceStateLoading: boolean = false;
-
-const me = {
-  token_balance: {
-    token_balance_get: 1000,
-  },
-};
-
-const historyData = data?.pages.flatMap((p) => p.data.content);
+import type { Balance, History, HistoryItem } from "@/types/wallet";
 
 const generateTypeIconValue = (
   item: HistoryItem,
@@ -53,14 +51,12 @@ const generateTypeIconValue = (
 };
 
 interface FlatListItemProps {
-  index: number;
-  item: any;
+  item: HistoryItem;
   onShowUnderlay: () => void;
   onHideUnderlay: () => void;
 }
 
 function FlatListItem({
-  index,
   item,
   onShowUnderlay,
   onHideUnderlay,
@@ -69,7 +65,7 @@ function FlatListItem({
 
   return (
     <TouchableHighlight
-      key={item.myId}
+      key={item.uuid}
       underlayColor="#000"
       onShowUnderlay={onShowUnderlay}
       onHideUnderlay={onHideUnderlay}
@@ -109,6 +105,59 @@ function FlatListItem({
 }
 
 export default function WalletTab() {
+  const showPageInfo = useDevStore((s) => s.showPageInfo);
+
+  const [size, setSize] = useState(0);
+  const targetRef = useRef<View>(null);
+
+  const fetchHistory = async ({ pageParam = 0 }: { pageParam?: number }) => {
+    return api
+      .get<History>("user/history", {
+        searchParams: { page: pageParam, size },
+      })
+      .json();
+  };
+
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isLoading,
+    isRefetching,
+    refetch,
+  } = useInfiniteQuery({
+    enabled: size > 0,
+    queryKey: ["wallet", "istory", { pageSize: size }],
+    queryFn: fetchHistory,
+    placeholderData: keepPreviousData,
+    initialPageParam: 0,
+    getNextPageParam: ({ last, pageable: { pageNumber } }) =>
+      last ? undefined : pageNumber + 1,
+    getPreviousPageParam: ({ first, pageable: { pageNumber } }) =>
+      first ? undefined : pageNumber - 1,
+  });
+
+  const balanceQuery = useQuery({
+    queryKey: ["user", "balance"],
+    queryFn: () => api.get<Balance>("user/balance").json(),
+  });
+
+  const historyData = data?.pages.flatMap((group) => group.content);
+
+  useLayoutEffect(() => {
+    const heightFlatListItem = 38; // TODO: Make this dynamic? Or just use a const?
+    targetRef.current?.measure((x, y, width, height, pageX, pageY) => {
+      const heightOfFlatListContainer = height;
+      const numberOfItemsForAvailableHeight = Math.max(
+        10,
+        Math.ceil(heightOfFlatListContainer / heightFlatListItem) + 1,
+      );
+      setSize(numberOfItemsForAvailableHeight);
+    });
+  }, [targetRef]);
+
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
@@ -117,7 +166,7 @@ export default function WalletTab() {
           <Ionicons size={52} name="wallet" color={spectrum.base2Content} />
           <Text style={styles.h2}>Wallet</Text>
         </View>
-        <Text style={styles.h2Secondary}>{user_tag}’s Tokens</Text>
+        <Text style={styles.h2Secondary}>Your Tokens</Text>
       </View>
       <View style={styles.balanceContainer}>
         <View style={styles.balanceIcon}>
@@ -125,13 +174,22 @@ export default function WalletTab() {
           <Text style={styles.balanceText}>GET</Text>
         </View>
         <View style={styles.balanceValue}>
-          {balanceStateLoading === true && <ActivityIndicator />}
-          {balanceStateLoading === false && (
+          {balanceQuery.isLoading && <ActivityIndicator />}
+          {balanceQuery.isSuccess && (
             <Text style={styles.balanceText}>
               {new Intl.NumberFormat("en-US").format(
-                me.token_balance.token_balance_get,
+                balanceQuery.data?.token_balance.token_balance_get,
               )}
             </Text>
+          )}
+          {balanceQuery.isError && (
+            <ErrorMessage
+              error={balanceQuery.error}
+              adjustsFontSizeToFit={true}
+              numberOfLines={2}
+              ellipsizeMode="clip"
+              style={{ textAlign: "right" }}
+            />
           )}
         </View>
       </View>
@@ -139,74 +197,67 @@ export default function WalletTab() {
         <View style={styles.historyHeader}>
           <Text style={styles.h2}>History</Text>
         </View>
-        <View style={styles.flatListContainer}>
-          <FlatList
-            data={historyData}
-            initialNumToRender={10}
-            keyExtractor={(item) => item.uuid}
-            ItemSeparatorComponent={({ highlighted }) => (
-              <View
-                style={[styles.separator, highlighted && { marginLeft: 0 }]}
-              />
-            )}
-            ListEmptyComponent={
-              <Empty
-                text="No transactions yet"
-                textProps={{ fontSize: 16 }}
-                vertical
-                style={{ marginTop: 20 }}
-              />
-            }
-            ListFooterComponent={
-              <Text style={styles.flatListFooter}>
-                You’ve reached the end of your wallet history
-              </Text>
-            }
-            onEndReachedThreshold={0.2}
-            renderItem={({ item, index, separators }) => (
-              <FlatListItem
-                key={item.id}
-                item={item}
-                index={index}
-                onShowUnderlay={separators.highlight}
-                onHideUnderlay={separators.unhighlight}
-              />
-            )}
-          />
-        </View>
-
-        {/* <ScrollView
-          // flex={1}
-          refreshControl={<RefreshControl refreshing={isRefetching} onRefresh={refetch} />}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-        >
-        <Stack width="100%" padding="$3" flex={1}>
-          {status === 'pending' ? (
-            <Spinner mt="$2" />
-          ) : status === 'error' ? (
-            <Text color="red5" textAlign="center">
-              Failed to fetch data
-            </Text>
-          ) : !data ? (
-            <Empty />
-          ) : (
-            <View>
-              <FlatList
-                data={historyData}
-                initialNumToRender={10}
-                keyExtractor={(item) => item.id}
-                ListEmptyComponent={<Empty />}
-                onEndReached={fetchNextPage}
-                onEndReachedThreshold={0.2}
-                onRefresh={refetch}
-                refreshing={isRefetching}
-                renderItem={renderItem}
-              />
+        <View style={styles.flatListContainer} ref={targetRef}>
+          {isLoading ? (
+            <View style={styles.errorAndLoadingContainer}>
+              <ActivityIndicator color={spectrum.primary} size="large" />
             </View>
+          ) : isError ? (
+            <View style={styles.errorAndLoadingContainer}>
+              <ErrorMessage error={error} size="large" />
+            </View>
+          ) : (
+            <FlatList
+              data={historyData}
+              initialNumToRender={size}
+              keyExtractor={(item) => item.uuid}
+              ItemSeparatorComponent={({ highlighted }) => (
+                <View
+                  style={[
+                    styles.flatListSeparator,
+                    highlighted && { marginLeft: 0 },
+                  ]}
+                />
+              )}
+              ListEmptyComponent={
+                <Empty
+                  style={{ marginTop: 20 }}
+                  text="No transactions yet"
+                  textStyle={{ fontSize: 16 }}
+                  vertical
+                />
+              }
+              ListFooterComponent={
+                <>
+                  {hasNextPage ? (
+                    <ActivityIndicator color={spectrum.primary} size="large" />
+                  ) : (
+                    <Text style={styles.flatListFooter}>
+                      You’ve reached the end of your wallet history
+                    </Text>
+                  )}
+                  {showPageInfo && (
+                    <Text style={styles.pageInfo}>
+                      src/app/(tabs)/wallet.tsx
+                    </Text>
+                  )}
+                </>
+              }
+              onEndReached={() => fetchNextPage()}
+              onEndReachedThreshold={0.2}
+              onRefresh={refetch}
+              refreshing={isRefetching}
+              renderItem={({ item, separators }) => (
+                <FlatListItem
+                  key={item.uuid}
+                  item={item}
+                  onShowUnderlay={separators.highlight}
+                  onHideUnderlay={separators.unhighlight}
+                />
+              )}
+            />
           )}
-        </Stack>
-        </ScrollView> */}
+        </View>
       </View>
     </View>
   );
@@ -215,6 +266,10 @@ export default function WalletTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  errorAndLoadingContainer: {
+    alignItems: "center",
+    marginTop: 32,
   },
   header: {
     alignItems: "center",
@@ -296,8 +351,18 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     textAlign: "center",
   },
-  separator: {
+  flatListSeparator: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: spectrum.base3Content,
+  },
+  pageInfo: {
+    borderTopColor: spectrum.base3Content,
+    borderTopWidth: 1,
+    color: spectrum.base1Content,
+    fontSize: 11,
+    fontWeight: 300,
+    marginVertical: 12,
+    paddingVertical: 12,
+    textAlign: "center",
   },
 });
