@@ -1,13 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
 import BottomGet from "@/assets/svg/bottom-get";
 import Empty from "@/components/empty";
@@ -82,11 +76,7 @@ export default function Favorites() {
                 height={width}
                 width={width}
                 fallback={
-                  <FontAwesome
-                    name="heart-o"
-                    size={width - 16}
-                    style={styles.fallbackIcon}
-                  />
+                  <FontAwesome name="heart-o" size={width - 16} style={styles.fallbackIcon} />
                 }
                 fallbackStyle={styles.fallback}
               />

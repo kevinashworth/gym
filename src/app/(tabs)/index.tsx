@@ -2,13 +2,7 @@ import { useCallback, useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { Stack } from "expo-router";
-import {
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import Categories from "@/components/dashboard/categories";
 import Communities from "@/components/dashboard/communities";
@@ -65,9 +59,7 @@ export default function DashboardTab() {
           </ScrollView>
         </View>
         <View>
-          <Text style={[styles.heading, { marginBottom: 6 }]}>
-            Suggested Near Me
-          </Text>
+          <Text style={[styles.heading, { marginBottom: 6 }]}>Suggested Near Me</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <Suggested />
           </ScrollView>
@@ -80,9 +72,7 @@ export default function DashboardTab() {
           <Text style={styles.heading}>Communities - Coming Soon</Text>
           <Communities />
         </View>
-        {showPageInfo && (
-          <Text style={styles.pageInfo}>src/app/(tabs)/index.tsx</Text>
-        )}
+        {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/index.tsx</Text>}
       </View>
     </ScrollView>
   );

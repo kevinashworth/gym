@@ -1,12 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
 import BottomGet from "@/assets/svg/bottom-get";
 import Placeholder from "@/assets/svg/placeholder";
@@ -74,12 +68,7 @@ export default function SuggestedLocations() {
                 source={{ uri: thumbnail }}
                 height={width}
                 width={width}
-                fallback={
-                  <Placeholder
-                    color={spectrum.base3Content}
-                    size={width - 20}
-                  />
-                }
+                fallback={<Placeholder color={spectrum.base3Content} size={width - 20} />}
                 fallbackStyle={styles.fallback}
                 imageStyle={styles.image}
               />
