@@ -56,15 +56,15 @@ function getCategoryIcon(category: Category) {
 export default function Categories() {
   const {
     data: categories,
-    isLoading,
+    isFetching,
     error,
   } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["dashboard", "categories"],
     queryFn: () => api.get<Category[]>("user/location/categories").json(),
     staleTime: 1000 * 60 * 60 * 24, // 1 day
   });
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <View style={styles.messageContainer}>
         <ActivityIndicator size="large" color={spectrum.primary} />

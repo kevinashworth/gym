@@ -29,7 +29,7 @@ interface Favorite {
 export default function Favorites() {
   const { lat, lng } = useLocation();
 
-  const { data, isLoading, error } = useQuery<Favorite[]>({
+  const { data, isFetching, error } = useQuery<Favorite[]>({
     queryKey: ["dashboard", "location", "favorites"], // "dashboard" and "location" are used for cache invalidation
     queryFn: () =>
       api
@@ -40,9 +40,7 @@ export default function Favorites() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  // const data = favorites;
-
-  if (isLoading) {
+  if (isFetching) {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <ActivityIndicator size="large" color={spectrum.base1Content} />

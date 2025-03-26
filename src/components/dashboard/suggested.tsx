@@ -29,7 +29,7 @@ interface Location {
 export default function SuggestedLocations() {
   const { lat, lng } = useLocation();
 
-  const { data, isLoading, error } = useQuery<Location[]>({
+  const { data, isFetching, error } = useQuery<Location[]>({
     queryKey: ["dashboard", "location", "suggested"], // "dashboard" and "location" are used for cache invalidation
     queryFn: () =>
       api
@@ -40,7 +40,7 @@ export default function SuggestedLocations() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <ActivityIndicator size="large" color={spectrum.base1Content} />
