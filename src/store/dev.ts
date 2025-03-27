@@ -52,19 +52,20 @@ const useDevStore = create<DevState & DevActions>()(
         })),
       toggleShowApiConsoleLogs: () =>
         set((state) => ({
-          showApiConsoleLogs: !state.showApiConsoleLogs,
+          showApiConsoleLogs:
+            process.env.NODE_ENV === "development" ? !state.showApiConsoleLogs : false,
         })),
       toggleShowDevToolbox: () =>
         set((state) => ({
-          showDevToolbox: !state.showDevToolbox,
+          showDevToolbox: process.env.NODE_ENV === "development" ? !state.showDevToolbox : false,
         })),
       toggleShowPageInfo: () =>
         set((state) => ({
-          showPageInfo: !state.showPageInfo,
+          showPageInfo: process.env.NODE_ENV === "development" ? !state.showPageInfo : false,
         })),
       toggleShowPathnameLog: () =>
         set((state) => ({
-          showPathnameLog: !state.showPathnameLog,
+          showPathnameLog: process.env.NODE_ENV === "development" ? !state.showPathnameLog : false,
         })),
     })),
     {
