@@ -44,8 +44,7 @@ export default function NotificationsTab() {
               paddingHorizontal: 8,
               paddingTop: 2,
               paddingBottom: 8,
-            }}
-          >
+            }}>
             <Text
               style={{
                 color: spectrum.black,
@@ -53,8 +52,7 @@ export default function NotificationsTab() {
                 fontWeight: 400,
                 lineHeight: 21,
                 textAlign: "center",
-              }}
-            >
+              }}>
               Dev Toolbox
             </Text>
             <Button

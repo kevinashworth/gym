@@ -125,8 +125,7 @@ const LocationProvider = ({ children }: PropsWithChildren) => {
         refreshLocation,
         retryPermission,
         setLocation,
-      }}
-    >
+      }}>
       {children}
     </LocationContext.Provider>
   );
