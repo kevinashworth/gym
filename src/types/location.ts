@@ -15,7 +15,7 @@ export const BusinessHoursSchema = z.object({
         hours: z.number(),
         minutes: z.number(),
       }),
-    }),
+    })
   ),
   open_now: z.boolean(),
   weekday_text: z.array(z.string()),

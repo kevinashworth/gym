@@ -23,8 +23,7 @@ const SvgComponent = ({ size = 72, ...props }) => (
         x2={80.904}
         y1={30.413}
         y2={141.152}
-        gradientUnits="userSpaceOnUse"
-      >
+        gradientUnits="userSpaceOnUse">
         <Stop offset={0.348} stopColor="#0047B8" />
         <Stop offset={0.626} stopColor="#fff" />
         <Stop offset={1} stopColor="#0047B8" />
