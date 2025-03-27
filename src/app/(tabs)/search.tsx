@@ -89,8 +89,7 @@ export default function SearchTab() {
           {!hasPermission && (
             <Button
               activityIndicator={isRequesting}
-              activityIndicatorColor={spectrum.primary}
-              activityIndicatorSize="small"
+              activityIndicatorProps={{ color: spectrum.primary, size: "small" }}
               label="Enable Location"
               onPress={retryPermission}
               buttonStyle={styles.retryButton}
@@ -223,8 +222,7 @@ function SearchResults({ query = "" }: { query: string }) {
         </Text>
         <Button
           activityIndicator={isRequesting}
-          activityIndicatorColor={spectrum.primary}
-          activityIndicatorSize="small"
+          activityIndicatorProps={{ color: spectrum.primary, size: "small" }}
           label="Enable Location"
           onPress={retryPermission}
           buttonStyle={styles.locationPermissionButton}
