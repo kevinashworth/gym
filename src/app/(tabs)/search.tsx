@@ -81,66 +81,64 @@ export default function SearchTab() {
   }, [queryText]);
 
   return (
-    <View>
+    <View style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
-      <View style={styles.container}>
-        {errorMsg && (
-          <View style={styles.errorContainer}>
-            <ErrorMessage error={errorMsg} />
-            {!hasPermission && (
-              <Button
-                activityIndicator={isRequesting}
-                activityIndicatorColor={spectrum.primary}
-                activityIndicatorSize="small"
-                label="Enable Location"
-                onPress={retryPermission}
-                buttonStyle={styles.retryButton}
+      {errorMsg && (
+        <View style={styles.errorContainer}>
+          <ErrorMessage error={errorMsg} />
+          {!hasPermission && (
+            <Button
+              activityIndicator={isRequesting}
+              activityIndicatorColor={spectrum.primary}
+              activityIndicatorSize="small"
+              label="Enable Location"
+              onPress={retryPermission}
+              buttonStyle={styles.retryButton}
+            />
+          )}
+        </View>
+      )}
+      <View style={styles.formContainer}>
+        <View>
+          <Text style={styles.inputLabel}>Search</Text>
+        </View>
+        <View style={styles.inputContainer}>
+          <Controller
+            control={control}
+            name="query"
+            render={({ field: { onBlur, onChange, value } }) => (
+              <Input
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="default"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                placeholder="search stores near me"
+                returnKeyType="search"
+                style={styles.input}
+                textContentType="none"
+                value={value}
               />
             )}
-          </View>
-        )}
-        <View style={styles.formContainer}>
-          <View>
-            <Text style={styles.inputLabel}>Search</Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <Controller
-              control={control}
-              name="query"
-              render={({ field: { onBlur, onChange, value } }) => (
-                <Input
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="default"
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  placeholder="search stores near me"
-                  returnKeyType="search"
-                  style={styles.input}
-                  textContentType="none"
-                  value={value}
-                />
-              )}
-            />
-            {queryText && (
-              <Pressable onPress={() => setValue("query", "")} style={styles.clearButton}>
-                <Icon size={16} color={spectrum.primary} name="x" />
-              </Pressable>
-            )}
-          </View>
-          <View>
-            <Button
-              label="Go"
-              onPress={() => setDebouncedQueryText(queryText)}
-              disabled={!!errors.query}
-              size="md"
-            />
-          </View>
+          />
+          {queryText && (
+            <Pressable onPress={() => setValue("query", "")} style={styles.clearButton}>
+              <Icon size={16} color={spectrum.primary} name="x" />
+            </Pressable>
+          )}
         </View>
-        <FormErrorsMessage errors={errors} name="query" />
-        <SearchResults query={debouncedQueryText} />
-        {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/search.tsx</Text>}
+        <View>
+          <Button
+            label="Go"
+            onPress={() => setDebouncedQueryText(queryText)}
+            disabled={!!errors.query}
+            size="md"
+          />
+        </View>
       </View>
+      <FormErrorsMessage errors={errors} name="query" />
+      <SearchResults query={debouncedQueryText} />
+      {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/search.tsx</Text>}
     </View>
   );
 }
@@ -185,13 +183,15 @@ function FlatListItem({ item }: { item: Location }) {
 }
 
 function SearchResults({ query = "" }: { query: string }) {
-  const { lat, lng, refreshLocation } = useLocation();
+  const { hasPermission, isRequesting, lat, lng, refreshLocation, retryPermission } = useLocation();
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
 
   const { data, isLoading, error } = useQuery<Location[]>({
     queryKey: ["search", query],
-    queryFn: () => api.get("user/location/search", { searchParams: { query, lat, lng } }).json(),
+    queryFn: () => {
+      return api.get("user/location/search", { searchParams: { query, lat, lng } }).json();
+    },
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
@@ -206,6 +206,33 @@ function SearchResults({ query = "" }: { query: string }) {
     });
   }, [refreshLocation, queryClient]);
 
+  // If location permission is not granted or lat/lng are undefined, show a message
+  if (!hasPermission || !lat || !lng) {
+    return (
+      <View style={styles.locationPermissionContainer}>
+        <Empty icon="map-pin-off" iconSize={32} text="Location Access Required" vertical />
+        <Text style={styles.locationPermissionText}>
+          To search for stores near you, we need access to your location.
+        </Text>
+        <Text style={styles.locationInstructionsText}>How to enable location access:</Text>
+        <Text style={styles.locationInstructionsList}>
+          1. Go to your device Settings{"\n"}
+          2. Find this app in the list{"\n"}
+          3. Tap on "Location"{"\n"}
+          4. Select "Allow while using the app"
+        </Text>
+        <Button
+          activityIndicator={isRequesting}
+          activityIndicatorColor={spectrum.primary}
+          activityIndicatorSize="small"
+          label="Enable Location"
+          onPress={retryPermission}
+          buttonStyle={styles.locationPermissionButton}
+        />
+      </View>
+    );
+  }
+
   if (isLoading) {
     return (
       <View>
@@ -218,10 +245,17 @@ function SearchResults({ query = "" }: { query: string }) {
     let errorMessage = "Sorry, your search request failed to get any results.";
     if (error instanceof TimeoutError) {
       errorMessage = "Sorry, your search request timed out.";
+    } else if (error instanceof Error && error.message === "Location data is required for search") {
+      errorMessage = "Location data is required to search for stores near you.";
     }
     return (
       <View>
         <ErrorMessage error={errorMessage} />
+        <Button
+          label="Retry with Location"
+          onPress={refreshLocation}
+          buttonStyle={styles.retryButton}
+        />
       </View>
     );
   }
@@ -265,14 +299,14 @@ function SearchResults({ query = "" }: { query: string }) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center",
-    paddingHorizontal: 16,
   },
   formContainer: {
     alignItems: "center",
     flexDirection: "row",
     gap: 8,
-    marginVertical: 8,
+    paddingVertical: 8,
     width: screenWidthMinusPadding,
   },
   inputLabel: {
@@ -349,5 +383,28 @@ const styles = StyleSheet.create({
   listFooter: {
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: spectrum.black,
+  },
+  locationPermissionContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+  },
+  locationPermissionText: {
+    fontSize: 14,
+    fontWeight: 500,
+    marginBottom: 8,
+  },
+  locationInstructionsText: {
+    fontSize: 14,
+    fontWeight: 500,
+    marginBottom: 4,
+  },
+  locationInstructionsList: {
+    fontSize: 13,
+    fontWeight: 300,
+    marginBottom: 16,
+  },
+  locationPermissionButton: {
+    marginTop: 8,
   },
 });
