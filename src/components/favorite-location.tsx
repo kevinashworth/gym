@@ -17,20 +17,20 @@ export default function FavoriteLocation({
   referralCode,
   uuid,
 }: FavoriteLocationProps) {
-  const { data: favorites, isLoading } = useFavorites(uuid);
+  const { data: favorites, isLoading } = useFavorites();
   const isFavorite = favorites?.some((favorite) => favorite === uuid);
   const queryClient = useQueryClient();
 
   async function add(uuid: string) {
     await api.post(`user/favorite/add/${uuid}`);
-    queryClient.invalidateQueries({ queryKey: ["favorites", uuid] });
+    queryClient.invalidateQueries({ queryKey: ["favorites"] });
   }
 
   async function remove(uuid: string) {
     await api.post("user/favorite/remove", {
       searchParams: { uuid },
     });
-    queryClient.invalidateQueries({ queryKey: ["favorites", uuid] });
+    queryClient.invalidateQueries({ queryKey: ["favorites"] });
   }
 
   function toggleFavorite() {
