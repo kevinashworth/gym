@@ -5,14 +5,14 @@ import Toast from "react-native-toast-message";
 import Button from "@/components//button";
 import DisplayJSON from "@/components/display-json";
 import NotificationItem from "@/components/notification-item";
-import { useDevStore, useTestStore } from "@/store";
+import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
 export default function NotificationsTab() {
   const showDevToolbox = useDevStore((s) => s.showDevToolbox);
   const showPageInfo = useDevStore((s) => s.showPageInfo);
 
-  const { count, message, setCount, setMessage, reset } = useTestStore();
+  const { count, message, setCount, setMessage, reset } = useDevStore();
   const router = useRouter();
 
   return (
@@ -29,11 +29,7 @@ export default function NotificationsTab() {
             subtitle="Notifications are stiiiillllll in progress."
             color={spectrum.warning}
           />
-          {showPageInfo && (
-            <Text style={styles.pageInfo}>
-              src/app/(tabs)/notifications.tsx
-            </Text>
-          )}
+          {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/notifications.tsx</Text>}
         </View>
         {showDevToolbox && (
           <View
@@ -114,8 +110,7 @@ export default function NotificationsTab() {
               onPress={() =>
                 Toast.show({
                   type: "success",
-                  text1:
-                    "Profile updated successfully. Foo foo foo bar bar bar.",
+                  text1: "Profile updated successfully. Foo foo foo bar bar bar.",
                 })
               }
               size="sm"
@@ -127,26 +122,15 @@ export default function NotificationsTab() {
               onPress={() =>
                 Toast.show({
                   type: "error",
-                  text1:
-                    "Profile not updated successfully. Foo foo foo bar bar bar.",
+                  text1: "Profile not updated successfully. Foo foo foo bar bar bar.",
                 })
               }
               size="sm"
               variant="outline"
             />
             <DisplayJSON json={{ count, message }} />
-            <Button
-              label="Reset"
-              onPress={() => reset()}
-              size="md"
-              variant="black"
-            />
-            <Button
-              label="Set Count"
-              onPress={() => setCount(10)}
-              size="md"
-              variant="black"
-            />
+            <Button label="Reset" onPress={() => reset()} size="md" variant="black" />
+            <Button label="Set Count" onPress={() => setCount(10)} size="md" variant="black" />
             <Button
               label="Set Message"
               onPress={() => setMessage("Hello from testing store 3")}
