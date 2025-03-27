@@ -16,21 +16,11 @@ function MyToast(props: any) {
 }
 
 export const toastConfig = {
-  success: (props: any) => (
-    <MyToast {...props} style={{ borderLeftColor: spectrum.success }} />
-  ),
-  info: (props: any) => (
-    <MyToast {...props} style={{ borderLeftColor: spectrum.primaryLight }} />
-  ),
-  primary: (props: any) => (
-    <MyToast {...props} style={{ borderLeftColor: spectrum.primary }} />
-  ),
-  secondary: (props: any) => (
-    <MyToast {...props} style={{ borderLeftColor: spectrum.secondary }} />
-  ),
-  error: (props: any) => (
-    <MyToast {...props} style={{ borderLeftColor: spectrum.error }} />
-  ),
+  success: (props: any) => <MyToast {...props} style={{ borderLeftColor: spectrum.success }} />,
+  info: (props: any) => <MyToast {...props} style={{ borderLeftColor: spectrum.primaryLight }} />,
+  primary: (props: any) => <MyToast {...props} style={{ borderLeftColor: spectrum.primary }} />,
+  secondary: (props: any) => <MyToast {...props} style={{ borderLeftColor: spectrum.secondary }} />,
+  error: (props: any) => <MyToast {...props} style={{ borderLeftColor: spectrum.error }} />,
   // successToast: (props: any) => (
   //   <View
   //     style={{
