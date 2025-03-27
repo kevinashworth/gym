@@ -1,8 +1,6 @@
-import { Text, TextStyle, ViewStyle } from "react-native";
+import { Text, TextStyle, View, ViewStyle } from "react-native";
 
 import Icon, { IconName } from "@/components/icon";
-import XStack from "@/components/x-stack";
-import YStack from "@/components/y-stack";
 import { spectrum } from "@/theme";
 
 interface EmptyProps {
@@ -23,14 +21,14 @@ export default function Empty({
   text = "No Data",
   textStyle = {},
   vertical = false,
-  ...props
 }: EmptyProps) {
-  const Stack = vertical ? YStack : XStack;
+  const flexDirection = vertical ? "column" : "row";
 
   const containerStyle = {
     ...style,
     alignItems: "center",
-    justifyContent: "center",
+    // justifyContent: "center",
+    flexDirection,
     gap: vertical ? 4 : 8,
   } as ViewStyle;
 
@@ -41,13 +39,9 @@ export default function Empty({
   };
 
   return (
-    <Stack style={containerStyle}>
-      <Icon
-        name={icon}
-        color={iconColor || spectrum.base3Content}
-        size={iconSize}
-      />
+    <View style={containerStyle}>
+      <Icon name={icon} color={iconColor || spectrum.base3Content} size={iconSize} />
       <Text style={textStyleCombined}>{text}</Text>
-    </Stack>
+    </View>
   );
 }
