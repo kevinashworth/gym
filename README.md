@@ -15,7 +15,13 @@ zustand for local state
 TanStack Query for server state
 TanStack Query with ky, and sometimes just ky, for network requests
 
+### Bugs needing attention
+
+Favorites not showing on Dashboard screen
+
 ### Not built yet
+
+Option to have visible password field
 
 Categories screen
 
