@@ -3,6 +3,9 @@ import React, { createContext, PropsWithChildren, useContext, useEffect, useStat
 import * as Location from "expo-location";
 import Toast from "react-native-toast-message";
 
+// TODO: Should there even be a default location? For a user that doesn't give
+// permission, we should probably show a message and not use a dummy location.
+// lat, lng, location would be undefined. Could be a good refactor.
 const defaultLocation = {
   coords: {
     latitude: process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT || 37.10716,
@@ -48,12 +51,10 @@ const LocationProvider = ({ children }: PropsWithChildren) => {
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
       });
-
       setLocation(location);
       setErrorMsg(null);
       return location;
     } catch (error) {
-      console.log("requestLocation", { error });
       const errorMessage = error instanceof Error ? error.message : "Failed to get location";
       setErrorMsg(errorMessage);
       Toast.show({
@@ -73,12 +74,7 @@ const LocationProvider = ({ children }: PropsWithChildren) => {
       if (status === "granted") {
         await requestLocation();
       } else {
-        setErrorMsg("Location permission is required to find gyms near you");
-        Toast.show({
-          type: "info",
-          text1: "Location Required",
-          text2: "Please enable location in your device settings to find nearby gyms",
-        });
+        setErrorMsg("Location permission is required to find stores near you");
       }
     } catch (error) {
       const errorMessage =
@@ -89,7 +85,6 @@ const LocationProvider = ({ children }: PropsWithChildren) => {
         text1: "Permission Error",
         text2: errorMessage,
       });
-      console.error("Location permission error:", error);
     } finally {
       setIsRequesting(false);
     }
