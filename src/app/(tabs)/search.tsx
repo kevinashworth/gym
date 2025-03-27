@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, Stack } from "expo-router";
+import { TimeoutError } from "ky";
 import { useForm, Controller } from "react-hook-form";
 import {
   ActivityIndicator,
   Dimensions,
+  FlatList,
   Pressable,
-  ScrollView,
+  RefreshControl,
   StyleSheet,
   Text,
   View,
@@ -30,8 +32,6 @@ import api from "@/lib/api";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
-const pictureWidth = 72;
-
 const window = Dimensions.get("window");
 const screenWidthMinusPadding = window.width - 32;
 
@@ -51,6 +51,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function SearchTab() {
   const showPageInfo = useDevStore((s) => s.showPageInfo);
+  const { errorMsg, isRequesting, hasPermission, retryPermission } = useLocation();
 
   const {
     control,
@@ -64,19 +65,40 @@ export default function SearchTab() {
     resolver: zodResolver(schema),
   });
   const queryText = watch("query");
+
   const [debouncedQueryText, setDebouncedQueryText] = useState("");
 
   useEffect(() => {
-    if (!queryText) setDebouncedQueryText("");
-    if (queryText?.length < 3) return;
-    const timer = setTimeout(() => setDebouncedQueryText(queryText), 300);
+    const timer = setTimeout(() => {
+      if (!queryText || queryText.length < 3) {
+        setDebouncedQueryText("");
+      } else {
+        setDebouncedQueryText(queryText);
+      }
+    }, 300);
+
     return () => clearTimeout(timer);
   }, [queryText]);
 
   return (
-    <ScrollView>
+    <View>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
+        {errorMsg && (
+          <View style={styles.errorContainer}>
+            <ErrorMessage error={errorMsg} />
+            {!hasPermission && (
+              <Button
+                activityIndicator={isRequesting}
+                activityIndicatorColor={spectrum.primary}
+                activityIndicatorSize="small"
+                label="Enable Location"
+                onPress={retryPermission}
+                buttonStyle={styles.retryButton}
+              />
+            )}
+          </View>
+        )}
         <View style={styles.formContainer}>
           <View>
             <Text style={styles.inputLabel}>Search</Text>
@@ -101,10 +123,7 @@ export default function SearchTab() {
               )}
             />
             {queryText && (
-              <Pressable
-                onPress={() => setValue("query", "")}
-                style={styles.clearButton}
-              >
+              <Pressable onPress={() => setValue("query", "")} style={styles.clearButton}>
                 <Icon size={16} color={spectrum.primary} name="x" />
               </Pressable>
             )}
@@ -119,123 +138,127 @@ export default function SearchTab() {
           </View>
         </View>
         <FormErrorsMessage errors={errors} name="query" />
-        <SearchResults queryText={debouncedQueryText} />
-        {showPageInfo && (
-          <Text style={styles.pageInfo}>src/app/(tabs)/search.tsx</Text>
-        )}
+        <SearchResults query={debouncedQueryText} />
+        {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/search.tsx</Text>}
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
-function SearchResults({ queryText = "" }: { queryText: string }) {
-  const { lat, lng } = useLocation();
+function FlatListItem({ item }: { item: Location }) {
+  const { uuid, name, thumbnail, has_campaign, address } = item;
+  const pictureWidth = 72;
+  return (
+    <Link href={`/location/${uuid}`} asChild>
+      <Pressable>
+        <View style={styles.locationContainer}>
+          <View>
+            <Picture
+              source={{ uri: thumbnail }}
+              height={pictureWidth}
+              width={pictureWidth}
+              fallback={<Placeholder color={spectrum.base3Content} size={pictureWidth - 20} />}
+              fallbackStyle={styles.fallback}
+              imageStyle={styles.image}
+            />
+            {has_campaign && (
+              <BottomGet style={{ position: "absolute", right: -6, top: -6 }} size={18} />
+            )}
+          </View>
+          <View style={{ flexGrow: 1, flexShrink: 1, minWidth: 0 }}>
+            <View style={{ flex: 1, justifyContent: "space-evenly" }}>
+              <Text style={styles.textName} numberOfLines={2}>
+                {name}
+              </Text>
+              <Text style={styles.textAddress} numberOfLines={2}>
+                {address}
+              </Text>
+            </View>
+          </View>
+          <View style={{ justifyContent: "center" }}>
+            <FavoriteLocation uuid={uuid} />
+          </View>
+        </View>
+      </Pressable>
+    </Link>
+  );
+}
+
+function SearchResults({ query = "" }: { query: string }) {
+  const { lat, lng, refreshLocation } = useLocation();
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
 
   const { data, isLoading, error } = useQuery<Location[]>({
-    queryKey: ["search", queryText],
-    queryFn: () =>
-      api
-        .get("user/location/search", {
-          searchParams: { query: queryText, lat, lng },
-        })
-        .json(),
+    queryKey: ["search", query],
+    queryFn: () => api.get("user/location/search", { searchParams: { query, lat, lng } }).json(),
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refreshLocation().then(() => {
+      queryClient
+        .refetchQueries({
+          queryKey: ["search"],
+        })
+        .then(() => setRefreshing(false));
+    });
+  }, [refreshLocation, queryClient]);
 
   if (isLoading) {
     return (
-      <View style={[styles.searchResultsContainer, styles.centerContent]}>
-        <ActivityIndicator size="large" color={spectrum.base1Content} />
+      <View>
+        <ActivityIndicator size="small" />
       </View>
     );
   }
 
   if (error) {
+    let errorMessage = "Sorry, your search request failed to get any results.";
+    if (error instanceof TimeoutError) {
+      errorMessage = "Sorry, your search request timed out.";
+    }
     return (
-      <View style={[styles.searchResultsContainer, styles.centerContent]}>
-        <ErrorMessage error={error?.message} />
+      <View>
+        <ErrorMessage error={errorMessage} />
       </View>
     );
   }
 
   if (!data?.length) {
     return (
-      <View style={[styles.centerContent, { marginTop: 16 }]}>
-        <Empty
-          icon="search-x"
-          iconSize={20}
-          text="Sorry, no results found near you"
-          vertical
-        />
+      <View>
+        <Empty icon="search-x" iconSize={20} text="Sorry, no results found near you" vertical />
       </View>
     );
   }
 
+  const ListHeader = () => (
+    <Text style={styles.searchResultsTitle}>
+      {query ? "Search Results Near You" : "Stores Near You"}
+    </Text>
+  );
+
+  const ListFooter = () => <View style={styles.listFooter} />;
+
   return (
     <View style={styles.searchResultsContainer}>
-      {queryText && data?.length && (
-        <Text style={styles.searchResultsTitle}>Search Results Near You</Text>
-      )}
-      {!queryText && data?.length && (
-        <Text style={styles.searchResultsTitle}>Stores Near You</Text>
-      )}
-      {data.map(({ uuid, name, thumbnail, has_campaign, address }) => (
-        <Link href={`/location/${uuid}`} asChild key={uuid}>
-          <Pressable>
-            <View style={styles.locationContainer}>
-              <View>
-                <Picture
-                  source={{ uri: thumbnail }}
-                  height={pictureWidth}
-                  width={pictureWidth}
-                  fallback={
-                    <Placeholder
-                      color={spectrum.base3Content}
-                      size={pictureWidth - 20}
-                    />
-                  }
-                  fallbackStyle={styles.fallback}
-                  imageStyle={styles.image}
-                />
-                {has_campaign && (
-                  <BottomGet
-                    style={{
-                      position: "absolute",
-                      right: -6,
-                      top: -6,
-                    }}
-                    size={18}
-                  />
-                )}
-              </View>
-              <View
-                style={{
-                  flexGrow: 1,
-                  flexShrink: 1,
-                  minWidth: 0,
-                }}
-              >
-                <View
-                  style={{
-                    flex: 1,
-                    flexDirection: "column",
-                    justifyContent: "space-evenly",
-                  }}
-                >
-                  <Text style={styles.textName} numberOfLines={2}>
-                    {name}
-                  </Text>
-                  <Text style={styles.textAddress} numberOfLines={2}>
-                    {address}
-                  </Text>
-                </View>
-              </View>
-              <View style={{ justifyContent: "center" }}>
-                <FavoriteLocation uuid={uuid} />
-              </View>
-            </View>
-          </Pressable>
-        </Link>
-      ))}
+      <FlatList
+        data={data}
+        renderItem={FlatListItem}
+        keyExtractor={(item) => item.uuid}
+        ListHeaderComponent={data.length ? ListHeader : null}
+        ListFooterComponent={data.length ? ListFooter : null}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            onRefresh={onRefresh}
+            refreshing={refreshing}
+            tintColor={spectrum.primary}
+          />
+        }
+      />
     </View>
   );
 }
@@ -245,13 +268,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
   },
-  centerContent: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
   formContainer: {
     alignItems: "center",
-    // backgroundColor: "cyan",
     flexDirection: "row",
     gap: 8,
     marginVertical: 8,
@@ -265,7 +283,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input: {
-    // backgroundColor: "yellow",
     color: spectrum.base1Content,
     fontSize: 14,
     paddingRight: 32,
@@ -278,9 +295,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   searchResultsContainer: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: "black",
-    flexDirection: "column",
     marginBottom: 16,
     width: screenWidthMinusPadding,
   },
@@ -290,7 +304,6 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   locationContainer: {
-    // borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: "black",
     borderTopWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
@@ -303,8 +316,6 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   textAddress: {
-    // flex: 1,
-    // flexShrink: 1,
     flexWrap: "wrap",
     fontSize: 13,
     fontWeight: 300,
@@ -326,5 +337,17 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     paddingVertical: 12,
     textAlign: "center",
+  },
+  errorContainer: {
+    width: "100%",
+    marginBottom: 16,
+    alignItems: "center",
+  },
+  retryButton: {
+    marginTop: 8,
+  },
+  listFooter: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: spectrum.black,
   },
 });
