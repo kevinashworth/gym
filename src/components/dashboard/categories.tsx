@@ -3,20 +3,8 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import {
-  HandHelping,
-  HeartPulse,
-  ShoppingBasket,
-  Soup,
-  Store,
-} from "lucide-react-native";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { HandHelping, HeartPulse, ShoppingBasket, Soup, Store } from "lucide-react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
 import Empty from "@/components/empty";
 import ErrorMessage from "@/components/error-message";
@@ -26,12 +14,7 @@ import { spectrum } from "@/theme";
 import type { LucideIcon } from "lucide-react-native";
 
 // This is just the list of categories we expect from the API
-export type Category =
-  | "convenience"
-  | "health"
-  | "restaurants"
-  | "retail"
-  | "services";
+export type Category = "convenience" | "health" | "restaurants" | "retail" | "services";
 
 const IconComponent: Record<Category, LucideIcon> = {
   convenience: ShoppingBasket,
@@ -56,15 +39,15 @@ function getCategoryIcon(category: Category) {
 export default function Categories() {
   const {
     data: categories,
-    isLoading,
+    isFetching,
     error,
   } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["dashboard", "categories"],
     queryFn: () => api.get<Category[]>("user/location/categories").json(),
     staleTime: 1000 * 60 * 60 * 24, // 1 day
   });
 
-  if (isLoading) {
+  if (isFetching) {
     return (
       <View style={styles.messageContainer}>
         <ActivityIndicator size="large" color={spectrum.primary} />

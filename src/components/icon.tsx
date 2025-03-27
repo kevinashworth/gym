@@ -9,6 +9,7 @@ import {
   CircleX,
   Image,
   Inbox,
+  MapPinOff,
   SearchX,
   UsersRound,
   X,
@@ -21,13 +22,9 @@ import CampaignReview from "@/assets/svg/campaign-review";
 import CampaignSurvey from "@/assets/svg/campaign-survey";
 import { spectrum } from "@/theme";
 
-export type FontAwesomeIconName = React.ComponentProps<
-  typeof FontAwesome
->["name"];
+export type FontAwesomeIconName = React.ComponentProps<typeof FontAwesome>["name"];
 
-export type FontAwesomeIconStyle = React.ComponentProps<
-  typeof FontAwesome
->["style"];
+export type FontAwesomeIconStyle = React.ComponentProps<typeof FontAwesome>["style"];
 
 const localIcons = {
   CampaignCheckIn: CampaignCheckIn,
@@ -47,16 +44,14 @@ const lucideIcons = {
   "circle-x": CircleX,
   image: Image,
   inbox: Inbox,
+  "map-pin-off": MapPinOff,
   notifications: Bell,
   "search-x": SearchX,
   "users-round": UsersRound,
   x: X,
 };
 
-export type IconName =
-  | keyof typeof localIcons
-  | keyof typeof lucideIcons
-  | FontAwesomeIconName;
+export type IconName = keyof typeof localIcons | keyof typeof lucideIcons | FontAwesomeIconName;
 
 export type HistoryIconName = keyof typeof localIcons;
 
@@ -76,9 +71,7 @@ export default function Icon({
 }: IconProps) {
   if (name in localIcons) {
     const LocalIconComponent = localIcons[name as keyof typeof localIcons];
-    return (
-      <LocalIconComponent color={color} size={size} style={style} {...props} />
-    );
+    return <LocalIconComponent color={color} size={size} style={style} {...props} />;
   }
 
   if (name in lucideIcons) {

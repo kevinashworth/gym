@@ -1,8 +1,8 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
-import { Stack, useFocusEffect } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Stack } from "expo-router";
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import Categories from "@/components/dashboard/categories";
 import Communities from "@/components/dashboard/communities";
@@ -15,27 +15,42 @@ export default function DashboardTab() {
   const showPageInfo = useDevStore((state) => state.showPageInfo);
   const queryClient = useQueryClient();
 
-  useFocusEffect(
-    useCallback(() => {
-      // console.log("DashboardTab was focused");
-      // Refetch queries in Favorites, Suggested
-      queryClient.refetchQueries({
-        queryKey: ["dashboard", "location"],
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Refetch Favorites, Suggested, Categories when user pulls down to refresh
+  // TODO: Also useFocusEffect to refetch when returning from, say, Settings?
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    queryClient
+      .refetchQueries({
+        queryKey: ["dashboard"],
         type: "active",
+      })
+      .then(() => {
+        setRefreshing(false);
       });
-      // return () => {
-      //   console.log("DashboardTab was unfocused");
-      // };
-    }, [queryClient]),
-  );
+  }, [queryClient]);
+
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     queryClient.refetchQueries({
+  //       queryKey: ["dashboard"],
+  //       type: "active",
+  //     });
+  //   }, [queryClient]),
+  // );
 
   return (
-    <ScrollView>
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-      />
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          onRefresh={onRefresh}
+          refreshing={refreshing}
+          tintColor={spectrum.primary}
+        />
+      }
+    >
+      <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
         <View>
           <Text style={styles.heading}>Favorites</Text>
@@ -44,9 +59,7 @@ export default function DashboardTab() {
           </ScrollView>
         </View>
         <View>
-          <Text style={[styles.heading, { marginBottom: 6 }]}>
-            Suggested Near Me
-          </Text>
+          <Text style={[styles.heading, { marginBottom: 6 }]}>Suggested Near Me</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <Suggested />
           </ScrollView>
@@ -59,9 +72,7 @@ export default function DashboardTab() {
           <Text style={styles.heading}>Communities - Coming Soon</Text>
           <Communities />
         </View>
-        {showPageInfo && (
-          <Text style={styles.pageInfo}>src/app/(tabs)/index.tsx</Text>
-        )}
+        {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/index.tsx</Text>}
       </View>
     </ScrollView>
   );

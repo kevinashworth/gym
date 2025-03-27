@@ -9,16 +9,14 @@ type Favorite = string;
 type Favorites = Favorite[];
 
 async function fetchFavorites(): Promise<Favorites> {
-  const favorites = await api
-    .get<FavoritesFromApi>("user/favorite/favorites")
-    .json();
+  const favorites = await api.get<FavoritesFromApi>("user/favorite/favorites").json();
   const result = favorites.map((favorite: FavoriteFromApi) => favorite[2]);
   return result;
 }
 
-export const useFavorites = (uuid: string) =>
+export const useFavorites = () =>
   useQuery({
-    queryKey: ["favorites", uuid], // uuid is for cache invalidation
+    queryKey: ["favorites"],
     queryFn: () => fetchFavorites(),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });

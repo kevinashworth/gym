@@ -1,13 +1,11 @@
-import React, {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 
 import * as Location from "expo-location";
+import Toast from "react-native-toast-message";
 
+// TODO: Should there even be a default location? For a user that doesn't give
+// permission, we should probably show a message and not use a dummy location.
+// lat, lng, location would be undefined. Could be a good refactor.
 const defaultLocation = {
   coords: {
     latitude: process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT || 37.10716,
@@ -16,9 +14,14 @@ const defaultLocation = {
 } as Location.LocationObject;
 
 interface LocationContextType {
-  location: Location.LocationObject;
+  errorMsg: string | null;
+  hasPermission: boolean;
+  isRequesting: boolean;
   lat: number;
   lng: number;
+  location: Location.LocationObject;
+  refreshLocation: () => Promise<void>;
+  retryPermission: () => Promise<void>;
   setLocation: React.Dispatch<React.SetStateAction<Location.LocationObject>>;
 }
 
@@ -35,31 +38,94 @@ export function useLocation() {
 }
 
 const LocationProvider = ({ children }: PropsWithChildren) => {
-  const [location, setLocation] =
-    useState<Location.LocationObject>(defaultLocation);
+  const [location, setLocation] = useState<Location.LocationObject>(defaultLocation);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isRequesting, setIsRequesting] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false);
 
   const lat = location.coords.latitude;
   const lng = location.coords.longitude;
 
-  useEffect(() => {
-    const getLocation = async () => {
-      const loc = await Location.getCurrentPositionAsync({});
-      if (loc) {
-        setLocation(loc);
+  const requestLocation = async () => {
+    try {
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+      setLocation(location);
+      setErrorMsg(null);
+      return location;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to get location";
+      setErrorMsg(errorMessage);
+      Toast.show({
+        type: "error",
+        text1: "Location Error",
+        text2: errorMessage,
+      });
+      return null;
+    }
+  };
+
+  const retryPermission = async () => {
+    setIsRequesting(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      setHasPermission(status === "granted");
+      if (status === "granted") {
+        await requestLocation();
+      } else {
+        setErrorMsg("Location permission is required to find stores near you");
       }
-    };
-    getLocation();
-  }, []);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to request location permission";
+      setErrorMsg(errorMessage);
+      Toast.show({
+        type: "error",
+        text1: "Permission Error",
+        text2: errorMessage,
+      });
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+
+  async function refreshLocation() {
+    if (isRequesting) return;
+    setIsRequesting(true);
+
+    try {
+      const { status } = await Location.getForegroundPermissionsAsync();
+      setHasPermission(status === "granted");
+
+      if (status !== "granted") {
+        await retryPermission();
+        return;
+      }
+
+      await requestLocation();
+    } finally {
+      setIsRequesting(false);
+    }
+  }
+
+  useEffect(() => {
+    refreshLocation();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <LocationContext.Provider
       value={{
-        location,
+        errorMsg,
+        hasPermission,
+        isRequesting,
         lat,
         lng,
+        location,
+        refreshLocation,
+        retryPermission,
         setLocation,
-      }}
-    >
+      }}>
       {children}
     </LocationContext.Provider>
   );

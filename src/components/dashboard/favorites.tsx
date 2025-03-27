@@ -1,13 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
-import {
-  ActivityIndicator,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
 import BottomGet from "@/assets/svg/bottom-get";
 import Empty from "@/components/empty";
@@ -29,7 +23,7 @@ interface Favorite {
 export default function Favorites() {
   const { lat, lng } = useLocation();
 
-  const { data, isLoading, error } = useQuery<Favorite[]>({
+  const { data, isFetching, error } = useQuery<Favorite[]>({
     queryKey: ["dashboard", "location", "favorites"], // "dashboard" and "location" are used for cache invalidation
     queryFn: () =>
       api
@@ -40,9 +34,7 @@ export default function Favorites() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  // const data = favorites;
-
-  if (isLoading) {
+  if (isFetching) {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <ActivityIndicator size="large" color={spectrum.base1Content} />
@@ -84,11 +76,7 @@ export default function Favorites() {
                 height={width}
                 width={width}
                 fallback={
-                  <FontAwesome
-                    name="heart-o"
-                    size={width - 16}
-                    style={styles.fallbackIcon}
-                  />
+                  <FontAwesome name="heart-o" size={width - 16} style={styles.fallbackIcon} />
                 }
                 fallbackStyle={styles.fallback}
               />

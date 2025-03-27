@@ -1,6 +1,7 @@
 import React from "react";
 
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
   TextStyle,
@@ -16,7 +17,7 @@ import Icon from "./icon";
 import type { IconName } from "./icon";
 
 type Sizes = "sm" | "md" | "lg" | "xl";
-type Variants =
+export type Variants =
   | "primary"
   | "secondary"
   | "outline"
@@ -25,10 +26,17 @@ type Variants =
   | "white"
   | "default";
 
+type ActivityIndicatorProps = {
+  color?: string;
+  size?: "small" | "large";
+  style?: ViewStyle;
+};
+
 type ButtonSizesContainer = Record<Sizes, ViewStyle>;
 type ButtonSizesLabel = Record<Sizes, TextStyle>;
 type ButtonVariantsContainer = Record<Variants, ViewStyle>;
 type ButtonVariantsLabel = Record<Variants, TextStyle>;
+type ButtonVariantsTextColor = Record<Variants, string>;
 
 const buttonSizesContainer: ButtonSizesContainer = {
   sm: { borderRadius: 12, padding: 4, paddingHorizontal: 8 },
@@ -82,7 +90,13 @@ const buttonVariantsLabel: ButtonVariantsLabel = {
   default: { color: spectrum.primary },
 };
 
+const buttonVariantsTextColor: ButtonVariantsTextColor = Object.fromEntries(
+  Object.entries(buttonVariantsLabel).map(([variant, style]) => [variant, style.color])
+) as ButtonVariantsTextColor;
+
 interface ButtonProps {
+  activityIndicator?: boolean;
+  activityIndicatorProps?: ActivityIndicatorProps;
   buttonStyle?: ViewStyle;
   disabled?: boolean;
   icon?: React.ReactElement;
@@ -95,6 +109,8 @@ interface ButtonProps {
 }
 
 export default function Button({
+  activityIndicator = false,
+  activityIndicatorProps,
   buttonStyle,
   disabled = false,
   icon,
@@ -105,22 +121,28 @@ export default function Button({
   variant = "primary",
   withoutShadow = false,
 }: ButtonProps) {
-  const IconComponent = icon ? (
-    React.cloneElement(icon, {
-      color: buttonVariantsLabel[variant].color || spectrum.gray1,
-    })
-  ) : iconName ? (
-    <Icon
-      name={iconName}
-      size={14}
-      color={buttonVariantsLabel[variant].color || spectrum.gray1}
+  const ActivityIndicatorComponent = activityIndicator && (
+    <ActivityIndicator
+      color={activityIndicatorProps?.color}
+      size={activityIndicatorProps?.size}
+      style={activityIndicatorProps?.style}
+      testID="activity-indicator"
     />
-  ) : null;
+  );
+  const IconComponent =
+    icon &&
+    React.cloneElement(icon, {
+      color: buttonVariantsTextColor[variant] || spectrum.gray1,
+    });
+  const IconNameComponent = iconName && (
+    <Icon name={iconName} size={14} color={buttonVariantsTextColor[variant] || spectrum.gray1} />
+  );
 
   return (
     <View>
       <TouchableOpacity
         activeOpacity={0.8}
+        disabled={disabled}
         onPress={!disabled ? onPress : undefined}
         style={[
           styles.buttonContainer,
@@ -134,15 +156,11 @@ export default function Button({
           },
         ]}
       >
+        {ActivityIndicatorComponent}
         {IconComponent}
+        {IconNameComponent}
         {label && (
-          <Text
-            style={[
-              styles.buttonLabel,
-              buttonSizesLabel[size],
-              buttonVariantsLabel[variant],
-            ]}
-          >
+          <Text style={[styles.buttonLabel, buttonSizesLabel[size], buttonVariantsLabel[variant]]}>
             {label}
           </Text>
         )}
