@@ -29,10 +29,7 @@ function WalletDisplay() {
               }).format(me.token_balance.token_balance_get * 0.1)}
             </Text>
             <Text style={styles.text3}>
-              GET{" "}
-              {new Intl.NumberFormat().format(
-                me.token_balance.token_balance_get,
-              )}
+              GET {new Intl.NumberFormat().format(me.token_balance.token_balance_get)}
             </Text>
           </View>
         </Pressable>
@@ -56,11 +53,7 @@ function SettingsDisplay() {
   return (
     <Link href="/settings" asChild>
       <Pressable>
-        <Ionicons
-          name="menu-outline"
-          size={36}
-          color={spectrum.primaryContent}
-        />
+        <Ionicons name="menu-outline" size={36} color={spectrum.primaryContent} />
       </Pressable>
     </Link>
   );
@@ -76,8 +69,7 @@ export default function CustomHeader() {
         height: insets.top + 75,
         paddingHorizontal: 16,
         paddingTop: insets.top,
-      }}
-    >
+      }}>
       <View style={styles.container}>
         <LogoDisplay />
         <WalletDisplay />

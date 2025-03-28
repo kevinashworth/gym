@@ -21,8 +21,6 @@ collect-account not shown anymore, only verify-account
 
 ### Not built yet
 
-Categories screen
-
 Location screen:
 
 - Add campaign functionality to Location screen ("Earn Rewards...")
@@ -38,7 +36,7 @@ Favorites in store
 ### Recently built
 
 Pull-down to refresh
-Done: Dashboard screen, Wallet screen, Search screen
+Done: Dashboard screen, Wallet screen, Search screen, Categories screen
 
 Dev-only settings on Settings screen
 
