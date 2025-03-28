@@ -24,13 +24,8 @@ export default function Favorites() {
   const { lat, lng } = useLocation();
 
   const { data, isFetching, error } = useQuery<Favorite[]>({
-    queryKey: ["dashboard", "location", "favorites"], // "dashboard" and "location" are used for cache invalidation
-    queryFn: () =>
-      api
-        .get("user/location/favorites", {
-          searchParams: { lat, lng },
-        })
-        .json(),
+    queryKey: ["dashboard", "location", "favorites", { lat, lng }], // "dashboard" used for queryClient.refetchQueries
+    queryFn: () => api.get("user/location/favorites", { searchParams: { lat, lng } }).json(),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
