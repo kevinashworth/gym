@@ -18,8 +18,7 @@ function FormErrorsMessage(props: FormErrorsMessageProps) {
     return null;
   }
 
-  const errorMessage: string =
-    typeof error === "object" ? error.message : error;
+  const errorMessage: string = typeof error === "object" ? error.message : error;
 
   if (!errorMessage) {
     return null;

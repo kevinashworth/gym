@@ -25,19 +25,12 @@ const defaultOptions = {
   printFunctionName: false,
 };
 
-function DisplayJSON({
-  consoleLog,
-  consoleTitle,
-  json,
-  options: optionsProp,
-}: Props) {
+function DisplayJSON({ consoleLog, consoleTitle, json, options: optionsProp }: Props) {
   const options = { ...defaultOptions, ...optionsProp };
 
   useEffect(() => {
     if (!!consoleTitle || consoleLog) {
-      console.group(
-        consoleTitle ? `DisplayJSON: ${consoleTitle}` : "DisplayJSON",
-      );
+      console.group(consoleTitle ? `DisplayJSON: ${consoleTitle}` : "DisplayJSON");
       console.log(json);
       console.groupEnd();
     }

@@ -154,8 +154,7 @@ export default function Button({
             backgroundColor: spectrum.gray10,
             borderColor: spectrum.gray10,
           },
-        ]}
-      >
+        ]}>
         {ActivityIndicatorComponent}
         {IconComponent}
         {IconNameComponent}

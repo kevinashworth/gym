@@ -10,18 +10,12 @@ export interface ErrorMessageProps extends TextProps {
   style?: TextStyle;
 }
 
-function ErrorMessage({
-  error,
-  size = "medium",
-  style: customStyle,
-  ...props
-}: ErrorMessageProps) {
+function ErrorMessage({ error, size = "medium", style: customStyle, ...props }: ErrorMessageProps) {
   if (!error) {
     return null;
   }
 
-  const isError =
-    typeof error === "string" || (typeof error === "object" && error.message);
+  const isError = typeof error === "string" || (typeof error === "object" && error.message);
   if (!isError) {
     console.warn("ErrorMessage: Invalid error prop:", error);
     return null;
@@ -37,10 +31,7 @@ function ErrorMessage({
   const fontWeight = size === "large" ? 600 : 500;
 
   return (
-    <Text
-      style={[styles.errorText, { fontSize, fontWeight }, customStyle]}
-      {...props}
-    >
+    <Text style={[styles.errorText, { fontSize, fontWeight }, customStyle]} {...props}>
       {errorMessage}
     </Text>
   );
