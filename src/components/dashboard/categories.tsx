@@ -74,14 +74,13 @@ export default function Categories() {
   return (
     <View style={styles.container}>
       {categories.map((category) => (
-        <Link href="/" asChild key={category}>
+        <Link href={`/category/${category}`} asChild key={category}>
           <Pressable>
             <View style={styles.favoriteContainer}>
               <LinearGradient
                 colors={[spectrum.secondary, spectrum.primary]}
                 locations={[0, 0.8]}
-                style={styles.gradient}
-              >
+                style={styles.gradient}>
                 {getCategoryIcon(category)}
               </LinearGradient>
               <Text style={styles.text}>{capitalize(category)}</Text>
