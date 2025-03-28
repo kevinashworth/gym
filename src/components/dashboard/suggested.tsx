@@ -24,13 +24,8 @@ export default function SuggestedLocations() {
   const { lat, lng } = useLocation();
 
   const { data, isFetching, error } = useQuery<Location[]>({
-    queryKey: ["dashboard", "location", "suggested"], // "dashboard" and "location" are used for cache invalidation
-    queryFn: () =>
-      api
-        .get("user/location/suggested", {
-          searchParams: { lat, lng },
-        })
-        .json(),
+    queryKey: ["dashboard", "location", "suggested", { lat, lng }], // "dashboard" used for queryClient.refetchQueries
+    queryFn: () => api.get("user/location/suggested", { searchParams: { lat, lng } }).json(),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
