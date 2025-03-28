@@ -19,10 +19,7 @@ interface InputProps extends TextInputProps {
   value?: string;
 }
 
-const Input = forwardRef(function CustomInput(
-  props: InputProps,
-  ref: Ref<TextInput>,
-) {
+const Input = forwardRef(function CustomInput(props: InputProps, ref: Ref<TextInput>) {
   const { disabled = false, error, style: styleProp, value, ...rest } = props;
 
   const [val, setVal] = useState<string>(value || "");
@@ -71,7 +68,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     elevation: 2,
     fontWeight: "normal",
-    // marginBottom: 6,
     padding: 12,
     shadowOffset: { height: 4, width: 0 },
     shadowOpacity: 0.2,
@@ -83,6 +79,6 @@ const styles = StyleSheet.create({
     top: 12,
   },
 });
-Input.displayName = "MyInput";
+Input.displayName = "InputWithClearButton";
 
 export default Input;

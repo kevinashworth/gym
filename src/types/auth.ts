@@ -24,20 +24,14 @@ export type GoogleUser = {
   token: string;
 };
 
-export function isCognitoUser(
-  user: CognitoUser | GoogleUser,
-): user is CognitoUser {
+export function isCognitoUser(user: CognitoUser | GoogleUser): user is CognitoUser {
   return (user as CognitoUser).username !== undefined;
 }
 
-export function isGoogleUser(
-  user: CognitoUser | GoogleUser,
-): user is GoogleUser {
+export function isGoogleUser(user: CognitoUser | GoogleUser): user is GoogleUser {
   return (user as GoogleUser).id !== undefined;
 }
 
-export function isUser(
-  user: CognitoUser | GoogleUser,
-): user is CognitoUser | GoogleUser {
+export function isUser(user: CognitoUser | GoogleUser): user is CognitoUser | GoogleUser {
   return isCognitoUser(user) || isGoogleUser(user);
 }

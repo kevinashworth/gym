@@ -5,14 +5,7 @@ import { Auth } from "aws-amplify";
 import { useRouter } from "expo-router";
 import ky from "ky";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Keyboard,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Keyboard, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import TextLink from "react-native-text-link";
 import { z } from "zod";
 
@@ -22,6 +15,7 @@ import DisplayJSON from "@/components/display-json";
 import ErrorMessage from "@/components/error-message";
 import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
+import InputPassword from "@/components/input-password";
 import { useAuthStore, useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 import { isValidEmail } from "@/utils/email";
@@ -54,9 +48,7 @@ export default function SignInScreen() {
   const showDevToolbox = useDevStore((s) => s.showDevToolbox);
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | Error | FieldError | undefined>(
-    undefined,
-  );
+  const [error, setError] = useState<string | Error | FieldError | undefined>(undefined);
 
   const {
     clearErrors,
@@ -116,7 +108,7 @@ export default function SignInScreen() {
               access_token: accessToken,
               id_token: idToken,
             },
-          },
+          }
         )
         .json();
     } catch (error) {
@@ -138,8 +130,7 @@ export default function SignInScreen() {
       bounces={false}
       keyboardDismissMode="none"
       keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
+      showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <LogoDark />
         <ErrorMessage error={error} />
@@ -172,18 +163,13 @@ export default function SignInScreen() {
             control={control}
             name="password"
             render={({ field: { onBlur, onChange, value } }) => (
-              <Input
-                autoCapitalize="none"
-                autoComplete="password"
-                autoCorrect={false}
+              <InputPassword
                 onBlur={onBlur}
                 onChangeText={onChange}
                 onSubmitEditing={onSubmit}
                 placeholder="Password"
                 ref={passwordInputRef}
                 returnKeyType="go"
-                secureTextEntry
-                textContentType="password"
                 value={value}
                 style={styles.textInput}
               />
@@ -215,8 +201,7 @@ export default function SignInScreen() {
             textLinkStyle={{
               color: spectrum.primary,
               textDecorationLine: "underline",
-            }}
-          >
+            }}>
             We got you.
           </TextLink>
         </View>
@@ -295,7 +280,6 @@ const styles = StyleSheet.create({
     width: inputWidth,
   },
   textInput: {
-    // backgroundColor: "orange",
     width: inputWidth,
   },
   textHelpful: {

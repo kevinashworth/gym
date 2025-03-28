@@ -44,8 +44,8 @@ const useAuthStore = create<AuthState & AuthActions>()(
       name: "auth-storage",
       version: 1,
       storage: expoFileSystemStorage,
-    },
-  ),
+    }
+  )
 );
 
 middleware(useAuthStore, {

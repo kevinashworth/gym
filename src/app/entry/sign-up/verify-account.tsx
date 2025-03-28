@@ -83,11 +83,7 @@ const SignUpVerifyScreen = () => {
     <>
       <View style={styles.container}>
         <Text style={styles.pageTitleText}>Verify your account</Text>
-        <Text
-          style={styles.explanationText}
-          numberOfLines={2}
-          adjustsFontSizeToFit
-        >
+        <Text style={styles.explanationText} numberOfLines={2} adjustsFontSizeToFit>
           You will receive a code to your email at {accountValue}
         </Text>
         <View style={styles.inputContainer}>
@@ -132,8 +128,7 @@ const SignUpVerifyScreen = () => {
             textLinkStyle={{
               color: spectrum.primary,
               textDecorationLine: "underline",
-            }}
-          >
+            }}>
             Resend.
           </TextLink>
         </View>
@@ -150,8 +145,7 @@ const SignUpVerifyScreen = () => {
             paddingHorizontal: 8,
             paddingTop: 2,
             paddingBottom: 8,
-          }}
-        >
+          }}>
           <Text
             style={{
               color: spectrum.black,
@@ -160,8 +154,7 @@ const SignUpVerifyScreen = () => {
               lineHeight: 21,
               paddingBottom: 8,
               textAlign: "center",
-            }}
-          >
+            }}>
             Dev Toolbox
           </Text>
           <Button
