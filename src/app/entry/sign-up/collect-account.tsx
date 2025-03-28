@@ -14,6 +14,7 @@ import DisplayJSON from "@/components/display-json";
 import ErrorMessage from "@/components/error-message";
 import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
+import InputPassword from "@/components/input-password-controlled";
 import { useAuthStore, useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 import { CognitoUser } from "@/types/auth";
@@ -70,6 +71,7 @@ function SignUpWithEmailScreen() {
   const passwordInputRef = useRef<TextInput>(null);
   const confirmInputRef = useRef<TextInput>(null);
 
+  const [showPassword, setShowPassword] = useState(false);
   const [signUpLoading, setSignUpLoading] = useState(false);
   const [signUpError, setSignUpError] = useState<Error | null>(null);
 
@@ -136,18 +138,16 @@ function SignUpWithEmailScreen() {
             control={control}
             name="password"
             render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                autoCapitalize="none"
-                autoCorrect={false}
+              <InputPassword
+                showPassword={showPassword}
+                onToggleShowPassword={() => setShowPassword(!showPassword)}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 onSubmitEditing={() => confirmInputRef.current?.focus()}
                 placeholder="Password"
                 ref={passwordInputRef}
                 returnKeyType="next"
-                secureTextEntry
                 style={styles.textInput}
-                textContentType="password"
                 value={value}
               />
             )}
@@ -159,17 +159,15 @@ function SignUpWithEmailScreen() {
             control={control}
             name="confirm"
             render={({ field: { onChange, onBlur, value } }) => (
-              <Input
-                autoCapitalize="none"
-                autoCorrect={false}
+              <InputPassword
+                showPassword={showPassword}
+                onToggleShowPassword={() => setShowPassword(!showPassword)}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 placeholder="Confirm Password"
                 ref={confirmInputRef}
                 returnKeyType="done"
-                secureTextEntry
                 style={styles.textInput}
-                textContentType="password"
                 value={value}
               />
             )}
@@ -197,8 +195,7 @@ function SignUpWithEmailScreen() {
             textLinkStyle={{
               color: spectrum.primary,
               textDecorationLine: "underline",
-            }}
-          >
+            }}>
             Sign in.
           </TextLink>
         </View>
@@ -217,8 +214,7 @@ function SignUpWithEmailScreen() {
             textLinkStyle={{
               color: spectrum.primary,
               textDecorationLine: "underline",
-            }}
-          >
+            }}>
             Confirm your account.
           </TextLink>
         </View>
@@ -239,9 +235,7 @@ function SignUpWithEmailScreen() {
             label="Toggle Overall Error State"
             onPress={() =>
               setSignUpError(
-                signUpError
-                  ? null
-                  : new Error("An overall error message from Auth.signUp"),
+                signUpError ? null : new Error("An overall error message from Auth.signUp")
               )
             }
             size="sm"

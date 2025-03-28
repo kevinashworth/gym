@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef } from "react";
 
 import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
@@ -6,14 +6,19 @@ import Icon from "@/components/icon";
 import Input, { InputProps } from "@/components/input";
 import { spectrum } from "@/theme";
 
-type InputPasswordProps = Omit<
-  InputProps,
-  "autoCapitalize" | "autoComplete" | "autoCorrect" | "secureTextEntry" | "textContentType"
->;
+interface InputPasswordProps
+  extends Omit<
+    InputProps,
+    "autoCapitalize" | "autoComplete" | "autoCorrect" | "secureTextEntry" | "textContentType"
+  > {
+  showPassword: boolean;
+  onToggleShowPassword: () => void;
+}
 
-const InputPassword = forwardRef<TextInput, InputPasswordProps>(function CustomInput(props, ref) {
-  const [showPassword, setShowPassword] = useState(false);
-
+const InputPassword = forwardRef<TextInput, InputPasswordProps>(function CustomInput(
+  { showPassword, onToggleShowPassword, ...props },
+  ref
+) {
   return (
     <>
       <Input
@@ -25,7 +30,7 @@ const InputPassword = forwardRef<TextInput, InputPasswordProps>(function CustomI
         textContentType="password"
         {...props}
       />
-      <TouchableOpacity style={styles.icon_block} onPress={() => setShowPassword(!showPassword)}>
+      <TouchableOpacity style={styles.icon_block} onPress={onToggleShowPassword}>
         <Icon name={showPassword ? "eye-off" : "eye"} size={20} color={spectrum.gray8} />
       </TouchableOpacity>
     </>

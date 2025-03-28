@@ -15,9 +15,11 @@ zustand for local state
 TanStack Query for server state
 TanStack Query with ky, and sometimes just ky, for network requests
 
-### Not built yet
+## Bugs
 
-Option to have visible password field
+collect-account not shown anymore, only verify-account
+
+### Not built yet
 
 Categories screen
 

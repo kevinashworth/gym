@@ -4,7 +4,7 @@ import { StyleProp, StyleSheet, TextInput, TextInputProps, TextStyle } from "rea
 
 import { spectrum } from "@/theme";
 
-interface InputProps extends TextInputProps {
+export interface InputProps extends TextInputProps {
   disabled?: boolean;
   error?: boolean | string | Error;
   style?: StyleProp<TextStyle>;
