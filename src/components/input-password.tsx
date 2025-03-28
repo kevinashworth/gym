@@ -6,11 +6,10 @@ import Icon from "@/components/icon";
 import Input from "@/components/input";
 import { spectrum } from "@/theme";
 
-interface InputPasswordProps
-  extends Omit<
-    TextInputProps,
-    "autoCapitalize" | "autoComplete" | "autoCorrect" | "secureTextEntry" | "textContentType"
-  > {}
+type InputPasswordProps = Omit<
+  TextInputProps,
+  "autoCapitalize" | "autoComplete" | "autoCorrect" | "secureTextEntry" | "textContentType"
+>;
 
 const InputPassword = forwardRef<TextInput, InputPasswordProps>(function CustomInput(props, ref) {
   const [showPassword, setShowPassword] = useState(false);
