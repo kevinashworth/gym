@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link, Stack } from "expo-router";
 import { TimeoutError } from "ky";
 import { useForm, Controller } from "react-hook-form";
@@ -183,10 +183,9 @@ function FlatListItem({ item }: { item: Location }) {
 
 function SearchResults({ query = "" }: { query: string }) {
   const { hasPermission, isRequesting, lat, lng, refreshLocation, retryPermission } = useLocation();
-  const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data, isLoading, error } = useQuery<Location[]>({
+  const { data, isLoading, error, refetch } = useQuery<Location[]>({
     queryKey: ["search", query],
     queryFn: () => {
       return api.get("user/location/search", { searchParams: { query, lat, lng } }).json();
@@ -196,14 +195,12 @@ function SearchResults({ query = "" }: { query: string }) {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refreshLocation().then(() => {
-      queryClient
-        .refetchQueries({
-          queryKey: ["search"],
-        })
-        .then(() => setRefreshing(false));
-    });
-  }, [refreshLocation, queryClient]);
+    refreshLocation()
+      .then(() => {
+        refetch();
+      })
+      .then(() => setRefreshing(false));
+  }, [refreshLocation, refetch]);
 
   // If location permission is not granted or lat/lng are undefined, show a message
   if (!hasPermission || !lat || !lng) {
