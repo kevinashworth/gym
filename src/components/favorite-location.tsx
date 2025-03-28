@@ -1,10 +1,8 @@
-import React from "react";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
-import { useQueryClient } from "@tanstack/react-query";
-
-import Like from "@/components/like";
-import api from "@/lib/api";
-import { useFavorites } from "@/queries/useFavorites";
+import Icon from "@/components/icon";
+import { useFavoriteLocation } from "@/hooks/useFavoriteLocation";
+import { spectrum } from "@/theme";
 
 interface FavoriteLocationProps {
   enableText?: boolean;
@@ -17,36 +15,47 @@ export default function FavoriteLocation({
   referralCode,
   uuid,
 }: FavoriteLocationProps) {
-  const { data: favorites, isLoading } = useFavorites();
-  const isFavorite = favorites?.some((favorite) => favorite === uuid);
-  const queryClient = useQueryClient();
+  const { isFavorite, isUpdating, toggleFavorite } = useFavoriteLocation(uuid);
 
-  async function add(uuid: string) {
-    await api.post(`user/favorite/add/${uuid}`);
-    queryClient.invalidateQueries({ queryKey: ["favorites"] });
-  }
-
-  async function remove(uuid: string) {
-    await api.post("user/favorite/remove", {
-      searchParams: { uuid },
-    });
-    queryClient.invalidateQueries({ queryKey: ["favorites"] });
-  }
-
-  function toggleFavorite() {
-    if (isFavorite) {
-      remove(uuid);
-    } else {
-      add(uuid);
-    }
-  }
+  const handleChange = () => {
+    toggleFavorite();
+  };
 
   return (
-    <Like
-      enableText={enableText}
-      liked={Boolean(isFavorite)}
-      loading={isLoading}
-      onChange={toggleFavorite}
-    />
+    <Pressable onPress={isUpdating ? undefined : handleChange}>
+      <View style={{ alignItems: "center", flex: 1, flexDirection: "column", width: 64 }}>
+        {isUpdating && (
+          <ActivityIndicator
+            color={spectrum.base3Content}
+            size="small"
+            style={{
+              height: 24,
+              width: 24,
+            }}
+          />
+        )}
+        {!isUpdating && (
+          <>
+            {isFavorite && <Icon name="heart" color={spectrum.primary} size={24} />}
+            {!isFavorite && <Icon name="heart-o" color={spectrum.secondary} size={24} />}
+          </>
+        )}
+        {enableText && (
+          <Text
+            style={[
+              { fontSize: 12, textAlign: "center" },
+              {
+                color: isUpdating
+                  ? spectrum.base3Content
+                  : isFavorite
+                    ? spectrum.primary
+                    : spectrum.secondary,
+              },
+            ]}>
+            {isFavorite ? "Added" : "Add"} to Favorites
+          </Text>
+        )}
+      </View>
+    </Pressable>
   );
 }
