@@ -3,24 +3,23 @@ import ky from "ky";
 import { useAuthStore } from "@/store";
 import { useDevStore } from "@/store";
 
-const prefixUrl = (
-  process.env.EXPO_PUBLIC_API_BASE_URL || "https://test.api.gotyou.co"
-).trim();
+const prefixUrl = (process.env.EXPO_PUBLIC_API_BASE_URL || "https://test.api.gotyou.co").trim();
 
 const prefixed = ky.create({
   prefixUrl,
   hooks: {
-    // beforeRequest: [
-    //   (request) => {
-    //     const showApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
-    //     if (showApiConsoleLogs) {
-    //       console.group("API Request:");
-    //       console.log(request.method, request.url);
-    //       console.log({ headers: request.headers });
-    //       console.groupEnd();
-    //     }
-    //   },
-    // ],
+    beforeRequest: [
+      (request) => {
+        const showApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
+        if (showApiConsoleLogs) {
+          if (request.method !== "GET") {
+            console.group("API Request:");
+            console.log(request.method, request.url);
+            console.groupEnd();
+          }
+        }
+      },
+    ],
     afterResponse: [
       async (request, _options, response) => {
         const showApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
@@ -28,13 +27,10 @@ const prefixed = ky.create({
           const json = await response.json();
           const jsonString = JSON.stringify(json);
           const jsonFirst100CharsAsString =
-            jsonString.length > 100
-              ? jsonString.slice(0, 100) + "..."
-              : jsonString;
+            jsonString.length > 100 ? jsonString.slice(0, 100) + "..." : jsonString;
           console.group("API Response:");
           console.log(request.method, request.url);
-          request.method === "GET" &&
-            console.log(response.status, jsonFirst100CharsAsString);
+          request.method === "GET" && console.log(response.status, jsonFirst100CharsAsString);
           console.groupEnd();
         }
       },
