@@ -105,7 +105,6 @@ interface ButtonProps {
   onPress: () => void;
   size?: Sizes;
   variant?: Variants;
-  withoutShadow?: boolean;
 }
 
 export default function Button({
@@ -119,7 +118,6 @@ export default function Button({
   onPress,
   size = "md",
   variant = "primary",
-  withoutShadow = false,
 }: ButtonProps) {
   const ActivityIndicatorComponent = activityIndicator && (
     <ActivityIndicator
@@ -149,7 +147,6 @@ export default function Button({
           buttonStyle,
           buttonSizesContainer[size],
           buttonVariantsContainer[variant],
-          withoutShadow && { shadowColor: "transparent" },
           disabled && {
             backgroundColor: spectrum.gray10,
             borderColor: spectrum.gray10,
