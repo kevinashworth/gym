@@ -4,7 +4,7 @@ import CampaignCheckIn from "@/assets/svg/campaign-check-in";
 import CampaignReferral from "@/assets/svg/campaign-referral";
 import CampaignReview from "@/assets/svg/campaign-review";
 import CampaignSurvey from "@/assets/svg/campaign-survey";
-import Button from "@/components/campaign-button";
+import CampaignButton from "@/components/campaign-actions/campaign-button";
 import chunk from "@/utils/chunk";
 
 const campaignTypes: {

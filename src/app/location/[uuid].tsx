@@ -18,7 +18,7 @@ import {
 import { showLocation } from "react-native-map-link";
 
 import Placeholder from "@/assets/svg/placeholder";
-import CampaignActions from "@/components/campaign-actions";
+import CampaignActions from "@/components/campaign-actions/campaign-actions";
 import DisplayJSON from "@/components/display-json";
 import ErrorMessage from "@/components/error-message";
 import FavoriteLocation from "@/components/favorite-location";

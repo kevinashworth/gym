@@ -11,13 +11,9 @@ interface Props {
 }
 
 export default function Button({ icon, label, onPress }: Props) {
-  const Icon = icon
-    ? React.cloneElement(icon, { color: spectrum.primary })
-    : null;
+  const Icon = icon ? React.cloneElement(icon, { color: spectrum.primary }) : null;
 
-  const onPressFn = !!onPress
-    ? onPress
-    : () => alert(`You pressed the ${label} button.`);
+  const onPressFn = !!onPress ? onPress : () => alert(`You pressed the ${label} button.`);
 
   return (
     <View style={styles.buttonContainer}>
