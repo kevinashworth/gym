@@ -57,7 +57,7 @@ const buttonVariantsContainer: ButtonVariantsContainer = {
   outline: {
     backgroundColor: spectrum.white,
     borderColor: spectrum.primary,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
   },
   error: {
     backgroundColor: spectrum.error,
@@ -71,6 +71,24 @@ const buttonVariantsContainer: ButtonVariantsContainer = {
   default: {
     backgroundColor: spectrum.base1,
   },
+};
+
+const defaultDisabledContainer = {
+  backgroundColor: spectrum.gray10,
+  borderColor: spectrum.gray10,
+};
+const buttonDisabledVariantsContainer: ButtonVariantsContainer = {
+  primary: defaultDisabledContainer,
+  secondary: defaultDisabledContainer,
+  outline: {
+    backgroundColor: spectrum.white,
+    borderColor: spectrum.gray10,
+    borderWidth: 1,
+  },
+  error: defaultDisabledContainer,
+  black: defaultDisabledContainer,
+  white: defaultDisabledContainer,
+  default: defaultDisabledContainer,
 };
 
 const buttonSizesLabel: ButtonSizesLabel = {
@@ -88,6 +106,20 @@ const buttonVariantsLabel: ButtonVariantsLabel = {
   black: { color: spectrum.white },
   white: { color: spectrum.black },
   default: { color: spectrum.primary },
+};
+
+const defaultDisabledLabel = {
+  color: spectrum.gray10,
+};
+
+const buttonDisabledVariantsLabel: ButtonVariantsLabel = {
+  primary: defaultDisabledLabel,
+  secondary: defaultDisabledLabel,
+  outline: defaultDisabledLabel,
+  error: defaultDisabledLabel,
+  black: defaultDisabledLabel,
+  white: defaultDisabledLabel,
+  default: defaultDisabledLabel,
 };
 
 const buttonVariantsTextColor: ButtonVariantsTextColor = Object.fromEntries(
@@ -147,16 +179,19 @@ export default function Button({
           buttonStyle,
           buttonSizesContainer[size],
           buttonVariantsContainer[variant],
-          disabled && {
-            backgroundColor: spectrum.gray10,
-            borderColor: spectrum.gray10,
-          },
+          disabled && buttonDisabledVariantsContainer[variant],
         ]}>
         {ActivityIndicatorComponent}
         {IconComponent}
         {IconNameComponent}
         {label && (
-          <Text style={[styles.buttonLabel, buttonSizesLabel[size], buttonVariantsLabel[variant]]}>
+          <Text
+            style={[
+              styles.buttonLabel,
+              buttonSizesLabel[size],
+              buttonVariantsLabel[variant],
+              disabled && buttonDisabledVariantsLabel[variant],
+            ]}>
             {label}
           </Text>
         )}
