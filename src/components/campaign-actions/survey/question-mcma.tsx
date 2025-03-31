@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import Button from "@/components/button";
-import CheckboxGroup from "@/components/checkbox-group2";
+import CheckboxGroup from "@/components/checkbox-group";
 
 interface PromptWithAlternativesProps {
   alternatives: string[];

@@ -1,12 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useIsFocused } from "@react-navigation/native";
-import {
-  BarcodeScanningResult,
-  Camera,
-  CameraView,
-  useCameraPermissions,
-} from "expo-camera";
+import { BarcodeScanningResult, Camera, CameraView, useCameraPermissions } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import * as Linking from "expo-linking";
 import { router, Stack } from "expo-router";
@@ -29,10 +24,7 @@ import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 import { uriValidator } from "@/utils/qrcode-scan";
 
-import type {
-  UriValidatorError,
-  UriValidatorResult,
-} from "@/utils/qrcode-scan";
+import type { UriValidatorError, UriValidatorResult } from "@/utils/qrcode-scan";
 
 const window = Dimensions.get("window");
 const screenWidthForCamera = window.width * 0.75;
@@ -66,12 +58,8 @@ export default function ActionTab() {
           const pathname = "/location/[uuid]";
           const params = Object.assign(
             { uuid: result.locationId },
-            result.type === "referral"
-              ? { referralCode: result.referralCode }
-              : {},
-            result.type === "checkin"
-              ? { campaign_short_code: result.campaign_short_code }
-              : {},
+            result.type === "referral" ? { referralCode: result.referralCode } : {},
+            result.type === "checkin" ? { campaign_short_code: result.campaign_short_code } : {}
           );
           router.push({ pathname, params }); // TODO: `push` now seems ok with `isFocused`, but if not, `replace` could be better, as `push` keeps this screen on the Stack
         }, 500);
@@ -103,12 +91,8 @@ export default function ActionTab() {
           const pathname = "/location/[uuid]";
           const params = Object.assign(
             { uuid: result.locationId },
-            result.type === "referral"
-              ? { referralCode: result.referralCode }
-              : {},
-            result.type === "checkin"
-              ? { campaign_short_code: result.campaign_short_code }
-              : {},
+            result.type === "referral" ? { referralCode: result.referralCode } : {},
+            result.type === "checkin" ? { campaign_short_code: result.campaign_short_code } : {}
           );
           router.push({ pathname, params });
         }, 500);
@@ -117,10 +101,7 @@ export default function ActionTab() {
   }
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === "active"
-      ) {
+      if (appState.current.match(/inactive|background/) && nextAppState === "active") {
         qrLock.current = false;
       }
       appState.current = nextAppState;
@@ -155,14 +136,9 @@ export default function ActionTab() {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>
-          Enable camera permissions for the GotYou&nbsp;app, so you can start
-          scanning QR&nbsp;codes
+          Enable camera permissions for the GotYou&nbsp;app, so you can start scanning QR&nbsp;codes
         </Text>
-        <RNButton
-          onPress={requestPermission}
-          title="Grant permission"
-          color={spectrum.primary}
-        />
+        <RNButton onPress={requestPermission} title="Grant permission" color={spectrum.primary} />
       </View>
     );
   }
@@ -172,9 +148,7 @@ export default function ActionTab() {
       <View style={styles.container}>
         <Stack.Screen options={{ headerShown: false }} />
         <View style={{ alignItems: "center" }}>
-          <Text style={styles.h6}>
-            Position the QR code in the camera box below
-          </Text>
+          <Text style={styles.h6}>Position the QR code in the camera box below</Text>
         </View>
 
         <View style={styles.cameraContainer}>
@@ -183,10 +157,7 @@ export default function ActionTab() {
               barcodeTypes: ["qr"],
             }}
             onBarcodeScanned={isFocused ? handleBarcodeScanned : undefined}
-            style={[
-              styles.camera,
-              Platform.OS === "ios" ? styles.cameraIOS : styles.cameraAndroid,
-            ]}
+            style={[styles.camera, Platform.OS === "ios" ? styles.cameraIOS : styles.cameraAndroid]}
           />
           <View style={styles.overlayIconContainer}>
             <TouchableOpacity onPress={handlePickImage}>
@@ -200,14 +171,8 @@ export default function ActionTab() {
         {showDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
-            <DisplayJSON
-              json={{ pickedImage, qrLock, scanError, scanResult }}
-            />
-            <Button
-              iconName="refresh"
-              onPress={resetState}
-              label="Reset local state"
-            />
+            <DisplayJSON json={{ pickedImage, qrLock, scanError, scanResult }} />
+            <Button iconName="refresh" onPress={resetState} label="Reset local state" />
           </View>
         )}
       </View>
