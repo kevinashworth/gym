@@ -255,7 +255,7 @@ export default function LocationScreen() {
           </YStack>
           <YStack style={{ alignItems: "center", gap: 8 }}>
             <Text style={styles.h6}>Earn Rewards From This Business</Text>
-            <CampaignActions />
+            <CampaignActions location={location} />
           </YStack>
         </YStack>
         <View
