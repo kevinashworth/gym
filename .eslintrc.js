@@ -29,11 +29,6 @@ module.exports = {
             group: "builtin",
             position: "before",
           },
-          {
-            pattern: "~/**",
-            group: "external",
-            position: "after",
-          },
         ],
         pathGroupsExcludedImportTypes: ["react"],
         groups: [
@@ -49,5 +44,17 @@ module.exports = {
         ],
       },
     ],
+    // "@typescript-eslint/no-unused-vars": [
+    //   "error",
+    //   {
+    //     args: "all",
+    //     argsIgnorePattern: "^_",
+    //     caughtErrors: "all",
+    //     caughtErrorsIgnorePattern: "^_",
+    //     destructuredArrayIgnorePattern: "^_",
+    //     varsIgnorePattern: "^_",
+    //     ignoreRestSiblings: true,
+    //   },
+    // ],
   },
 };

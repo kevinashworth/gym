@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { Campaign, CampaignsSchema } from "./campaign";
+
 export const BusinessHoursSchema = z.object({
   periods: z.array(
     z.object({
@@ -22,20 +24,6 @@ export const BusinessHoursSchema = z.object({
 });
 
 export type BusinessHours = z.infer<typeof BusinessHoursSchema>;
-
-export const CampaignSchema = z.object({
-  uuid: z.string(),
-  name: z.string(),
-  campaign_type: z.string(),
-  reward: z.number(),
-  first_time_bonus: z.number(),
-});
-
-export type Campaign = z.infer<typeof CampaignSchema>;
-
-export const CampaignsSchema = z.array(CampaignSchema);
-
-export type Campaigns = z.infer<typeof CampaignsSchema>;
 
 export const LocationSchema = z.object({
   name: z.string(),

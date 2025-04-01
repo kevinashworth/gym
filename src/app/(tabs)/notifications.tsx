@@ -81,22 +81,25 @@ export default function NotificationsTab() {
               label="Toast - info"
               onPress={() => Toast.show({ type: "info", text1: "Info" })}
               size="sm"
-              variant="outline"
+              variant="primary"
             />
             <Button
               iconName="arrow-up"
               label="Toast - tomatoToast"
               onPress={() => Toast.show({ type: "tomatoToast", text1: "Info" })}
               size="sm"
-              variant="outline"
+              variant="secondary"
             />
             <Button
+              disabled={false}
               iconName="arrow-up"
               label="Toast - successToast"
               onPress={() =>
                 Toast.show({
                   type: "successToast",
                   text1: "Profile updated successfully.",
+                  text2:
+                    "Thank you for updating your profile a little longer and longer and longer and longer.",
                 })
               }
               size="sm"
@@ -127,13 +130,13 @@ export default function NotificationsTab() {
               variant="outline"
             />
             <DisplayJSON json={{ count, message }} />
-            <Button label="Reset" onPress={() => reset()} size="md" variant="black" />
-            <Button label="Set Count" onPress={() => setCount(10)} size="md" variant="black" />
+            <Button label="Reset" onPress={() => reset()} size="md" variant="error" />
+            <Button label="Set Count" onPress={() => setCount(10)} size="md" variant="default" />
             <Button
               label="Set Message"
               onPress={() => setMessage("Hello from testing store 3")}
               size="md"
-              variant="black"
+              variant="white"
             />
           </View>
         )}

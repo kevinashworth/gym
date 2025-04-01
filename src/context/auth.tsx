@@ -1,9 +1,4 @@
-import {
-  useContext,
-  useEffect,
-  createContext,
-  type PropsWithChildren,
-} from "react";
+import { useContext, useEffect, createContext, type PropsWithChildren } from "react";
 
 import { usePathname, useRouter } from "expo-router";
 
@@ -40,9 +35,7 @@ function useProtectedRoute(isUserAuthenticated: boolean) {
   const router = useRouter();
 
   useEffect(() => {
-    const isUnprotectedPath = unprotectedPrefixes.some((path) =>
-      pathname.startsWith(path),
-    );
+    const isUnprotectedPath = unprotectedPrefixes.some((path) => pathname.startsWith(path));
 
     // If the user is not signed in and the path is protected, redirect to welcome page.
     if (!isUserAuthenticated && !isUnprotectedPath) {

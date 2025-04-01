@@ -18,7 +18,7 @@ import {
 import { showLocation } from "react-native-map-link";
 
 import Placeholder from "@/assets/svg/placeholder";
-import CampaignActions from "@/components/campaign-actions";
+import CampaignActions from "@/components/campaign-actions/campaign-actions";
 import DisplayJSON from "@/components/display-json";
 import ErrorMessage from "@/components/error-message";
 import FavoriteLocation from "@/components/favorite-location";
@@ -30,7 +30,7 @@ import { photoKeys } from "@/constants/photoKeys";
 import api from "@/lib/api";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
-import { clamp } from "@/utils/clamp";
+import clamp from "@/utils/clamp";
 import { formatAddressForMaps } from "@/utils/maps";
 import { phoneFormatter, phoneFormatterAsLink } from "@/utils/phone";
 
@@ -102,8 +102,7 @@ export default function LocationScreen() {
 
   useEffect(() => {
     if (!location) return;
-    const mainImage =
-      location.business_logo || location.external_thumbnail_1 || "";
+    const mainImage = location.business_logo || location.external_thumbnail_1 || "";
     if (mainImage) {
       Image.getSize(mainImage, (width, height) => {
         const aspectRatio = clamp(0.75, width / height, 1.25);
@@ -153,8 +152,7 @@ export default function LocationScreen() {
     Linking.openURL(url).catch((e) => console.error(e));
   };
 
-  const handleGoBack = () =>
-    router.canGoBack() ? router.back() : router.replace("/(tabs)");
+  const handleGoBack = () => (router.canGoBack() ? router.back() : router.replace("/(tabs)"));
 
   return (
     <View style={styles.container}>
@@ -176,8 +174,7 @@ export default function LocationScreen() {
               style={{
                 alignItems: "center",
                 gap: 8,
-              }}
-            >
+              }}>
               <Picture
                 source={{
                   uri: mainImageWithSize.url,
@@ -197,9 +194,7 @@ export default function LocationScreen() {
                 <XStack style={{ gap: 2 }}>
                   <Text>Review Score:</Text>
                   <Text style={{ fontWeight: 500 }}>
-                    {location.average_rating
-                      ? Number(location.average_rating).toFixed(1)
-                      : "—"}
+                    {location.average_rating ? Number(location.average_rating).toFixed(1) : "—"}
                   </Text>
                 </XStack>
               </YStack>
@@ -212,20 +207,16 @@ export default function LocationScreen() {
                       showLocation({
                         address: formatAddressForMaps(location),
                       })
-                    }
-                  >
+                    }>
                     {({ pressed }) => (
                       <>
                         <Text
                           style={[
                             styles.address,
                             {
-                              textDecorationLine: pressed
-                                ? "underline"
-                                : "none",
+                              textDecorationLine: pressed ? "underline" : "none",
                             },
-                          ]}
-                        >
+                          ]}>
                           {location.address1}
                         </Text>
                         {location.address2 && (
@@ -233,12 +224,9 @@ export default function LocationScreen() {
                             style={[
                               styles.address,
                               {
-                                textDecorationLine: pressed
-                                  ? "underline"
-                                  : "none",
+                                textDecorationLine: pressed ? "underline" : "none",
                               },
-                            ]}
-                          >
+                            ]}>
                             {location.address2}
                           </Text>
                         )}
@@ -246,20 +234,15 @@ export default function LocationScreen() {
                           style={[
                             styles.address,
                             {
-                              textDecorationLine: pressed
-                                ? "underline"
-                                : "none",
+                              textDecorationLine: pressed ? "underline" : "none",
                             },
-                          ]}
-                        >
+                          ]}>
                           {location.city} {location.state} {location.zip}
                         </Text>
                       </>
                     )}
                   </Pressable>
-                  <TouchableOpacity
-                    onPress={() => callNumber(location.business_phone)}
-                  >
+                  <TouchableOpacity onPress={() => callNumber(location.business_phone)}>
                     <Text style={styles.phone}>
                       {phoneFormatter(location.business_phone || "")}
                     </Text>
@@ -267,14 +250,12 @@ export default function LocationScreen() {
                 </YStack>
                 <FavoriteLocation uuid={uuid} enableText />
               </XStack>
-              <Text style={styles.description}>
-                {location.description || "(No description)"}
-              </Text>
+              <Text style={styles.description}>{location.description || "(No description)"}</Text>
             </YStack>
           </YStack>
           <YStack style={{ alignItems: "center", gap: 8 }}>
             <Text style={styles.h6}>Earn Rewards From This Business</Text>
-            <CampaignActions />
+            <CampaignActions location={location} />
           </YStack>
         </YStack>
         <View
@@ -282,8 +263,7 @@ export default function LocationScreen() {
             flexDirection: "row",
             gap: 6,
             padding: 8,
-          }}
-        >
+          }}>
           <View style={{ flex: 1, flexDirection: "column", gap: 6 }}>
             {imagesWithSizes.slice(0, colWrap).map((photo, i: number) => (
               <Image
@@ -307,9 +287,7 @@ export default function LocationScreen() {
             ))}
           </View>
         </View>
-        {showPageInfo && (
-          <Text style={styles.pageInfo}>src/app/location/[uuid].tsx</Text>
-        )}
+        {showPageInfo && <Text style={styles.pageInfo}>src/app/location/[uuid].tsx</Text>}
         {showDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>

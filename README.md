@@ -23,9 +23,12 @@ collect-account not shown anymore, only verify-account
 
 Location screen:
 
-- Add campaign functionality to Location screen ("Earn Rewards...")
 - Modal to show a single image in large view
 - Use a location's `is_favorite` 1) instead of `favorites` or 2) to improve favorites performance
+
+Settings:
+
+- Invite Friends
 
 For UX, add a message when the user has reached the end of the Search list. Also, for dev, why does pageInfo not show up below the search results all the time?
 
@@ -34,6 +37,8 @@ For UX, add a message when the user has reached the end of the Search list. Also
 Favorites in store
 
 ### Recently built
+
+- Add campaign functionality to Location screen ("Earn Rewards...")
 
 Pull-down to refresh
 Done: Dashboard screen, Wallet screen, Search screen, Categories screen

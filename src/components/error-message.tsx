@@ -28,10 +28,10 @@ function ErrorMessage({ error, size = "medium", style: customStyle, ...props }: 
   }
 
   const fontSize = size === "large" ? 16 : 12;
-  const fontWeight = size === "large" ? 600 : 500;
+  // const fontWeight = size === "large" ? 500 : 500;
 
   return (
-    <Text style={[styles.errorText, { fontSize, fontWeight }, customStyle]} {...props}>
+    <Text style={[styles.errorText, { fontSize }, customStyle]} {...props}>
       {errorMessage}
     </Text>
   );

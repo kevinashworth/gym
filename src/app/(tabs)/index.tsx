@@ -48,8 +48,7 @@ export default function DashboardTab() {
           refreshing={refreshing}
           tintColor={spectrum.primary}
         />
-      }
-    >
+      }>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
         <View>

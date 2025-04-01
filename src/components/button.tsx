@@ -57,7 +57,7 @@ const buttonVariantsContainer: ButtonVariantsContainer = {
   outline: {
     backgroundColor: spectrum.white,
     borderColor: spectrum.primary,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: 1,
   },
   error: {
     backgroundColor: spectrum.error,
@@ -71,6 +71,24 @@ const buttonVariantsContainer: ButtonVariantsContainer = {
   default: {
     backgroundColor: spectrum.base1,
   },
+};
+
+const defaultDisabledContainer = {
+  backgroundColor: spectrum.gray10,
+  borderColor: spectrum.gray10,
+};
+const buttonDisabledVariantsContainer: ButtonVariantsContainer = {
+  primary: defaultDisabledContainer,
+  secondary: defaultDisabledContainer,
+  outline: {
+    backgroundColor: spectrum.white,
+    borderColor: spectrum.gray10,
+    borderWidth: 1,
+  },
+  error: defaultDisabledContainer,
+  black: defaultDisabledContainer,
+  white: defaultDisabledContainer,
+  default: defaultDisabledContainer,
 };
 
 const buttonSizesLabel: ButtonSizesLabel = {
@@ -90,6 +108,15 @@ const buttonVariantsLabel: ButtonVariantsLabel = {
   default: { color: spectrum.primary },
 };
 
+const defaultDisabledLabel = {
+  color: spectrum.gray10,
+};
+
+const buttonDisabledVariantsLabel: ButtonVariantsLabel = {
+  ...buttonVariantsLabel,
+  outline: defaultDisabledLabel,
+};
+
 const buttonVariantsTextColor: ButtonVariantsTextColor = Object.fromEntries(
   Object.entries(buttonVariantsLabel).map(([variant, style]) => [variant, style.color])
 ) as ButtonVariantsTextColor;
@@ -105,7 +132,6 @@ interface ButtonProps {
   onPress: () => void;
   size?: Sizes;
   variant?: Variants;
-  withoutShadow?: boolean;
 }
 
 export default function Button({
@@ -119,7 +145,6 @@ export default function Button({
   onPress,
   size = "md",
   variant = "primary",
-  withoutShadow = false,
 }: ButtonProps) {
   const ActivityIndicatorComponent = activityIndicator && (
     <ActivityIndicator
@@ -149,17 +174,19 @@ export default function Button({
           buttonStyle,
           buttonSizesContainer[size],
           buttonVariantsContainer[variant],
-          withoutShadow && { shadowColor: "transparent" },
-          disabled && {
-            backgroundColor: spectrum.gray10,
-            borderColor: spectrum.gray10,
-          },
+          disabled && buttonDisabledVariantsContainer[variant],
         ]}>
         {ActivityIndicatorComponent}
         {IconComponent}
         {IconNameComponent}
         {label && (
-          <Text style={[styles.buttonLabel, buttonSizesLabel[size], buttonVariantsLabel[variant]]}>
+          <Text
+            style={[
+              styles.buttonLabel,
+              buttonSizesLabel[size],
+              buttonVariantsLabel[variant],
+              disabled && buttonDisabledVariantsLabel[variant],
+            ]}>
             {label}
           </Text>
         )}

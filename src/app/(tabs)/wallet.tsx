@@ -1,11 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
-import {
-  keepPreviousData,
-  useInfiniteQuery,
-  useQuery,
-} from "@tanstack/react-query";
+import { keepPreviousData, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import {
   ActivityIndicator,
@@ -27,9 +23,7 @@ import { spectrum } from "@/theme";
 import type { HistoryIconName, IconName } from "@/components/icon";
 import type { Balance, History, HistoryItem } from "@/types/wallet";
 
-const generateTypeIconValue = (
-  item: HistoryItem,
-): [string, IconName, number] => {
+const generateTypeIconValue = (item: HistoryItem): [string, IconName, number] => {
   if (item.type !== "transfer") {
     // The 5 possible values for item.type are "CheckIn", "CheckInQRCode",
     // "Referral", "Review", "Survey".
@@ -39,8 +33,7 @@ const generateTypeIconValue = (
     if (item.actionDescription.indexOf("redeem") > -1) {
       return ["Redeem", "circle-dollar-sign", -item.rewardGetToken];
     }
-    const capitalizedStr =
-      item.type.charAt(0).toUpperCase() + item.type.slice(1);
+    const capitalizedStr = item.type.charAt(0).toUpperCase() + item.type.slice(1);
     // NB: "as IconName" below is a promise with no guarantee. But it won't
     // break anything and it's not a big deal and it should only come into play
     // if the backend changes and we don't update the new values here in the
@@ -56,11 +49,7 @@ interface FlatListItemProps {
   onHideUnderlay: () => void;
 }
 
-function FlatListItem({
-  item,
-  onShowUnderlay,
-  onHideUnderlay,
-}: FlatListItemProps) {
+function FlatListItem({ item, onShowUnderlay, onHideUnderlay }: FlatListItemProps) {
   const [type, icon, value] = generateTypeIconValue(item);
 
   return (
@@ -68,34 +57,27 @@ function FlatListItem({
       key={item.uuid}
       underlayColor="#000"
       onShowUnderlay={onShowUnderlay}
-      onHideUnderlay={onHideUnderlay}
-    >
+      onHideUnderlay={onHideUnderlay}>
       <View style={styles.flatListItem}>
         <Icon size={20} color={spectrum.primary} name={icon} />
         <Text
           style={[styles.flatListItemText, { width: 72 }]}
           numberOfLines={1}
-          adjustsFontSizeToFit
-        >
+          adjustsFontSizeToFit>
           {new Date(item.updateTimestamp).toLocaleDateString("en-US", {
             year: "2-digit",
             month: "numeric",
             day: "numeric",
           })}
         </Text>
-        <Text
-          style={[styles.flatListItemText, { flex: 1 }]}
-          numberOfLines={1}
-          adjustsFontSizeToFit
-        >
+        <Text style={[styles.flatListItemText, { flex: 1 }]} numberOfLines={1} adjustsFontSizeToFit>
           {type === "Redeem" ? "Redeem" : item.location_name}
         </Text>
         <Text
           style={[
             styles.flatListItemText,
             { color: value > 0 ? "green" : "red", textAlign: "right" },
-          ]}
-        >
+          ]}>
           {value > 0 && "+"}
           {value / 100}
         </Text>
@@ -118,26 +100,17 @@ export default function WalletTab() {
       .json();
   };
 
-  const {
-    data,
-    error,
-    fetchNextPage,
-    hasNextPage,
-    isError,
-    isLoading,
-    isRefetching,
-    refetch,
-  } = useInfiniteQuery({
-    enabled: size > 0,
-    queryKey: ["wallet", "istory", { pageSize: size }],
-    queryFn: fetchHistory,
-    placeholderData: keepPreviousData,
-    initialPageParam: 0,
-    getNextPageParam: ({ last, pageable: { pageNumber } }) =>
-      last ? undefined : pageNumber + 1,
-    getPreviousPageParam: ({ first, pageable: { pageNumber } }) =>
-      first ? undefined : pageNumber - 1,
-  });
+  const { data, error, fetchNextPage, hasNextPage, isError, isLoading, isRefetching, refetch } =
+    useInfiniteQuery({
+      enabled: size > 0,
+      queryKey: ["wallet", "istory", { pageSize: size }],
+      queryFn: fetchHistory,
+      placeholderData: keepPreviousData,
+      initialPageParam: 0,
+      getNextPageParam: ({ last, pageable: { pageNumber } }) => (last ? undefined : pageNumber + 1),
+      getPreviousPageParam: ({ first, pageable: { pageNumber } }) =>
+        first ? undefined : pageNumber - 1,
+    });
 
   const balanceQuery = useQuery({
     queryKey: ["user", "balance"],
@@ -152,7 +125,7 @@ export default function WalletTab() {
       const heightOfFlatListContainer = height;
       const numberOfItemsForAvailableHeight = Math.max(
         10,
-        Math.ceil(heightOfFlatListContainer / heightFlatListItem) + 1,
+        Math.ceil(heightOfFlatListContainer / heightFlatListItem) + 1
       );
       setSize(numberOfItemsForAvailableHeight);
     });
@@ -178,7 +151,7 @@ export default function WalletTab() {
           {balanceQuery.isSuccess && (
             <Text style={styles.balanceText}>
               {new Intl.NumberFormat("en-US").format(
-                balanceQuery.data?.token_balance.token_balance_get,
+                balanceQuery.data?.token_balance.token_balance_get
               )}
             </Text>
           )}
@@ -212,12 +185,7 @@ export default function WalletTab() {
               initialNumToRender={size}
               keyExtractor={(item) => item.uuid}
               ItemSeparatorComponent={({ highlighted }) => (
-                <View
-                  style={[
-                    styles.flatListSeparator,
-                    highlighted && { marginLeft: 0 },
-                  ]}
-                />
+                <View style={[styles.flatListSeparator, highlighted && { marginLeft: 0 }]} />
               )}
               ListEmptyComponent={
                 <Empty
@@ -236,11 +204,7 @@ export default function WalletTab() {
                       You’ve reached the end of your wallet history
                     </Text>
                   )}
-                  {showPageInfo && (
-                    <Text style={styles.pageInfo}>
-                      src/app/(tabs)/wallet.tsx
-                    </Text>
-                  )}
+                  {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/wallet.tsx</Text>}
                 </>
               }
               onEndReached={() => fetchNextPage()}

@@ -11,16 +11,13 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: spectrum.primary,
         tabBarShowLabel: false,
-      }}
-    >
+      }}>
       <Tabs.Screen
         name="index"
         options={{
           title: "Dashboard",
           tabBarAccessibilityLabel: "Dashboard",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -28,9 +25,7 @@ export default function TabLayout() {
         options={{
           title: "Wallet",
           tabBarAccessibilityLabel: "Wallet",
-          tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="wallet" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="wallet" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -49,9 +44,7 @@ export default function TabLayout() {
         options={{
           title: "Notifications",
           tabBarAccessibilityLabel: "Notifications",
-          tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name="notifications" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="notifications" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -59,9 +52,7 @@ export default function TabLayout() {
         options={{
           title: "Search",
           tabBarAccessibilityLabel: "Search",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="search" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="search" color={color} />,
         }}
       />
     </Tabs>
