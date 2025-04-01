@@ -52,15 +52,19 @@ function IconCoins({ quantity, textStyle, size = 24, ...props }: IconCoinsProps)
     width: size,
     height: size,
   };
+
   const fontSize = size * (16 / 24);
 
   return (
     <View style={[styles.container, dynamicStyles]}>
-      <View style={[styles.svg, dynamicStyles]}>
+      <View style={dynamicStyles}>
         <SvgComponent size={size} {...props} />
       </View>
       <View style={[styles.text, dynamicStyles]}>
-        <Text style={[{ color: "white", fontSize, fontWeight: "bold" }, textStyle]}>
+        <Text
+          style={[{ color: "white", fontSize, fontWeight: "bold" }, textStyle]}
+          adjustsFontSizeToFit
+          numberOfLines={1}>
           {quantity}
         </Text>
       </View>
@@ -70,18 +74,12 @@ function IconCoins({ quantity, textStyle, size = 24, ...props }: IconCoinsProps)
 
 const styles = StyleSheet.create({
   container: {
-    // alignItems: "center",
-    // flexDirection: "row",
     position: "relative",
   },
-  svg: {
-    // justifyContent: "center",
-    // alignItems: "center",
-  },
   text: {
-    position: "absolute",
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
   },
 });
 
