@@ -113,13 +113,8 @@ const defaultDisabledLabel = {
 };
 
 const buttonDisabledVariantsLabel: ButtonVariantsLabel = {
-  primary: defaultDisabledLabel,
-  secondary: defaultDisabledLabel,
+  ...buttonVariantsLabel,
   outline: defaultDisabledLabel,
-  error: defaultDisabledLabel,
-  black: defaultDisabledLabel,
-  white: defaultDisabledLabel,
-  default: defaultDisabledLabel,
 };
 
 const buttonVariantsTextColor: ButtonVariantsTextColor = Object.fromEntries(
