@@ -77,17 +77,8 @@ export default function CampaignActions({ location }: CampaignActionsProps) {
       ))}
       <Dialog isVisible={modalVisible} onHide={() => setModalVisible(false)}>
         <Text style={styles.nameHeading}>{location.name}</Text>
-        {campaignType === "CheckIn" && (
-          <CheckInDialog
-            // error={null}
-            // isError={false}
-            // isMutating={true}
-            error={{ message: "You are not in the area of CheckIn" } as Error}
-            isError={true}
-            isMutating={false}
-            location={location}
-            onSubmit={() => setModalVisible(false)}
-          />
+        {campaignType === "CheckIn" && !!campaign && (
+          <CheckInDialog campaign={campaign} onSubmit={() => setModalVisible(false)} />
         )}
         {campaignType === "Referral" && (
           <ReferralDialog

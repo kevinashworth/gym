@@ -1,6 +1,12 @@
 import { z } from "zod";
 
-export const CampaignTypeSchema = z.enum(["CheckIn", "Review", "Referral", "Survey"]);
+export const CampaignTypeSchema = z.enum([
+  "CheckIn",
+  "QrCodeCheckIn",
+  "Review",
+  "Referral",
+  "Survey",
+]);
 
 export type CampaignType = z.infer<typeof CampaignTypeSchema>;
 
