@@ -80,14 +80,11 @@ export default function CampaignActions({ location }: CampaignActionsProps) {
         {campaignType === "CheckIn" && !!campaign && (
           <CheckInDialog campaign={campaign} onSubmit={() => setModalVisible(false)} />
         )}
-        {campaignType === "Referral" && (
+        {campaignType === "Referral" && !!campaign && (
           <ReferralDialog
-            handleReferral={() => {}}
-            isMutating={false}
+            campaign={campaign}
             location={location}
-            mutateResult={{ qrcode: "" }}
             onSubmit={() => setModalVisible(false)}
-            sharing={false}
           />
         )}
         {campaignType === "Review" && !!campaign && (
