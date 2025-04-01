@@ -2,9 +2,12 @@ import { PropsWithChildren } from "react";
 
 import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for the "X" icon
 import { Dimensions, Modal, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message"; // see https://github.com/calintamas/react-native-toast-message/blob/HEAD/docs/modal-usage.md#showing-a-toast-inside-a-modal
 
 import BottomGet from "@/assets/svg/bottom-get";
 import { spectrum } from "@/theme";
+import { toastConfig } from "@/utils/toast";
 
 const window = Dimensions.get("window");
 const screenWidthMinusPadding = window.width - 32;
@@ -15,7 +18,9 @@ interface DialogProps {
   onHide: () => void;
 }
 
-const Dialog = ({ children, isVisible, onHide }: PropsWithChildren<DialogProps>) => {
+const DialogWithGetIcon = ({ children, isVisible, onHide }: PropsWithChildren<DialogProps>) => {
+  const insets = useSafeAreaInsets();
+
   return (
     <Modal animationType="fade" transparent={true} visible={isVisible} onDismiss={onHide}>
       <View style={styles.background}>
@@ -31,6 +36,7 @@ const Dialog = ({ children, isVisible, onHide }: PropsWithChildren<DialogProps>)
           <View style={styles.content}>{children}</View>
         </View>
       </View>
+      <Toast config={toastConfig} topOffset={insets.top} />
     </Modal>
   );
 };
@@ -83,10 +89,9 @@ const styles = StyleSheet.create({
   },
   content: {
     alignItems: "center",
-    // backgroundColor: spectrum.error,
     margin: 8,
     padding: 8,
   },
 });
 
-export default Dialog;
+export default DialogWithGetIcon;

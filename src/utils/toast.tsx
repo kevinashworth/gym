@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { BaseToast } from "react-native-toast-message";
 
 import { spectrum } from "@/theme";
@@ -21,28 +21,37 @@ export const toastConfig = {
   primary: (props: any) => <MyToast {...props} style={{ borderLeftColor: spectrum.primary }} />,
   secondary: (props: any) => <MyToast {...props} style={{ borderLeftColor: spectrum.secondary }} />,
   error: (props: any) => <MyToast {...props} style={{ borderLeftColor: spectrum.error }} />,
-  // successToast: (props: any) => (
-  //   <View
-  //     style={{
-  //       backgroundColor: spectrum.success,
-  //       borderRadius: 8,
-  //       justifyContent: "center",
-  //       minWidth: 196,
-  //       padding: 16,
-  //     }}
-  //   >
-  //     <Text
-  //       style={{
-  //         color: spectrum.white,
-  //         fontSize: 16,
-  //         fontWeight: 500,
-  //         textAlign: "center",
-  //       }}
-  //     >
-  //       {props.text1}
-  //     </Text>
-  //   </View>
-  // ),
+  successToast: (props: any) => (
+    <View
+      style={{
+        backgroundColor: spectrum.success,
+        borderRadius: 8,
+        justifyContent: "center",
+        minWidth: 196,
+        padding: 16,
+      }}>
+      <Text
+        style={{
+          color: spectrum.white,
+          fontSize: 16,
+          fontWeight: 500,
+          textAlign: "center",
+        }}>
+        {props.text1}
+      </Text>
+      {props.text2 && (
+        <Text
+          style={{
+            color: spectrum.white,
+            fontSize: 14,
+            fontWeight: 400,
+            textAlign: "center",
+          }}>
+          {props.text2}
+        </Text>
+      )}
+    </View>
+  ),
 };
 
 const styles = StyleSheet.create({
