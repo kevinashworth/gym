@@ -1,36 +1,40 @@
+# Welcome to your Expo app 👋
+
+This is an [Expo](https://expo.dev) project
+
 # GYM
 
 ## Notes to self
 
+These notes are a little sloppy, a WIP, not a introduction to the codebase
+
 ### Do not use
 
-Tamagui
-easy-peasy
-Local state as a copy of server state
+- Tamagui
+- easy-peasy
+- Local state as a copy of server state
 
 ### Do use
 
-Typescript, zod
-zustand for local state
-TanStack Query for server state
-TanStack Query with ky, and sometimes just ky, for network requests
+- Typescript
+- zod
+- zustand for local state
+- TanStack Query for server state
+- TanStack Query with ky, and sometimes just ky, for network requests
 
-## Bugs, Fixes
+### Bugs, Fixes
 
-collect-account not shown anymore, only verify-account
-
-Location permission stuff needs better verbiage
+- collect-account not shown anymore, only verify-account
+- Location permission stuff needs better verbiage
 
 ### Not built yet
 
-Location screen:
+Location screen:\
+Modal to show a single image in large view\
+Use a location's `is_favorite` 1) instead of `favorites` or 2) to improve favorites performance
 
-- Modal to show a single image in large view
-- Use a location's `is_favorite` 1) instead of `favorites` or 2) to improve favorites performance
-
-Settings:
-
-- Invite Friends
+Settings:\
+Invite Friends
 
 For UX, add a message when the user has reached the end of the Search list. Also, for dev, why does pageInfo not show up below the search results all the time?
 
@@ -44,7 +48,7 @@ For a user that doesn't give location permissions, we should probably show a mes
 
 - Add campaign functionality to Location screen ("Earn Rewards...")
 
-Pull-down to refresh
+Pull-down to refresh\
 Done: Dashboard screen, Wallet screen, Search screen, Categories screen
 
 Dev-only settings on Settings screen
