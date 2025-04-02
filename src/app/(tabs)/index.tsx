@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { Stack, useFocusEffect } from "expo-router";

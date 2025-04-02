@@ -17,11 +17,7 @@ import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
 import api from "@/lib/api";
 import { spectrum } from "@/theme";
-import {
-  UserProfile,
-  UserProfileEditForm,
-  UserProfileEditFormSchema,
-} from "@/types/user";
+import { UserProfile, UserProfileEditForm, UserProfileEditFormSchema } from "@/types/user";
 import { AsYouType, phoneFormatter, phoneFormatterE164 } from "@/utils/phone";
 
 /*
@@ -35,13 +31,7 @@ const inputWidth = 244;
 function UserProfileFormLoadingState() {
   return (
     <>
-      {[
-        "First Name",
-        "Last Name",
-        "User Name",
-        "Email Address",
-        "Phone Number",
-      ].map((label) => (
+      {["First Name", "Last Name", "User Name", "Email Address", "Phone Number"].map((label) => (
         <View key={label} style={styles.inputContainer}>
           <Input disabled={true} placeholder={label} style={styles.textInput} />
         </View>
@@ -239,12 +229,8 @@ const ProfileScreen = () => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.keyboardAvoid}
-    >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
+      style={styles.keyboardAvoid}>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
           <Stack.Screen options={{ title: "Edit Profile" }} />
           {isLoading || !userProfile ? (
