@@ -20,14 +20,30 @@ interface Location {
   has_campaign: boolean;
 }
 
-export default function SuggestedLocations() {
+interface SuggestedProps {
+  disabled?: boolean;
+}
+
+export default function SuggestedLocations({ disabled }: SuggestedProps) {
   const { lat, lng } = useLocation();
 
+  const searchParams =
+    typeof lat === "number" && typeof lng === "number" ? { lat, lng } : undefined;
+
   const { data, isFetching, error } = useQuery<Location[]>({
-    queryKey: ["dashboard", "location", "suggested", { lat, lng }], // "dashboard" used for queryClient.refetchQueries
-    queryFn: () => api.get("user/location/suggested", { searchParams: { lat, lng } }).json(),
+    enabled: !!searchParams && !disabled,
+    queryKey: ["dashboard", "location", "suggested", searchParams],
+    queryFn: () => api.get("user/location/suggested", { searchParams }).json(),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
+
+  if (disabled || !searchParams) {
+    return (
+      <View style={styles.container}>
+        <Empty icon="map-pin-off" text="To find suggested stores, allow access to your location." />
+      </View>
+    );
+  }
 
   if (isFetching) {
     return (
@@ -47,8 +63,12 @@ export default function SuggestedLocations() {
 
   if (!data?.length) {
     return (
-      <View style={[styles.container, styles.centerContent]}>
-        <Empty />
+      <View style={[styles.container]}>
+        <Empty
+          icon="map-o"
+          text="As you use the app, suggestions will appear here."
+          textStyle={styles.emptyText}
+        />
       </View>
     );
   }
@@ -112,12 +132,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     wordWrap: "break-word",
   },
+  image: {
+    borderRadius: 6,
+  },
   emptyText: {
     fontSize: 14,
     color: spectrum.base1Content,
-  },
-  image: {
-    borderRadius: 6,
   },
   fallback: {
     backgroundColor: spectrum.gray5,

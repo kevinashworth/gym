@@ -7,6 +7,7 @@ import { expoFileSystemStorage } from "./expoFileSystemStorage";
 
 interface DevState {
   // for development
+  enableMockLocation: boolean;
   showApiConsoleLogs: boolean;
   showDevToolbox: boolean;
   showPageInfo: boolean;
@@ -18,6 +19,7 @@ interface DevState {
 
 interface DevActions {
   // for development
+  toggleEnableMockLocation: () => void;
   toggleShowApiConsoleLogs: () => void;
   toggleShowDevToolbox: () => void;
   toggleShowPageInfo: () => void;
@@ -29,9 +31,10 @@ interface DevActions {
 }
 
 const initialState: DevState = {
+  enableMockLocation: Boolean(process.env.EXPO_PUBLIC_ENABLE_MOCK_LOCATION),
   showApiConsoleLogs: process.env.NODE_ENV === "development",
-  showDevToolbox: process.env.NODE_ENV === "development",
-  showPageInfo: process.env.NODE_ENV === "development",
+  showDevToolbox: false,
+  showPageInfo: false,
   showPathnameLog: process.env.NODE_ENV === "development",
   count: 0,
   message: "Hello from testing store",
@@ -49,6 +52,14 @@ const useDevStore = create<DevState & DevActions>()(
       setMessage: (message) =>
         set((state) => ({
           message,
+        })),
+      toggleEnableMockLocation: () =>
+        set((state) => ({
+          enableMockLocation:
+            process.env.NODE_ENV === "development" &&
+            Boolean(process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT) &&
+            Boolean(process.env.EXPO_PUBLIC_MOCK_LOCATION_LNG) &&
+            !state.enableMockLocation,
         })),
       toggleShowApiConsoleLogs: () =>
         set((state) => ({
@@ -76,9 +87,6 @@ const useDevStore = create<DevState & DevActions>()(
   )
 );
 
-middleware(useDevStore, {
-  name: "dev-store",
-  version: 1,
-});
+middleware(useDevStore);
 
 export default useDevStore;

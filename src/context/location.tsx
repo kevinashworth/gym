@@ -3,13 +3,12 @@ import React, { createContext, PropsWithChildren, useContext, useEffect, useStat
 import * as Location from "expo-location";
 import Toast from "react-native-toast-message";
 
-// TODO: Should there even be a default location? For a user that doesn't give
-// permission, we should probably show a message and not use a dummy location.
-// lat, lng, location would be undefined. Could be a good refactor.
-const defaultLocation = {
+import { useDevStore } from "@/store";
+
+const mockLocation = {
   coords: {
-    latitude: process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT || 37.10716,
-    longitude: process.env.EXPO_PUBLIC_MOCK_LOCATION_LNG || -113.56079,
+    latitude: Number(process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT),
+    longitude: Number(process.env.EXPO_PUBLIC_MOCK_LOCATION_LNG),
   },
 } as Location.LocationObject;
 
@@ -17,12 +16,12 @@ interface LocationContextType {
   errorMsg: string | null;
   hasPermission: boolean;
   isRequesting: boolean;
-  lat: number;
-  lng: number;
-  location: Location.LocationObject;
+  lat: number | undefined;
+  lng: number | undefined;
+  location: Location.LocationObject | null;
   refreshLocation: () => Promise<void>;
   retryPermission: () => Promise<void>;
-  setLocation: React.Dispatch<React.SetStateAction<Location.LocationObject>>;
+  setLocation: React.Dispatch<React.SetStateAction<Location.LocationObject | null>>;
 }
 
 const LocationContext = createContext<LocationContextType | null>(null);
@@ -38,13 +37,21 @@ export function useLocation() {
 }
 
 const LocationProvider = ({ children }: PropsWithChildren) => {
-  const [location, setLocation] = useState<Location.LocationObject>(defaultLocation);
+  const { enableMockLocation } = useDevStore();
+
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isRequesting, setIsRequesting] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
 
-  const lat = location.coords.latitude;
-  const lng = location.coords.longitude;
+  const lat = location?.coords.latitude;
+  const lng = location?.coords.longitude;
+
+  useEffect(() => {
+    if (enableMockLocation && !location) {
+      setLocation(mockLocation);
+    }
+  }, [enableMockLocation, location]);
 
   const requestLocation = async () => {
     try {
