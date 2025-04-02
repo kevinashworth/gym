@@ -1,4 +1,4 @@
-import { Text, TextStyle, View, ViewStyle } from "react-native";
+import { StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
 
 import Icon, { IconName } from "@/components/icon";
 import { spectrum } from "@/theme";
@@ -19,29 +19,27 @@ export default function Empty({
   iconSize,
   style,
   text = "No Data",
-  textStyle = {},
+  textStyle,
   vertical = false,
 }: EmptyProps) {
   const flexDirection = vertical ? "column" : "row";
-
-  const containerStyle = {
-    ...style,
-    alignItems: "center",
-    // justifyContent: "center",
-    flexDirection,
-    gap: vertical ? 4 : 8,
-  } as ViewStyle;
-
-  const textStyleCombined = {
-    color: spectrum.base3Content,
-    fontSize: 10,
-    ...textStyle,
-  };
+  const gap = vertical ? 4 : 8;
 
   return (
-    <View style={containerStyle}>
+    <View style={[styles.container, style, { flexDirection, gap }]}>
       <Icon name={icon} color={iconColor || spectrum.base3Content} size={iconSize} />
-      <Text style={textStyleCombined}>{text}</Text>
+      <Text style={[styles.text, textStyle]}>{text}</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    color: spectrum.base3Content,
+    fontSize: 12,
+  },
+});
