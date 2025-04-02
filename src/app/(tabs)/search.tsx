@@ -51,7 +51,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function SearchTab() {
   const showPageInfo = useDevStore((s) => s.showPageInfo);
-  const { errorMsg, isRequesting, hasPermission, retryPermission } = useLocation();
+  const { hasPermission } = useLocation();
 
   const {
     control,
@@ -83,20 +83,6 @@ export default function SearchTab() {
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
-      {errorMsg && (
-        <View style={styles.errorContainer}>
-          <ErrorMessage error={errorMsg} />
-          {!hasPermission && (
-            <Button
-              activityIndicator={isRequesting}
-              activityIndicatorProps={{ color: spectrum.primary, size: "small" }}
-              label="Enable Location"
-              onPress={retryPermission}
-              buttonStyle={styles.retryButton}
-            />
-          )}
-        </View>
-      )}
       <View style={styles.formContainer}>
         <View>
           <Text style={styles.inputLabel}>Search</Text>
@@ -109,6 +95,7 @@ export default function SearchTab() {
               <Input
                 autoCapitalize="none"
                 autoCorrect={false}
+                disabled={!hasPermission}
                 keyboardType="default"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -185,10 +172,14 @@ function SearchResults({ query = "" }: { query: string }) {
   const { hasPermission, isRequesting, lat, lng, refreshLocation, retryPermission } = useLocation();
   const [refreshing, setRefreshing] = useState(false);
 
+  const searchParams =
+    typeof lat === "number" && typeof lng === "number" ? { lat, lng } : undefined;
+
   const { data, isLoading, error, refetch } = useQuery<Location[]>({
+    enabled: !!searchParams,
     queryKey: ["search", query],
     queryFn: () => {
-      return api.get("user/location/search", { searchParams: { query, lat, lng } }).json();
+      return api.get("user/location/search", { searchParams: { query, ...searchParams } }).json();
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
   });

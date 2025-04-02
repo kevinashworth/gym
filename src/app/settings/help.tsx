@@ -1,13 +1,7 @@
 import { useState } from "react";
 
 import { Stack } from "expo-router";
-import {
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import Icon from "@/components/icon";
 import Input from "@/components/input-with-clear-button";
@@ -22,12 +16,7 @@ export default function Help() {
       <Stack.Screen options={{ title: "Help" }} />
       <View style={styles.content}>
         <View style={styles.searchContainer}>
-          <Icon
-            color={spectrum.base1Content}
-            name="search"
-            size={24}
-            style={styles.searchIcon}
-          />
+          <Icon color={spectrum.base1Content} name="search" size={24} style={styles.searchIcon} />
           <Input
             value={filter}
             onChangeText={(f) => setFilter(f)}
@@ -42,16 +31,10 @@ export default function Help() {
               <Text style={styles.title} numberOfLines={2}>
                 Frequently Asked Questions
               </Text>
-              <Text style={styles.subtitle}>
-                Tap to visit the FAQ page on our website
-              </Text>
+              <Text style={styles.subtitle}>Tap to visit the FAQ page on our website</Text>
             </View>
             <View style={styles.iconContainer}>
-              <Icon
-                color={spectrum.base1Content}
-                name="chevron-right"
-                size={24}
-              />
+              <Icon color={spectrum.base1Content} name="chevron-right" size={24} />
             </View>
           </View>
         </TouchableOpacity>

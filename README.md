@@ -15,9 +15,11 @@ zustand for local state
 TanStack Query for server state
 TanStack Query with ky, and sometimes just ky, for network requests
 
-## Bugs
+## Bugs, Fixes
 
 collect-account not shown anymore, only verify-account
+
+Location permission stuff needs better verbiage
 
 ### Not built yet
 
@@ -37,6 +39,8 @@ For UX, add a message when the user has reached the end of the Search list. Also
 Favorites in store
 
 ### Recently built
+
+For a user that doesn't give location permissions, we should probably show a message and not use a dummy location. I mean, is the app even useful without location permissions?
 
 - Add campaign functionality to Location screen ("Earn Rewards...")
 

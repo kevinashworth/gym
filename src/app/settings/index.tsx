@@ -1,12 +1,5 @@
 import { router, Stack } from "expo-router";
-import {
-  Alert,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 import Icon, { IconName } from "@/components/icon";
@@ -22,35 +15,21 @@ type SettingItemProps = {
   isLast?: boolean;
 };
 
-const SettingItem = ({
-  icon,
-  iconColor,
-  label,
-  onPress,
-  textColor,
-  isLast,
-}: SettingItemProps) => (
+const SettingItem = ({ icon, iconColor, label, onPress, textColor, isLast }: SettingItemProps) => (
   <Pressable
     onPress={onPress}
     style={({ pressed }) => [
       styles.settingItem,
       !isLast && styles.settingItemBorder,
       pressed && styles.settingItemPressed,
-    ]}
-  >
+    ]}>
     <View style={styles.settingContent}>
       {icon ? (
-        <Icon
-          name={icon}
-          size={20}
-          color={iconColor || textColor || spectrum.base1Content}
-        />
+        <Icon name={icon} size={20} color={iconColor || textColor || spectrum.base1Content} />
       ) : (
         <View style={{ width: 20 }} />
       )}
-      <Text style={[styles.settingLabel, textColor && { color: textColor }]}>
-        {label}
-      </Text>
+      <Text style={[styles.settingLabel, textColor && { color: textColor }]}>{label}</Text>
     </View>
     <Icon name="chevron-right" size={16} color={spectrum.base1Content} />
   </Pressable>
@@ -92,8 +71,7 @@ export default function SettingsTab() {
                 flexDirection: "row",
                 alignItems: "center",
                 marginLeft: -16,
-              }}
-            >
+              }}>
               <Icon name="chevron-left" size={32} color={spectrum.blue10} />
               <Text style={styles.backText}>Back</Text>
             </TouchableOpacity>
@@ -132,12 +110,7 @@ export default function SettingsTab() {
           label="Help"
           onPress={() => router.push("/settings/help")}
         />
-        <SettingItem
-          label="Logout"
-          onPress={handleLogout}
-          textColor={spectrum.error}
-          isLast
-        />
+        <SettingItem label="Logout" onPress={handleLogout} textColor={spectrum.error} isLast />
       </View>
       {process.env.NODE_ENV === "development" && (
         <View style={styles.devSettings}>

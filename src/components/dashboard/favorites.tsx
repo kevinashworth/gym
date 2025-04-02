@@ -13,21 +13,37 @@ import { spectrum } from "@/theme";
 
 const width = 72;
 
-interface Favorite {
+type Favorite = {
   uuid: string;
   name: string;
   thumbnail: string;
   has_campaign: boolean;
+};
+
+interface FavoritesProps {
+  disabled?: boolean;
 }
 
-export default function Favorites() {
+export default function Favorites({ disabled }: FavoritesProps) {
   const { lat, lng } = useLocation();
 
+  const searchParams =
+    typeof lat === "number" && typeof lng === "number" ? { lat, lng } : undefined;
+
   const { data, isFetching, error } = useQuery<Favorite[]>({
-    queryKey: ["dashboard", "location", "favorites", { lat, lng }], // "dashboard" used for queryClient.refetchQueries
-    queryFn: () => api.get("user/location/favorites", { searchParams: { lat, lng } }).json(),
+    enabled: !!searchParams && !disabled,
+    queryKey: ["dashboard", "location", "favorites", searchParams],
+    queryFn: () => api.get("user/location/favorites", { searchParams }).json(),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
+
+  if (disabled || !searchParams) {
+    return (
+      <View style={styles.container}>
+        <Empty icon="map-pin-off" text="To find favorites, allow access to your location." />
+      </View>
+    );
+  }
 
   if (isFetching) {
     return (
@@ -47,7 +63,7 @@ export default function Favorites() {
 
   if (!data?.length) {
     return (
-      <View style={[styles.container, styles.centerContent]}>
+      <View style={[styles.container]}>
         <Empty
           icon="heart-o"
           text="When you like a store, click Add to Favorites."
@@ -119,5 +135,10 @@ const styles = StyleSheet.create({
   fallbackIcon: {
     color: spectrum.base3Content,
     marginTop: 6,
+  },
+  locationPermissionText: {
+    fontSize: 12,
+    marginTop: 12,
+    color: spectrum.base1Content,
   },
 });
