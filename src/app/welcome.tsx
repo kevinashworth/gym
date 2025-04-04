@@ -2,8 +2,8 @@ import * as Application from "expo-application";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Linking from "expo-linking";
 import { Stack, useFocusEffect, useRouter } from "expo-router";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import TextLink from "react-native-text-link";
 
 import LogoLight from "@/assets/svg/logo-light";
@@ -32,27 +32,20 @@ function WelcomeScreen() {
   });
 
   return (
-    <View style={StyleSheet.absoluteFillObject}>
-      <View style={styles.container}>
-        <Stack.Screen
-          // name="welcome"
-          options={{
-            headerShown: false,
-          }}
-        />
+    <SafeAreaView style={StyleSheet.absoluteFillObject}>
+      <View style={[styles.container, StyleSheet.absoluteFillObject]}>
+        <Stack.Screen options={{ headerShown: false }} />
         <LinearGradient
           colors={[spectrum.primary, spectrum.secondary]}
           locations={[0.2, 1]}
-          style={styles.backgroundGradient}
-        >
+          style={styles.backgroundGradient}>
           <View
             style={{
               flex: 1,
               alignItems: "center",
               justifyContent: "center",
               gap: 32,
-            }}
-          >
+            }}>
             <LogoLight />
             <Welcome />
             <View
@@ -60,8 +53,7 @@ function WelcomeScreen() {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 16,
-              }}
-            >
+              }}>
               <Button
                 buttonStyle={{ width: buttonWidth }}
                 label="Sign In"
@@ -88,8 +80,7 @@ function WelcomeScreen() {
                     paddingHorizontal: 8,
                     paddingTop: 2,
                     paddingBottom: 8,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       color: spectrum.black,
@@ -98,8 +89,7 @@ function WelcomeScreen() {
                       lineHeight: 21,
                       paddingBottom: 8,
                       textAlign: "center",
-                    }}
-                  >
+                    }}>
                     Dev Toolbox
                   </Text>
                   <Button
@@ -112,9 +102,7 @@ function WelcomeScreen() {
                   <Button
                     buttonStyle={{ width: buttonWidth / 2 }}
                     label="Collect Account"
-                    onPress={() =>
-                      router.push("/entry/sign-up/collect-account")
-                    }
+                    onPress={() => router.push("/entry/sign-up/collect-account")}
                     size="sm"
                     variant="black"
                   />
@@ -124,16 +112,11 @@ function WelcomeScreen() {
           </View>
           <View
             style={{
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: insets.bottom + 10,
+              marginBottom: insets.bottom + Platform.OS === "ios" ? 10 : 40,
               paddingLeft: "10%",
               paddingRight: "10%",
-            }}
-          >
-            <Text style={styles.disclaimer}>
-              By using this service you agree to the GotYou
-            </Text>
+            }}>
+            <Text style={styles.disclaimer}>By using this service you agree to the GotYou</Text>
             <TextLink
               links={[
                 {
@@ -146,26 +129,22 @@ function WelcomeScreen() {
                 },
               ]}
               textStyle={styles.disclaimer}
-              textLinkStyle={styles.blueLinkText}
-            >
+              textLinkStyle={styles.blueLinkText}>
               Terms and Conditions and Privacy Policy.
             </TextLink>
-            <Text style={styles.version}>
-              Version {Application.nativeApplicationVersion}
-            </Text>
-            <Text style={styles.version}>
-              ©2025 GotYou, Inc. All rights reserved.
-            </Text>
+            <Text style={styles.version}>Version {Application.nativeApplicationVersion}</Text>
+            <Text style={styles.version}>©2025 GotYou, Inc. All rights reserved.</Text>
           </View>
         </LinearGradient>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    justifyContent: "center",
   },
   backgroundGradient: {
     height,
