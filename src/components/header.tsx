@@ -2,7 +2,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import LogoLightSmall from "@/assets/svg/logo-light-sm";
@@ -20,7 +20,7 @@ function WalletDisplay() {
   return (
     (me?.otc_redeemed && (
       <Link href="/(tabs)/wallet" asChild>
-        <Pressable>
+        <TouchableOpacity>
           <View style={styles.walletView}>
             <Text style={styles.text5}>
               USD{" "}
@@ -33,7 +33,7 @@ function WalletDisplay() {
               GET {new Intl.NumberFormat().format(me.token_balance.token_balance_get)}
             </Text>
           </View>
-        </Pressable>
+        </TouchableOpacity>
       </Link>
     )) ||
     null
@@ -43,9 +43,9 @@ function WalletDisplay() {
 function LogoDisplay() {
   return (
     <Link href="/(tabs)" asChild>
-      <Pressable>
+      <TouchableOpacity>
         <LogoLightSmall />
-      </Pressable>
+      </TouchableOpacity>
     </Link>
   );
 }
@@ -53,15 +53,16 @@ function LogoDisplay() {
 function SettingsDisplay() {
   return (
     <Link href="/settings" asChild>
-      <Pressable>
+      <TouchableOpacity>
         <Ionicons name="menu-outline" size={36} color={spectrum.primaryContent} />
-      </Pressable>
+      </TouchableOpacity>
     </Link>
   );
 }
 
 export default function CustomHeader() {
   const insets = useSafeAreaInsets();
+
   return (
     <>
       <LinearGradient

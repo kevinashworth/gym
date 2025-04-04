@@ -1,13 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, usePathname, useRouter } from "expo-router";
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import LogoLightSmall, { logoWidth } from "@/assets/svg/logo-light-sm";
@@ -39,21 +33,15 @@ function PageTitleDisplay({ pathname }: { pathname: string }) {
 
 function LogoDisplay() {
   return (
-    <Link href="/(tabs)" asChild>
-      <Pressable>
+    <Link href="/welcome" asChild>
+      <TouchableOpacity>
         <LogoLightSmall />
-      </Pressable>
+      </TouchableOpacity>
     </Link>
   );
 }
 
-function BackDisplay({
-  onPress,
-  disabled,
-}: {
-  onPress: () => void;
-  disabled: boolean;
-}) {
+function BackDisplay({ onPress, disabled }: { onPress: () => void; disabled: boolean }) {
   return (
     <TouchableOpacity onPress={onPress} disabled={disabled}>
       <View
@@ -63,8 +51,7 @@ function BackDisplay({
           justifyContent: "flex-end",
           opacity: disabled ? 0.5 : 1,
           width: logoWidth,
-        }}
-      >
+        }}>
         <Ionicons name="chevron-back" size={20} color="white" />
         <Text style={styles.backText}>Back</Text>
       </View>
@@ -95,8 +82,7 @@ export default function EntryHeader() {
         height: insets.top + 75,
         paddingHorizontal: 16,
         paddingTop: insets.top,
-      }}
-    >
+      }}>
       <View style={styles.container}>
         <LogoDisplay />
         <PageTitleDisplay pathname={pathname} />
