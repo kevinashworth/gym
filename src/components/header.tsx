@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -62,20 +63,23 @@ function SettingsDisplay() {
 export default function CustomHeader() {
   const insets = useSafeAreaInsets();
   return (
-    <LinearGradient
-      colors={[spectrum.primary, spectrum.secondary]}
-      locations={[0.2, 1]}
-      style={{
-        height: insets.top + 75,
-        paddingHorizontal: 16,
-        paddingTop: insets.top,
-      }}>
-      <View style={styles.container}>
-        <LogoDisplay />
-        <WalletDisplay />
-        <SettingsDisplay />
-      </View>
-    </LinearGradient>
+    <>
+      <LinearGradient
+        colors={[spectrum.primary, spectrum.secondary]}
+        locations={[0.2, 1]}
+        style={{
+          height: insets.top + 75,
+          paddingHorizontal: 16,
+          paddingTop: insets.top,
+        }}>
+        <View style={styles.container}>
+          <LogoDisplay />
+          <WalletDisplay />
+          <SettingsDisplay />
+        </View>
+      </LinearGradient>
+      <StatusBar style="light" />
+    </>
   );
 }
 
