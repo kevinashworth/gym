@@ -180,44 +180,43 @@ function SignUpWithEmailScreen() {
           size="lg"
           variant="primary"
         />
-        <View style={{ alignItems: "center" }}>
-          <Text style={styles.textHelpful}>Already a user?</Text>
-          <TextLink
-            links={[
-              {
-                text: "Sign in",
-                onPress: () => router.push("/entry/sign-in"),
-              },
-            ]}
-            textStyle={styles.textHelpful}
-            textLinkStyle={{
-              color: spectrum.primary,
-              textDecorationLine: "underline",
-            }}>
-            Sign in.
-          </TextLink>
+        <View style={{ gap: 16, padding: 16 }}>
+          <View>
+            <Text style={styles.textHelpful}>Already a user?</Text>
+            <TextLink
+              links={[
+                {
+                  text: "Sign in",
+                  onPress: () => router.push("/entry/sign-in"),
+                },
+              ]}
+              textStyle={styles.textHelpful}
+              textLinkStyle={{
+                color: spectrum.primary,
+                textDecorationLine: "underline",
+              }}>
+              Sign in.
+            </TextLink>
+          </View>
+          <View>
+            <Text style={styles.textHelpful}>Have a code?</Text>
+            <TextLink
+              links={[
+                {
+                  text: "Confirm",
+                  onPress: handleRedirectConfirm,
+                },
+              ]}
+              textStyle={styles.textHelpful}
+              textLinkStyle={{
+                color: spectrum.primary,
+                textDecorationLine: "underline",
+              }}>
+              Confirm your account.
+            </TextLink>
+          </View>
         </View>
-      </View>
-      {accountValue && isValidEmail(accountValue) && !errors.account && (
-        <View style={{ alignItems: "center", paddingTop: 16 }}>
-          <Text style={styles.textHelpful}>Have a code?</Text>
-          <TextLink
-            links={[
-              {
-                text: "Confirm",
-                onPress: handleRedirectConfirm,
-              },
-            ]}
-            textStyle={styles.textHelpful}
-            textLinkStyle={{
-              color: spectrum.primary,
-              textDecorationLine: "underline",
-            }}>
-            Confirm your account.
-          </TextLink>
-        </View>
-      )}
-      {showDevToolbox && (
+
         <View style={styles.toolbox}>
           <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
           <Button
@@ -300,7 +299,7 @@ function SignUpWithEmailScreen() {
           />
           <DisplayJSON json={{ errors, signUpError }} />
         </View>
-      )}
+      </View>
     </>
   );
 }
@@ -327,8 +326,8 @@ const styles = StyleSheet.create({
   },
   textHelpful: {
     color: spectrum.base2Content,
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 14,
+    textAlign: "center",
   },
   toolbox: {
     alignItems: "center",

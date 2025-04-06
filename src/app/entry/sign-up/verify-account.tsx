@@ -114,74 +114,77 @@ const SignUpVerifyScreen = () => {
           size="lg"
           variant="primary"
         />
-
-        <View style={{ alignItems: "center" }}>
-          <Text style={styles.textHelpful}>Didn’t get it?</Text>
-          <TextLink
-            links={[
-              {
-                text: "Resend",
-                onPress: () => console.log("resend"),
-              },
-            ]}
-            textStyle={styles.textHelpful}
-            textLinkStyle={{
-              color: spectrum.primary,
-              textDecorationLine: "underline",
-            }}>
-            Resend.
-          </TextLink>
+        <View style={{ gap: 16, padding: 16 }}>
+          <View>
+            <Text style={styles.textHelpful}>Didn’t get it?</Text>
+            <TextLink
+              links={[
+                {
+                  text: "Resend",
+                  onPress: () => {
+                    console.log("resend", canResend);
+                    if (!canResend) return;
+                    resendConfirmCode(account);
+                  },
+                },
+              ]}
+              textStyle={[styles.textHelpful, { fontVariant: ["tabular-nums"] }]}
+              textLinkStyle={{
+                color: canResend ? spectrum.primary : spectrum.base2Content,
+                textDecorationLine: "underline",
+              }}>
+              {canResend ? "Resend." : `Resend in ${resendCooldown}s`}
+            </TextLink>
+          </View>
+          <View>
+            <Text style={styles.textHelpful}>Weird dev state?</Text>
+            <TextLink
+              links={[
+                {
+                  text: "collect-info",
+                  onPress: () => {
+                    router.push("/entry/sign-up/collect-info");
+                  },
+                },
+              ]}
+              textStyle={styles.textHelpful}
+              textLinkStyle={{
+                color: spectrum.primary,
+                textDecorationLine: "underline",
+              }}>
+              Go to collect-info.
+            </TextLink>
+          </View>
         </View>
+        {showDevToolbox && (
+          <View style={styles.toolbox}>
+            <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
+            <Button
+              iconName="arrow-right"
+              label="collect-account.tsx"
+              onPress={() => router.push("/entry/sign-up/collect-account")}
+              size="sm"
+              variant="primary"
+            />
+            <Button
+              iconName="refresh"
+              label="Toggle Error State (confirmCode)"
+              onPress={() => {
+                if (!errors.confirmCode) {
+                  setErrorForm("confirmCode", {
+                    type: "custom",
+                    message: "Confirm code error message goes here.",
+                  });
+                } else {
+                  clearErrors("confirmCode");
+                }
+              }}
+              size="sm"
+              variant="black"
+            />
+          </View>
+        )}
       </View>
-      {showDevToolbox && (
-        <View
-          style={{
-            alignItems: "center",
-            borderColor: spectrum.black,
-            borderWidth: StyleSheet.hairlineWidth,
-            gap: 2,
-            justifyContent: "center",
-            margin: 16,
-            paddingHorizontal: 8,
-            paddingTop: 2,
-            paddingBottom: 8,
-          }}>
-          <Text
-            style={{
-              color: spectrum.black,
-              fontSize: 12,
-              fontWeight: 400,
-              lineHeight: 21,
-              paddingBottom: 8,
-              textAlign: "center",
-            }}>
-            Dev Toolbox
-          </Text>
-          <Button
-            iconName="arrow-right"
-            label="collect-account.tsx"
-            onPress={() => router.push("/entry/sign-up/collect-account")}
-            size="sm"
-            variant="black"
-          />
-          <Button
-            iconName="refresh"
-            label="Toggle Error State (confirmCode)"
-            onPress={() => {
-              if (!errors.confirmCode) {
-                setErrorForm("confirmCode", {
-                  type: "custom",
-                  message: "Confirm code error message goes here.",
-                });
-              } else {
-                clearErrors("confirmCode");
-              }
-            }}
-            size="sm"
-            variant="black"
-          />
-        </View>
-      )}
     </>
   );
 };
@@ -213,8 +216,23 @@ const styles = StyleSheet.create({
   },
   textHelpful: {
     color: spectrum.base2Content,
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 14,
+    textAlign: "center",
+  },
+  toolbox: {
+    alignItems: "center",
+    backgroundColor: spectrum.gray1,
+    borderColor: spectrum.black,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 8,
+    gap: 8,
+    margin: 8,
+    padding: 8,
+  },
+  toolboxHeader: {
+    color: spectrum.primaryLight,
+    fontSize: 12,
+    textAlign: "center",
   },
 });
 

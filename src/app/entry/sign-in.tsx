@@ -188,22 +188,24 @@ export default function SignInScreen() {
             width: inputWidth,
           }}
         />
-        <View style={{ alignItems: "center" }}>
-          <Text style={styles.textHelpful}>Forgot password?</Text>
-          <TextLink
-            links={[
-              {
-                text: "We got you",
-                onPress: () => router.push("/"),
-              },
-            ]}
-            textStyle={styles.textHelpful}
-            textLinkStyle={{
-              color: spectrum.primary,
-              textDecorationLine: "underline",
-            }}>
-            We got you.
-          </TextLink>
+        <View style={{ gap: 16, padding: 16 }}>
+          <View>
+            <Text style={styles.textHelpful}>Forgot password?</Text>
+            <TextLink
+              links={[
+                {
+                  text: "We got you",
+                  onPress: () => router.push("/entry/recovery/apply"),
+                },
+              ]}
+              textStyle={styles.textHelpful}
+              textLinkStyle={{
+                color: spectrum.primary,
+                textDecorationLine: "underline",
+              }}>
+              We got you.
+            </TextLink>
+          </View>
         </View>
       </View>
 
@@ -284,8 +286,8 @@ const styles = StyleSheet.create({
   },
   textHelpful: {
     color: spectrum.base2Content,
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 14,
+    textAlign: "center",
   },
   toolbox: {
     alignItems: "center",
