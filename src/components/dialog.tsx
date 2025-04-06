@@ -35,10 +35,7 @@ const Dialog = ({ children, isVisible, onHide }: PropsWithChildren<DialogProps>)
 };
 
 const shadow = {
-  shadowColor: spectrum.base1Content,
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.2,
-  shadowRadius: 5,
+  boxShadow: `0 4px 5px rgba(48, 48, 48, 0.2)`, // spectrum.base1Content20
   elevation: 4,
 };
 

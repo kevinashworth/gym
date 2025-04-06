@@ -44,10 +44,7 @@ export default function Help() {
 }
 
 const shadow = {
-  shadowColor: spectrum.base1Content,
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.2,
-  shadowRadius: 5,
+  boxShadow: "0 4px 5px rgba(0, 0, 0, 0.2)",
   elevation: 4,
 };
 

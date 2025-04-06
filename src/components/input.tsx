@@ -34,18 +34,20 @@ const Input = forwardRef<TextInput, InputProps>(function CustomInput(props, ref)
   );
 });
 
+const shadow = {
+  boxShadow: `0 4px 5px rgba(0, 0, 0, 0.2)`,
+  elevation: 4,
+};
+
 const styles = StyleSheet.create({
   input: {
     backgroundColor: spectrum.gray2,
     borderRadius: 8,
     borderWidth: 1,
-    elevation: 2,
     fontWeight: "normal",
     paddingHorizontal: 12,
     paddingVertical: 10,
-    shadowOffset: { height: 4, width: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
+    ...shadow,
   },
 });
 
