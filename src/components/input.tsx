@@ -41,12 +41,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     elevation: 2,
     fontWeight: "normal",
-    padding: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     shadowOffset: { height: 4, width: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
   },
 });
-Input.displayName = "MyInput";
 
 export default Input;

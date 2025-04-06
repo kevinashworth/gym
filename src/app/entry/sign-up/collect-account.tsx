@@ -5,7 +5,6 @@ import { Auth } from "aws-amplify";
 import { useRouter } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TextLink from "react-native-text-link";
 import { z } from "zod";
 
@@ -44,7 +43,6 @@ const schema = z
 type FormValues = z.infer<typeof schema>;
 
 function SignUpWithEmailScreen() {
-  const insets = useSafeAreaInsets();
   const setCognitoUser = useAuthStore((s) => s.setCognitoUser);
   const showDevToolbox = useDevStore((s) => s.showDevToolbox);
 
@@ -220,7 +218,7 @@ function SignUpWithEmailScreen() {
         </View>
       )}
       {showDevToolbox && (
-        <View style={[styles.toolbox, { marginBottom: insets.bottom }]}>
+        <View style={styles.toolbox}>
           <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
           <Button
             iconName="arrow-right"
@@ -335,7 +333,7 @@ const styles = StyleSheet.create({
   toolbox: {
     alignItems: "center",
     backgroundColor: spectrum.gray1,
-    borderColor: spectrum.gray8,
+    borderColor: spectrum.black,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 8,
     gap: 8,

@@ -3,7 +3,7 @@ import React, { forwardRef } from "react";
 import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
 import Icon from "@/components/icon";
-import Input, { InputProps } from "@/components/input";
+import Input, { type InputProps } from "@/components/input";
 import { spectrum } from "@/theme";
 
 interface InputPasswordProps
@@ -15,7 +15,7 @@ interface InputPasswordProps
   onToggleShowPassword: () => void;
 }
 
-const InputPassword = forwardRef<TextInput, InputPasswordProps>(function CustomInput(
+const InputPasswordControlled = forwardRef<TextInput, InputPasswordProps>(function CustomInput(
   { showPassword, onToggleShowPassword, ...props },
   ref
 ) {
@@ -41,9 +41,8 @@ const styles = StyleSheet.create({
   icon_block: {
     position: "absolute",
     right: 12,
-    top: 12,
+    top: 9,
   },
 });
-InputPassword.displayName = "MyInputPassword";
 
-export default InputPassword;
+export default InputPasswordControlled;
