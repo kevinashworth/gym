@@ -85,6 +85,7 @@
     "@types/lodash-es": "4.17.12",
     "@types/react": "~18.3.12",
     "@types/react-test-renderer": "^18.0.7",
+    "ajv": "8.17.1",
     "babel-plugin-module-resolver": "5.0.2",
     "eslint": "^8.57.0",
     "eslint-config-expo": "~8.0.1",

@@ -23,12 +23,22 @@ export const expoFileSystemStorage: PersistStorage<unknown> = {
     const filePath = `${storageDirectory}${name}`;
     const fileInfo = await fs.getInfoAsync(filePath);
     if (!fileInfo.exists) {
-      return undefined;
+      return null; // Return null instead of undefined
     }
     const content = await fs.readAsStringAsync(filePath);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return JSON.parse(content);
+    return JSON.parse(content); // Return content directly as it's already a string
   },
+  // getItem: async (name) => {
+  //   await ensureDirectoryExists();
+  //   const filePath = `${storageDirectory}${name}`;
+  //   const fileInfo = await fs.getInfoAsync(filePath);
+  //   if (!fileInfo.exists) {
+  //     return undefined;
+  //   }
+  //   const content = await fs.readAsStringAsync(filePath);
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  //   return JSON.parse(content);
+  // },
   setItem: async (name, value) => {
     await ensureDirectoryExists();
     const filePath = `${storageDirectory}${name}`;

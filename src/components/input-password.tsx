@@ -3,7 +3,7 @@ import React, { forwardRef, useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
 
 import Icon from "@/components/icon";
-import Input, { InputProps } from "@/components/input";
+import Input, { type InputProps } from "@/components/input";
 import { spectrum } from "@/theme";
 
 type InputPasswordProps = Omit<
@@ -36,9 +36,8 @@ const styles = StyleSheet.create({
   icon_block: {
     position: "absolute",
     right: 12,
-    top: 12,
+    top: 9,
   },
 });
-InputPassword.displayName = "MyInputPassword";
 
 export default InputPassword;

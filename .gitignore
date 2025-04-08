@@ -37,3 +37,7 @@ yarn-error.*
 *.tsbuildinfo
 
 expo-env.d.ts
+
+src/components/campaign-actions/survey/README.md
+src/app/entry/sign-up/README-gym.md
+src/app/entry/sign-up/README-gymobile.md

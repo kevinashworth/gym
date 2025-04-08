@@ -36,8 +36,8 @@ const SettingItem = ({ icon, iconColor, label, onPress, textColor, isLast }: Set
 );
 
 export default function SettingsTab() {
-  const clearCognitoUser = useAuthStore((s) => s.clearCognitoUser);
-  const clearUser = useUserStore((s) => s.clearUser);
+  const resetAuth = useAuthStore((s) => s.resetAuth);
+  const resetUser = useUserStore((s) => s.resetUser);
 
   const handleLogout = () =>
     Alert.alert("Logout", "Are you sure you want to sign out?", [
@@ -49,8 +49,8 @@ export default function SettingsTab() {
         text: "Logout",
         style: "destructive",
         onPress: () => {
-          clearCognitoUser();
-          clearUser();
+          resetAuth();
+          resetUser();
           if (router.canDismiss()) {
             router.dismissAll();
           }

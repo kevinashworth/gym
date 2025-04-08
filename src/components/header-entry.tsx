@@ -17,7 +17,7 @@ const getPageTitle = (pathname: string) => {
 
   switch (entryPart) {
     case "recovery":
-      return "Retrieve Password";
+      return "Reset Password";
     case "sign-in":
       return "Sign In";
     case "sign-up":

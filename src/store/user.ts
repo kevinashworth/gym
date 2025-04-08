@@ -1,9 +1,17 @@
+import { Platform } from "react-native";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { middleware } from "zustand-expo-devtools";
 
 import { expoFileSystemStorage } from "./expoFileSystemStorage";
+
+const getStorageOption = () => {
+  if (Platform.OS === "web") {
+    return createJSONStorage(() => localStorage); // this is the default, use localStorage for web
+  }
+  return expoFileSystemStorage;
+};
 
 interface GotMe {
   uuid: string;
@@ -40,7 +48,7 @@ interface UserState {
 }
 
 interface UserActions {
-  clearUser: () => void;
+  resetUser: () => void;
   setAttributes: (attributes: UserState["attributes"]) => void;
   setAuthToken: (authToken: string) => void;
   setGotme: (gotme: GotMe) => void;
@@ -72,7 +80,7 @@ const useUserStore = create<UserState & UserActions>()(
   persist(
     immer((set) => ({
       ...initialState,
-      clearUser: () => set(() => initialState),
+      resetUser: () => set(() => initialState),
       setAttributes: (attributes) =>
         set((state) => {
           state.attributes = attributes;
@@ -97,9 +105,9 @@ const useUserStore = create<UserState & UserActions>()(
     {
       name: "user-storage",
       version: 1,
-      storage: expoFileSystemStorage,
-    },
-  ),
+      storage: getStorageOption(),
+    }
+  )
 );
 
 middleware(useUserStore);

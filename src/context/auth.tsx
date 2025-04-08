@@ -25,7 +25,7 @@ export function useSession() {
 }
 
 // List of route prefixes that will not be protected
-const unprotectedPrefixes = ["/welcome", "/entry"];
+const unprotectedPrefixes = ["/welcome", "/entry", "/settings/dev"];
 
 // This hook runs on every route change and will protect the route access based on user authentication.
 function useProtectedRoute(isUserAuthenticated: boolean) {

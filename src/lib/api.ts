@@ -1,7 +1,6 @@
 import ky from "ky";
 
 import { useAuthStore } from "@/store";
-import { useDevStore } from "@/store";
 
 import type { Hooks } from "ky";
 
@@ -36,7 +35,7 @@ const requiredHooks: Hooks = {
 const consoleLogHooks: Hooks = {
   beforeRequest: [
     (request) => {
-      const showApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
+      const showApiConsoleLogs = true; //useDevStore.getState().showApiConsoleLogs;
       if (showApiConsoleLogs) {
         if (request.method !== "GET") {
           console.group("API Request:");
@@ -48,7 +47,7 @@ const consoleLogHooks: Hooks = {
   ],
   afterResponse: [
     async (request, _options, response) => {
-      const showApiConsoleLogs = useDevStore.getState().showApiConsoleLogs;
+      const showApiConsoleLogs = true; //useDevStore.getState().showApiConsoleLogs;
       if (showApiConsoleLogs) {
         const json = await response.json();
         const jsonString = JSON.stringify(json);
@@ -74,5 +73,20 @@ const apiWithOptionalChanges = apiWithRequiredChanges.extend({
 
 const api =
   process.env.NODE_ENV === "development" ? apiWithOptionalChanges : apiWithRequiredChanges;
+
+// polyfill throwIfAborted which seems to be missing in react-native, but ky uses it
+//
+// Fun fact, AbortSignal here is just a react-native polyfill, too:
+// https://github.com/facebook/react-native/blob/838d26d7b534133e75c7fa673dfc849b0e64c9d3/packages/react-native/Libraries/Core/setUpXHR.js#L38
+//
+// Unfortunately it doesn't have a `reason`
+// ref: https://github.com/tjmehta/fast-abort-controller/blob/42588908035d1512f90e7299a2c70dfb708f9620/src/FastAbortSignal.ts#L39
+if (!AbortSignal.prototype.throwIfAborted) {
+  AbortSignal.prototype.throwIfAborted = function () {
+    if (this.aborted) {
+      throw new Error("Aborted");
+    }
+  };
+}
 
 export default api;

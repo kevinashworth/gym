@@ -15,52 +15,76 @@ function isValidMobilePhone(value: string) {
   return false;
 }
 
-function isValidPhone(value: string) {
+function isValidPhone(value: string, strict: boolean = false) {
   if (!value) return false;
   const phoneNumber = parsePhoneNumber(value, {
     defaultCountry: "US",
     extract: false,
   });
-  if (phoneNumber?.isValid()) {
+  if (strict) {
+    if (phoneNumber?.isValid()) {
+      return true;
+    }
+    return false;
+  }
+  if (phoneNumber?.isPossible()) {
     return true;
   }
   return false;
 }
 
 // returns (801) 225-6115 or null
-function phoneFormatter(inputPhoneNumber: string) {
+function phoneFormatter(inputPhoneNumber: string, strict: boolean = false) {
   if (!inputPhoneNumber) return null;
   const phoneNumber = parsePhoneNumber(inputPhoneNumber, {
     defaultCountry: "US",
     extract: false,
   });
-  if (phoneNumber?.isValid()) {
+  if (strict) {
+    if (phoneNumber?.isValid()) {
+      return phoneNumber.formatNational();
+    }
+    return null;
+  }
+  if (phoneNumber?.isPossible()) {
     return phoneNumber.formatNational();
   }
   return null;
 }
 
 // returns 8012256115 or null
-function phoneFormatterDigitsOnly(inputPhoneNumber: string) {
+function phoneFormatterDigitsOnly(inputPhoneNumber: string, strict: boolean = false) {
   if (!inputPhoneNumber) return null;
   const phoneNumber = parsePhoneNumber(inputPhoneNumber, {
     defaultCountry: "US",
     extract: false,
   });
-  if (phoneNumber?.isValid()) {
+  if (strict) {
+    if (phoneNumber?.isValid()) {
+      return phoneNumber.nationalNumber;
+    }
+    return null;
+  }
+  if (phoneNumber?.isPossible()) {
     return phoneNumber.nationalNumber;
   }
   return null;
 }
 
 // returns +18012256115 or null
-function phoneFormatterE164(inputPhoneNumber: string) {
+function phoneFormatterE164(inputPhoneNumber: string, strict: boolean = false) {
   if (!inputPhoneNumber) return null;
   const phoneNumber = parsePhoneNumber(inputPhoneNumber, {
     defaultCountry: "US",
     extract: false,
   });
-  if (phoneNumber?.isValid()) {
+  if (strict) {
+    if (phoneNumber?.isValid()) {
+      return phoneNumber.number;
+    }
+    return null;
+  }
+  if (phoneNumber?.isPossible()) {
     return phoneNumber.number;
   }
   return null;

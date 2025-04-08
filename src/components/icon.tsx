@@ -14,6 +14,7 @@ import {
   MapPinOff,
   OctagonAlert,
   SearchX,
+  SquarePen,
   UsersRound,
   X,
 } from "lucide-react-native";
@@ -53,6 +54,7 @@ const lucideIcons = {
   notifications: Bell,
   "octagon-alert": OctagonAlert,
   "search-x": SearchX,
+  "square-pen": SquarePen,
   "users-round": UsersRound,
   x: X,
 };

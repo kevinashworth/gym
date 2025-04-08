@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 import { Linking, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import Icon from "@/components/icon";
-import Input from "@/components/input-with-clear-button";
+import InputWithClearButton from "@/components/input-with-clear-button";
 import { spectrum } from "@/theme";
 
 export default function Help() {
@@ -17,7 +17,7 @@ export default function Help() {
       <View style={styles.content}>
         <View style={styles.searchContainer}>
           <Icon color={spectrum.base1Content} name="search" size={24} style={styles.searchIcon} />
-          <Input
+          <InputWithClearButton
             value={filter}
             onChangeText={(f) => setFilter(f)}
             placeholder="Search"
@@ -44,10 +44,7 @@ export default function Help() {
 }
 
 const shadow = {
-  shadowColor: spectrum.base1Content,
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.2,
-  shadowRadius: 5,
+  boxShadow: "0 4px 5px rgba(0, 0, 0, 0.2)",
   elevation: 4,
 };
 
