@@ -17,6 +17,10 @@ export type CognitoUser = {
   username: string; // same as email when signing up with email
 };
 
+export type CognitoAuthResponse = {
+  token: string;
+};
+
 export type GoogleUser = {
   email: string;
   id: string;

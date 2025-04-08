@@ -13,14 +13,13 @@ import DisplayJSON from "@/components/display-json";
 import ErrorMessage from "@/components/error-message";
 import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
-import InputPassword from "@/components/input-password-controlled";
-import { useAuthStore, useDevStore } from "@/store";
+import InputPasswordControlled from "@/components/input-password-controlled";
+import { inputWidth } from "@/constants/constants";
+import { useAuthStore } from "@/store";
 import { spectrum } from "@/theme";
-import { CognitoUser } from "@/types/auth";
+// import { CognitoUser } from "@/types/auth";
 import { isValidEmail } from "@/utils/email";
 import { zPassword } from "@/utils/password";
-
-const inputWidth = 244;
 
 const schema = z
   .object({
@@ -43,8 +42,7 @@ const schema = z
 type FormValues = z.infer<typeof schema>;
 
 function SignUpWithEmailScreen() {
-  const setCognitoUser = useAuthStore((s) => s.setCognitoUser);
-  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
+  const setAccount = useAuthStore((s) => s.setAccount);
 
   const router = useRouter();
 
@@ -54,7 +52,6 @@ function SignUpWithEmailScreen() {
     formState: { errors },
     handleSubmit,
     setError,
-    watch,
   } = useForm<FormValues>({
     defaultValues: {
       account: "",
@@ -63,7 +60,6 @@ function SignUpWithEmailScreen() {
     },
     resolver: zodResolver(schema),
   });
-  const accountValue = watch("account");
 
   const accountInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
@@ -80,9 +76,8 @@ function SignUpWithEmailScreen() {
   const onSubmit = handleSubmit(async (data) => {
     setSignUpLoading(true);
     setSignUpError(null);
-    let result;
     try {
-      result = await Auth.signUp({
+      await Auth.signUp({
         username: data.account,
         password: data.password,
         attributes: { email: data.account },
@@ -90,15 +85,12 @@ function SignUpWithEmailScreen() {
           enabled: true,
         },
       });
-      console.log("Auth.signUp result", result);
     } catch (error) {
       setSignUpError(error as Error); // TODO: Can we get an AuthError type or such from aws-amplify?
       setSignUpLoading(false);
       return;
     }
-    // @ts-ignore-line user
-    const user: CognitoUser = result.user;
-    setCognitoUser(user);
+    setAccount(data.account);
     setSignUpLoading(false);
     router.push("/entry/sign-up/verify-account");
   });
@@ -136,7 +128,7 @@ function SignUpWithEmailScreen() {
             control={control}
             name="password"
             render={({ field: { onChange, onBlur, value } }) => (
-              <InputPassword
+              <InputPasswordControlled
                 showPassword={showPassword}
                 onToggleShowPassword={() => setShowPassword(!showPassword)}
                 onBlur={onBlur}
@@ -157,7 +149,7 @@ function SignUpWithEmailScreen() {
             control={control}
             name="confirm"
             render={({ field: { onChange, onBlur, value } }) => (
-              <InputPassword
+              <InputPasswordControlled
                 showPassword={showPassword}
                 onToggleShowPassword={() => setShowPassword(!showPassword)}
                 onBlur={onBlur}
@@ -172,15 +164,18 @@ function SignUpWithEmailScreen() {
           />
           <FormErrorsMessage errors={errors} name="confirm" />
         </View>
-        <Button
-          buttonStyle={{ width: inputWidth }}
-          disabled={signUpLoading}
-          label="Next"
-          onPress={onSubmit}
-          size="lg"
-          variant="primary"
-        />
-        <View style={{ gap: 16, padding: 16 }}>
+        <View style={styles.visualAdjustment}>
+          <Button
+            buttonStyle={{ width: inputWidth }}
+            disabled={signUpLoading}
+            label="Next"
+            onPress={onSubmit}
+            size="lg"
+            variant="primary"
+          />
+        </View>
+
+        <View style={styles.textHelpfulContainer}>
           <View>
             <Text style={styles.textHelpful}>Already a user?</Text>
             <TextLink
@@ -224,7 +219,7 @@ function SignUpWithEmailScreen() {
             label="verify-account.tsx"
             onPress={() => router.push("/entry/sign-up/verify-account")}
             size="sm"
-            variant="black"
+            variant="primary"
           />
           <Button
             buttonStyle={{ width: 200 }}
@@ -288,7 +283,7 @@ function SignUpWithEmailScreen() {
             variant="black"
           />
           <Button
-            iconName="refresh"
+            iconName="times-circle"
             label="Clear Errors"
             onPress={() => {
               clearErrors();
@@ -311,18 +306,25 @@ const styles = StyleSheet.create({
     gap: 20,
     justifyContent: "center",
   },
-  inputContainer: {
-    gap: 8,
-    width: inputWidth,
-  },
   pageTitleText: {
     fontSize: 24,
     fontWeight: 700,
     marginTop: 32,
     textAlign: "center",
   },
+  inputContainer: {
+    gap: 8,
+    width: inputWidth,
+  },
   textInput: {
     width: inputWidth,
+  },
+  visualAdjustment: {
+    paddingTop: 4,
+  },
+  textHelpfulContainer: {
+    gap: 16,
+    padding: 16,
   },
   textHelpful: {
     color: spectrum.base2Content,

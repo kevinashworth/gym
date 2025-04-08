@@ -301,26 +301,6 @@ const styles = StyleSheet.create({
   textInput: {
     width: inputWidth,
   },
-  textHelpful: {
-    color: spectrum.base2Content,
-    fontSize: 16,
-    fontWeight: 500,
-  },
-  toolbox: {
-    alignItems: "center",
-    backgroundColor: spectrum.gray1,
-    borderColor: spectrum.gray8,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 8,
-    gap: 8,
-    margin: 8,
-    padding: 8,
-  },
-  toolboxHeader: {
-    color: spectrum.primaryLight,
-    fontSize: 12,
-    textAlign: "center",
-  },
   spacer: {
     height: 1,
   },

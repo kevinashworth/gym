@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Auth } from "aws-amplify";
@@ -12,10 +12,9 @@ import Button from "@/components/button";
 import ErrorMessage from "@/components/error-message";
 import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
-import { useAuthStore, useDevStore } from "@/store";
+import { inputWidth } from "@/constants/constants";
+import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
-
-const inputWidth = 244;
 
 const schema = z.object({
   confirmCode: z
@@ -33,10 +32,9 @@ const SignUpVerifyScreen = () => {
   const {
     clearErrors,
     control,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
     handleSubmit,
     setError: setErrorForm,
-    // watch,
   } = useForm<FormValues>({
     defaultValues: {
       confirmCode: "",
@@ -44,47 +42,69 @@ const SignUpVerifyScreen = () => {
     resolver: zodResolver(schema),
   });
 
-  const cognitoUser = useAuthStore((s) => s.cognitoUser);
-  const accountValue = cognitoUser?.attributes?.email;
+  // const account = useAuthStore((s) => s.account);
+  const account = "kashworth+brogue@gotyou.co";
 
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const [valid, setValid] = useState(false);
+  // const [valid, setValid] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
+  // State for resend cooldown
+  const [resendCooldown, setResendCooldown] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+
+  useEffect(() => {
+    if (resendCooldown > 0) {
+      const timer = setTimeout(() => {
+        setResendCooldown((prev) => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [resendCooldown]);
+
   const onSubmit = handleSubmit(async (data) => {
-    if (valid) return true;
+    // if (valid) return;
     setLoading(true);
     setError(null);
     const { confirmCode } = data;
 
-    if (!accountValue) {
-      setError(new Error("No account found"));
+    if (!account) {
+      setError(new Error("No email address found"));
       setLoading(false);
-      return false;
+      return;
     }
 
     try {
-      const result = await Auth.confirmSignUp(accountValue, confirmCode);
-      console.log("Auth.confirmSignUp result", result);
+      await Auth.confirmSignUp(account, confirmCode);
     } catch (error) {
       setError(error as Error);
       setLoading(false);
-      return false;
+      return;
     }
 
-    setValid(true);
+    // setValid(true);
     setLoading(false);
-    return true;
+    router.push("/entry/sign-up/collect-info");
   });
+
+  function resendConfirmCode(account: string) {
+    console.log("resendConfirmCode", account);
+    Auth.resendSignUp(account);
+    setResendCooldown(60);
+    setCanResend(false);
+  }
 
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.pageTitleText}>Verify your account</Text>
+        <Text style={styles.pageTitleText}>Verify your email</Text>
         <Text style={styles.explanationText} numberOfLines={2} adjustsFontSizeToFit>
-          You will receive a code to your email at {accountValue}
+          You will receive a confirmation code to your email{" "}
+          <Text style={styles.email}>{account}</Text>
         </Text>
         <View style={styles.inputContainer}>
           <Controller
@@ -92,7 +112,6 @@ const SignUpVerifyScreen = () => {
             name="confirmCode"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                disabled={!accountValue}
                 keyboardType="numeric"
                 onBlur={onBlur}
                 onChangeText={onChange}
@@ -108,7 +127,7 @@ const SignUpVerifyScreen = () => {
         </View>
         <Button
           buttonStyle={{ width: inputWidth }}
-          disabled={loading}
+          disabled={loading || !isDirty || !isValid}
           label="Next"
           onPress={onSubmit}
           size="lg"
@@ -210,6 +229,9 @@ const styles = StyleSheet.create({
     marginTop: -8, // this visual spacing feels better
     paddingHorizontal: 32,
     textAlign: "center",
+  },
+  email: {
+    fontWeight: 500,
   },
   textInput: {
     width: inputWidth,

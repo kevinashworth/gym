@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Stack } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
