@@ -16,7 +16,6 @@ import Button from "@/components/button";
 import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
 import api from "@/lib/api";
-import { spectrum } from "@/theme";
 import { UserProfile, UserProfileEditForm, UserProfileEditFormSchema } from "@/types/user";
 import { AsYouType, phoneFormatter, phoneFormatterE164 } from "@/utils/phone";
 

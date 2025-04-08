@@ -44,6 +44,10 @@ Favorites in store
 
 ### Recently built
 
+Sign up
+
+Remove insets that are not needed. Kept insets for headers and toasts, removed insets for the rest.
+
 For a user that doesn't give location permissions, we should probably show a message and not use a dummy location. I mean, is the app even useful without location permissions?
 
 - Add campaign functionality to Location screen ("Earn Rewards...")

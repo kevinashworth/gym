@@ -1,7 +1,6 @@
 import ky from "ky";
 
 import { useAuthStore } from "@/store";
-import { useDevStore } from "@/store";
 
 import type { Hooks } from "ky";
 
