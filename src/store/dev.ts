@@ -1,9 +1,17 @@
+import { Platform } from "react-native";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { middleware } from "zustand-expo-devtools";
 
 import { expoFileSystemStorage } from "./expoFileSystemStorage";
+
+const getStorageOption = () => {
+  if (Platform.OS === "web") {
+    return createJSONStorage(() => localStorage); // this is the default, use localStorage for web
+  }
+  return expoFileSystemStorage;
+};
 
 interface DevState {
   // for development
@@ -82,7 +90,7 @@ const useDevStore = create<DevState & DevActions>()(
     {
       name: "dev-storage",
       version: 1,
-      storage: expoFileSystemStorage,
+      storage: getStorageOption(),
     }
   )
 );
