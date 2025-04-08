@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { Amplify } from "aws-amplify";
 import * as Network from "expo-network";
-import { Stack } from "expo-router";
+import { Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { AppState, Platform } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
@@ -45,6 +45,7 @@ Amplify.configure({
 });
 
 export default function RootLayout() {
+  const pathname = usePathname();
   const [appIsReady, setAppIsReady] = useState(false);
 
   // see https://tanstack.com/query/latest/docs/framework/react/react-native#refetch-on-app-focus
@@ -85,6 +86,12 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [appIsReady]);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "development" && Platform.OS === "web") {
+      document.title = `GYM ${pathname}`;
+    }
+  }, [pathname]);
 
   if (!appIsReady) {
     return null;
