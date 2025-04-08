@@ -1,4 +1,3 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   Bell,
   ChevronLeft,
@@ -9,15 +8,18 @@ import {
   CircleX,
   Eye,
   EyeOff,
+  Heart,
   Image,
   Inbox,
   MapPinOff,
   OctagonAlert,
+  Search,
   SearchX,
   SquarePen,
   UsersRound,
   X,
 } from "lucide-react-native";
+import { StyleProp, Text, ViewStyle } from "react-native";
 
 import CampaignCheckIn from "@/assets/svg/campaign-check-in";
 import CampaignCheckInQRCode from "@/assets/svg/campaign-check-in-qr-code";
@@ -25,10 +27,6 @@ import CampaignReferral from "@/assets/svg/campaign-referral";
 import CampaignReview from "@/assets/svg/campaign-review";
 import CampaignSurvey from "@/assets/svg/campaign-survey";
 import { spectrum } from "@/theme";
-
-export type FontAwesomeIconName = React.ComponentProps<typeof FontAwesome>["name"];
-
-export type FontAwesomeIconStyle = React.ComponentProps<typeof FontAwesome>["style"];
 
 const localIcons = {
   CampaignCheckIn: CampaignCheckIn,
@@ -48,30 +46,34 @@ const lucideIcons = {
   "circle-x": CircleX,
   eye: Eye,
   "eye-off": EyeOff,
+  heart: Heart,
   image: Image,
   inbox: Inbox,
   "map-pin-off": MapPinOff,
   notifications: Bell,
   "octagon-alert": OctagonAlert,
+  search: Search,
   "search-x": SearchX,
   "square-pen": SquarePen,
   "users-round": UsersRound,
   x: X,
 };
 
-export type IconName = keyof typeof localIcons | keyof typeof lucideIcons | FontAwesomeIconName;
+export type IconName = keyof typeof localIcons | keyof typeof lucideIcons;
 
 export type HistoryIconName = keyof typeof localIcons;
 
 interface IconProps {
   color?: string;
+  fill?: string;
   name: IconName;
   size?: number;
-  style?: FontAwesomeIconStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
-export default function Icon({
+export default function MyIcon({
   color = spectrum.base1Content,
+  fill,
   name = "inbox",
   size = 28,
   style,
@@ -84,16 +86,16 @@ export default function Icon({
 
   if (name in lucideIcons) {
     const LucideIconComponent = lucideIcons[name as keyof typeof lucideIcons];
-    return <LucideIconComponent color={color} size={size} {...props} />;
+    return (
+      <LucideIconComponent
+        color={color}
+        fill={fill ? fill : "transparent"} // `fill` of `undefined` leads to a black fill, hence "transparent"
+        size={size}
+        style={style}
+        {...props}
+      />
+    );
   }
 
-  return (
-    <FontAwesome
-      color={color}
-      name={name as FontAwesomeIconName}
-      size={size}
-      style={style}
-      {...props}
-    />
-  );
+  return <Text>?</Text>;
 }

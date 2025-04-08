@@ -36,8 +36,10 @@ export default function FavoriteLocation({
         )}
         {!isUpdating && (
           <>
-            {isFavorite && <Icon name="heart" color={spectrum.primary} size={24} />}
-            {!isFavorite && <Icon name="heart-o" color={spectrum.secondary} size={24} />}
+            {isFavorite && (
+              <Icon fill={spectrum.primary} name="heart" color={spectrum.primary} size={24} />
+            )}
+            {!isFavorite && <Icon name="heart" color={spectrum.secondary} size={24} />}
           </>
         )}
         {enableText && (

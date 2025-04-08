@@ -1,4 +1,3 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "expo-router";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
@@ -6,6 +5,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-nati
 import BottomGet from "@/assets/svg/bottom-get";
 import Empty from "@/components/empty";
 import ErrorMessage from "@/components/error-message";
+import Icon from "@/components/icon";
 import Picture from "@/components/picture";
 import { useLocation } from "@/context/location";
 import api from "@/lib/api";
@@ -65,7 +65,7 @@ export default function Favorites({ disabled }: FavoritesProps) {
     return (
       <View style={[styles.container]}>
         <Empty
-          icon="heart-o"
+          icon="heart"
           text="When you like a store, click Add to Favorites."
           textStyle={styles.emptyText}
         />
@@ -87,7 +87,12 @@ export default function Favorites({ disabled }: FavoritesProps) {
                 height={width}
                 width={width}
                 fallback={
-                  <FontAwesome name="heart-o" size={width - 16} style={styles.fallbackIcon} />
+                  <Icon
+                    color={spectrum.base3Content}
+                    name="heart"
+                    size={width - 16}
+                    style={styles.fallbackIcon}
+                  />
                 }
                 fallbackStyle={styles.fallback}
               />
@@ -133,7 +138,6 @@ const styles = StyleSheet.create({
     backgroundColor: spectrum.gray5,
   },
   fallbackIcon: {
-    color: spectrum.base3Content,
     marginTop: 6,
   },
   locationPermissionText: {
