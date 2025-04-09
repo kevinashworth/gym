@@ -37,7 +37,7 @@ export default function DevSettings() {
           <Pressable onPress={toggleEnableMockLocation} style={styles.tableCell}>
             <Icon
               color={enableMockLocation ? spectrum.primary : spectrum.warning}
-              name={enableMockLocation ? "check-square-o" : "square-o"}
+              name={enableMockLocation ? "square-check" : "square"}
               size={24}
             />
           </Pressable>
@@ -47,7 +47,7 @@ export default function DevSettings() {
           <Pressable onPress={toggleShowDevToolbox} style={styles.tableCell}>
             <Icon
               color={showDevToolbox ? spectrum.primary : spectrum.warning}
-              name={showDevToolbox ? "check-square-o" : "square-o"}
+              name={showDevToolbox ? "square-check" : "square"}
               size={24}
             />
           </Pressable>
@@ -57,7 +57,7 @@ export default function DevSettings() {
           <Pressable onPress={toggleShowPageInfo} style={styles.tableCell}>
             <Icon
               color={showPageInfo ? spectrum.primary : spectrum.warning}
-              name={showPageInfo ? "check-square-o" : "square-o"}
+              name={showPageInfo ? "square-check" : "square"}
               size={24}
             />
           </Pressable>
@@ -67,7 +67,7 @@ export default function DevSettings() {
           <Pressable onPress={toggleShowApiConsoleLogs} style={styles.tableCell}>
             <Icon
               color={showApiConsoleLogs ? spectrum.primary : spectrum.warning}
-              name={showApiConsoleLogs ? "check-square-o" : "square-o"}
+              name={showApiConsoleLogs ? "square-check" : "square"}
               size={24}
             />
           </Pressable>
@@ -77,7 +77,7 @@ export default function DevSettings() {
           <Pressable onPress={toggleShowPathnameLog} style={styles.tableCell}>
             <Icon
               color={showPathnameLog ? spectrum.primary : spectrum.warning}
-              name={showPathnameLog ? "check-square-o" : "square-o"}
+              name={showPathnameLog ? "square-check" : "square"}
               size={24}
             />
           </Pressable>

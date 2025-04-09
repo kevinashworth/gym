@@ -15,8 +15,11 @@ import {
   OctagonAlert,
   Search,
   SearchX,
+  Square,
+  SquareCheck,
   SquarePen,
   UsersRound,
+  Wrench,
   X,
 } from "lucide-react-native";
 import { StyleProp, Text, ViewStyle } from "react-native";
@@ -54,8 +57,11 @@ const lucideIcons = {
   "octagon-alert": OctagonAlert,
   search: Search,
   "search-x": SearchX,
+  square: Square,
+  "square-check": SquareCheck,
   "square-pen": SquarePen,
   "users-round": UsersRound,
+  wrench: Wrench,
   x: X,
 };
 
