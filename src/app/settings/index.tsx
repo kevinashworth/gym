@@ -1,7 +1,8 @@
 import { router, Stack } from "expo-router";
-import { Alert, Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 
+import alert from "@/components/alert";
 import Icon, { IconName } from "@/components/icon";
 import { useAuthStore, useUserStore } from "@/store";
 import { spectrum } from "@/theme";
@@ -40,10 +41,11 @@ export default function SettingsTab() {
   const resetUser = useUserStore((s) => s.resetUser);
 
   const handleLogout = () =>
-    Alert.alert("Logout", "Are you sure you want to sign out?", [
+    alert("Logout", "Are you sure you want to sign out?", [
       {
         text: "Cancel",
         style: "cancel",
+        onPress: () => console.log("Alert: Cancel"),
       },
       {
         text: "Logout",
