@@ -1,10 +1,10 @@
 import React from "react";
 
 import { renderHook, act, waitFor } from "@testing-library/react-native";
-import * as Location from "expo-location";
+import * as GeoLocation from "expo-location"; // NB: We call it GeoLocation to avoid confusion with our own locations from our API
 import Toast from "react-native-toast-message";
 
-import { LocationProvider, useLocation } from "./location";
+import { GeoLocationProvider, useGeoLocation } from "./location";
 
 // Mock the expo-location module
 jest.mock("expo-location", () => ({
@@ -25,8 +25,8 @@ jest.mock("react-native-toast-message", () => ({
 process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT = "37.7749";
 process.env.EXPO_PUBLIC_MOCK_LOCATION_LNG = "-122.4194";
 
-describe("LocationContext", () => {
-  const mockLocation = {
+describe("GeoLocationContext", () => {
+  const mockGeoLocation = {
     coords: {
       latitude: 34.0522,
       longitude: -118.2437,
@@ -43,19 +43,21 @@ describe("LocationContext", () => {
     jest.clearAllMocks();
 
     // Default mock implementations
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: "granted" });
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+    (GeoLocation.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
       status: "granted",
     });
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(mockLocation);
+    (GeoLocation.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: "granted",
+    });
+    (GeoLocation.getCurrentPositionAsync as jest.Mock).mockResolvedValue(mockGeoLocation);
   });
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <LocationProvider>{children}</LocationProvider>
+    <GeoLocationProvider>{children}</GeoLocationProvider>
   );
 
   test("initializes with default location from environment variables", async () => {
-    const { result } = renderHook(() => useLocation(), { wrapper });
+    const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
     // Initial state should use the default location from env vars
     expect(result.current.lat).toBe(37.10716);
@@ -69,23 +71,25 @@ describe("LocationContext", () => {
     });
 
     // After initialization, should have requested permissions and location
-    expect(Location.getForegroundPermissionsAsync).toHaveBeenCalled();
-    expect(Location.getCurrentPositionAsync).toHaveBeenCalled();
+    expect(GeoLocation.getForegroundPermissionsAsync).toHaveBeenCalled();
+    expect(GeoLocation.getCurrentPositionAsync).toHaveBeenCalled();
 
     // Should now have the mock location
-    expect(result.current.lat).toBe(mockLocation.coords.latitude);
-    expect(result.current.lng).toBe(mockLocation.coords.longitude);
-    expect(result.current.location).toEqual(mockLocation);
+    expect(result.current.lat).toBe(mockGeoLocation.coords.latitude);
+    expect(result.current.lng).toBe(mockGeoLocation.coords.longitude);
+    expect(result.current.geoLocation).toEqual(mockGeoLocation);
   });
 
   test("handles permission denied", async () => {
     // Mock permission denied
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: "denied" });
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+    (GeoLocation.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: "denied",
+    });
+    (GeoLocation.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
       status: "denied",
     });
 
-    const { result } = renderHook(() => useLocation(), { wrapper });
+    const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
     // Wait for the permission request to complete
     await waitFor(() => {
@@ -99,9 +103,9 @@ describe("LocationContext", () => {
   test("handles location error", async () => {
     // Mock location error
     const mockError = new Error("Location unavailable");
-    (Location.getCurrentPositionAsync as jest.Mock).mockRejectedValue(mockError);
+    (GeoLocation.getCurrentPositionAsync as jest.Mock).mockRejectedValue(mockError);
 
-    const { result } = renderHook(() => useLocation(), { wrapper });
+    const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
     // Wait for the location request to complete
     await waitFor(() => {
@@ -116,8 +120,8 @@ describe("LocationContext", () => {
     });
   });
 
-  test("refreshLocation updates location when successful", async () => {
-    const { result } = renderHook(() => useLocation(), { wrapper });
+  test("refreshGeoLocation updates location when successful", async () => {
+    const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
     // Wait for initial location request to complete
     await waitFor(() => {
@@ -125,32 +129,34 @@ describe("LocationContext", () => {
     });
 
     // Update mock location for refresh
-    const updatedLocation = {
-      ...mockLocation,
+    const updatedGeoLocation = {
+      ...mockGeoLocation,
       coords: {
-        ...mockLocation.coords,
+        ...mockGeoLocation.coords,
         latitude: 40.7128,
         longitude: -74.006,
       },
     };
-    (Location.getCurrentPositionAsync as jest.Mock).mockResolvedValue(updatedLocation);
+    (GeoLocation.getCurrentPositionAsync as jest.Mock).mockResolvedValue(updatedGeoLocation);
 
-    // Call refreshLocation
+    // Call refreshGeoLocation
     await act(async () => {
-      await result.current.refreshLocation();
+      await result.current.refreshGeoLocation();
     });
 
     // Should have updated location
-    expect(result.current.lat).toBe(updatedLocation.coords.latitude);
-    expect(result.current.lng).toBe(updatedLocation.coords.longitude);
-    expect(result.current.location).toEqual(updatedLocation);
+    expect(result.current.lat).toBe(updatedGeoLocation.coords.latitude);
+    expect(result.current.lng).toBe(updatedGeoLocation.coords.longitude);
+    expect(result.current.geoLocation).toEqual(updatedGeoLocation);
   });
 
-  test.skip("retryPermission requests permissions and updates location", async () => {
+  test.skip("retryGeoLocationPermission requests permissions and updates location", async () => {
     // Initially denied permission
-    (Location.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({ status: "denied" });
+    (GeoLocation.getForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+      status: "denied",
+    });
 
-    const { result } = renderHook(() => useLocation(), { wrapper });
+    const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
     // Wait for initial permission check to complete
     await waitFor(() => {
@@ -160,30 +166,30 @@ describe("LocationContext", () => {
     expect(result.current.hasPermission).toBe(false);
 
     // Now grant permission for retry
-    (Location.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
+    (GeoLocation.requestForegroundPermissionsAsync as jest.Mock).mockResolvedValue({
       status: "granted",
     });
 
-    // Call retryPermission
+    // Call retryGeoLocationPermission
     await act(async () => {
-      await result.current.retryPermission();
+      await result.current.retryGeoLocationPermission();
     });
 
     // Should have updated permission status and location
     expect(result.current.hasPermission).toBe(true);
-    expect(result.current.lat).toBe(mockLocation.coords.latitude);
-    expect(result.current.lng).toBe(mockLocation.coords.longitude);
+    expect(result.current.lat).toBe(mockGeoLocation.coords.latitude);
+    expect(result.current.lng).toBe(mockGeoLocation.coords.longitude);
   });
 
   test("setLocation updates the location state", async () => {
-    const { result } = renderHook(() => useLocation(), { wrapper });
+    const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
     // Wait for initial location request to complete
     await waitFor(() => {
       expect(result.current.isRequesting).toBe(false);
     });
 
-    const customLocation = {
+    const customGeoLocation = {
       coords: {
         latitude: 51.5074,
         longitude: -0.1278,
@@ -198,23 +204,21 @@ describe("LocationContext", () => {
 
     // Update location using setLocation
     act(() => {
-      result.current.setLocation(customLocation);
+      result.current.setLocation(customGeoLocation);
     });
 
     // Should have updated location
-    expect(result.current.lat).toBe(customLocation.coords.latitude);
-    expect(result.current.lng).toBe(customLocation.coords.longitude);
-    expect(result.current.location).toEqual(customLocation);
+    expect(result.current.lat).toBe(customGeoLocation.coords.latitude);
+    expect(result.current.lng).toBe(customGeoLocation.coords.longitude);
+    expect(result.current.geoLocation).toEqual(customGeoLocation);
   });
 
   test.skip("prevents concurrent location requests", async () => {
-    const { result } = renderHook(() => useLocation(), { wrapper });
+    const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
     // Set isRequesting to true manually
     act(() => {
-      result.current.setLocation({
-        ...result.current.location,
-      });
+      result.current.setGeoLocation(result.current.geoLocation);
     });
 
     // Reset mocks to track new calls
@@ -227,11 +231,11 @@ describe("LocationContext", () => {
     });
 
     await act(async () => {
-      await result.current.refreshLocation();
+      await result.current.refreshGeoLocation();
     });
 
     // Should not have called location APIs
-    expect(Location.getForegroundPermissionsAsync).not.toHaveBeenCalled();
-    expect(Location.getCurrentPositionAsync).not.toHaveBeenCalled();
+    expect(GeoLocation.getForegroundPermissionsAsync).not.toHaveBeenCalled();
+    expect(GeoLocation.getCurrentPositionAsync).not.toHaveBeenCalled();
   });
 });

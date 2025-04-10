@@ -7,7 +7,7 @@ import Empty from "@/components/empty";
 import ErrorMessage from "@/components/error-message";
 import Icon from "@/components/icon";
 import Picture from "@/components/picture";
-import { useLocation } from "@/context/location";
+import { useGeoLocation } from "@/context/location";
 import api from "@/lib/api";
 import { spectrum } from "@/theme";
 
@@ -25,7 +25,7 @@ interface FavoritesProps {
 }
 
 export default function Favorites({ disabled }: FavoritesProps) {
-  const { lat, lng } = useLocation();
+  const { lat, lng } = useGeoLocation();
 
   const searchParams =
     typeof lat === "number" && typeof lng === "number" ? { lat, lng } : undefined;

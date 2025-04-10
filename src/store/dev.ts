@@ -15,7 +15,7 @@ const getStorageOption = () => {
 
 interface DevState {
   // for development
-  enableMockLocation: boolean;
+  enableMockGeoLocation: boolean;
   showApiConsoleLogs: boolean;
   showDevToolbox: boolean;
   showPageInfo: boolean;
@@ -27,7 +27,7 @@ interface DevState {
 
 interface DevActions {
   // for development
-  toggleEnableMockLocation: () => void;
+  toggleEnableMockGeoLocation: () => void;
   toggleShowApiConsoleLogs: () => void;
   toggleShowDevToolbox: () => void;
   toggleShowPageInfo: () => void;
@@ -39,7 +39,7 @@ interface DevActions {
 }
 
 const initialState: DevState = {
-  enableMockLocation: Boolean(process.env.EXPO_PUBLIC_ENABLE_MOCK_LOCATION),
+  enableMockGeoLocation: Boolean(process.env.EXPO_PUBLIC_ENABLE_MOCK_LOCATION),
   showApiConsoleLogs: process.env.NODE_ENV === "development",
   showDevToolbox: false,
   showPageInfo: false,
@@ -61,13 +61,13 @@ const useDevStore = create<DevState & DevActions>()(
         set((state) => ({
           message,
         })),
-      toggleEnableMockLocation: () =>
+      toggleEnableMockGeoLocation: () =>
         set((state) => ({
           enableMockLocation:
             process.env.NODE_ENV === "development" &&
             Boolean(process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT) &&
             Boolean(process.env.EXPO_PUBLIC_MOCK_LOCATION_LNG) &&
-            !state.enableMockLocation,
+            !state.enableMockGeoLocation,
         })),
       toggleShowApiConsoleLogs: () =>
         set((state) => ({

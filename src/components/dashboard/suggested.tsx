@@ -7,7 +7,7 @@ import Placeholder from "@/assets/svg/placeholder";
 import Empty from "@/components/empty";
 import ErrorMessage from "@/components/error-message";
 import Picture from "@/components/picture";
-import { useLocation } from "@/context/location";
+import { useGeoLocation } from "@/context/location";
 import api from "@/lib/api";
 import { spectrum } from "@/theme";
 
@@ -25,7 +25,7 @@ interface SuggestedProps {
 }
 
 export default function SuggestedLocations({ disabled }: SuggestedProps) {
-  const { lat, lng } = useLocation();
+  const { lat, lng } = useGeoLocation();
 
   const searchParams =
     typeof lat === "number" && typeof lng === "number" ? { lat, lng } : undefined;

@@ -5,16 +5,16 @@ import Icon from "@/components/icon";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
-const width = 120;
+const width = 150;
 
 export default function DevSettings() {
   const {
-    enableMockLocation,
+    enableMockGeoLocation: enableMockLocation,
     showApiConsoleLogs,
     showDevToolbox,
     showPageInfo,
     showPathnameLog,
-    toggleEnableMockLocation,
+    toggleEnableMockGeoLocation,
     toggleShowApiConsoleLogs,
     toggleShowDevToolbox,
     toggleShowPageInfo,
@@ -33,8 +33,10 @@ export default function DevSettings() {
           <Text style={styles.headerText}>Click icon to toggle</Text>
         </View>
         <View style={styles.tableRow}>
-          <Text style={[styles.tableCell, { textAlign: "right", width }]}>Use mock location</Text>
-          <Pressable onPress={toggleEnableMockLocation} style={styles.tableCell}>
+          <Text style={[styles.tableCell, { textAlign: "right", width }]} numberOfLines={1}>
+            Use mock geo location
+          </Text>
+          <Pressable onPress={toggleEnableMockGeoLocation} style={styles.tableCell}>
             <Icon
               color={enableMockLocation ? spectrum.primary : spectrum.warning}
               name={enableMockLocation ? "square-check" : "square"}
@@ -111,5 +113,7 @@ const styles = StyleSheet.create({
   tableHead: {
     justifyContent: "center",
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: spectrum.base1Content,
   },
 });

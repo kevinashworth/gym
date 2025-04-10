@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 
 import ErrorMessage from "@/components/error-message";
-import { useLocation } from "@/context/location";
+import { useGeoLocation } from "@/context/location";
 import api from "@/lib/api";
 import { spectrum } from "@/theme";
 
@@ -18,7 +18,7 @@ interface CheckInDialogContentsProps {
 }
 
 function CheckInDialogContents({ campaign, onSubmit }: CheckInDialogContentsProps) {
-  const { lat, lng } = useLocation();
+  const { lat, lng } = useGeoLocation();
 
   const { error, isError, isPending, mutate } = useMutation({
     mutationFn: async ({ lat, lng, uuid }: { lat: number; lng: number; uuid: string }) => {

@@ -11,12 +11,13 @@ import Favorites from "@/components/dashboard/favorites";
 import Suggested from "@/components/dashboard/suggested";
 import Dialog from "@/components/dialog";
 import Icon from "@/components/icon";
-import { useLocation } from "@/context/location";
+import { useGeoLocation } from "@/context/location";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
 export default function DashboardTab() {
-  const { lat, lng, retryPermission, isRequesting } = useLocation();
+  const { lat, lng, refreshGeoLocation, retryGeoLocationPermission, isRequesting } =
+    useGeoLocation();
   const showPageInfo = useDevStore((state) => state.showPageInfo);
   const queryClient = useQueryClient();
 
@@ -89,7 +90,7 @@ export default function DashboardTab() {
           activityIndicator={isRequesting}
           activityIndicatorProps={{ color: spectrum.primary, size: "small" }}
           label="Allow Location Permission"
-          onPress={retryPermission}
+          onPress={retryGeoLocationPermission}
         />
       </Dialog>
       <View style={styles.container}>

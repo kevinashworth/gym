@@ -18,7 +18,7 @@ import Toast from "react-native-toast-message";
 import CustomHeader from "@/components/header";
 import EntryHeader from "@/components/header-entry";
 import { SessionProvider } from "@/context/auth";
-import { LocationProvider } from "@/context/location";
+import { GeoLocationProvider } from "@/context/location";
 import { toastConfig } from "@/utils/toast";
 
 import type { AppStateStatus } from "react-native";
@@ -101,7 +101,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          <LocationProvider>
+          <GeoLocationProvider>
             <Stack>
               <Stack.Screen
                 name="(tabs)"
@@ -123,7 +123,7 @@ export default function RootLayout() {
               />
               <Stack.Screen name="welcome" />
             </Stack>
-          </LocationProvider>
+          </GeoLocationProvider>
         </SessionProvider>
       </QueryClientProvider>
       <Toast config={toastConfig} topOffset={insets.top} />

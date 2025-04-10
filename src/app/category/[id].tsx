@@ -22,7 +22,7 @@ import ErrorMessage from "@/components/error-message";
 import FavoriteLocation from "@/components/favorite-location";
 import CustomHeader from "@/components/header";
 import Picture from "@/components/picture";
-import { useLocation } from "@/context/location";
+import { useGeoLocation } from "@/context/location";
 import api from "@/lib/api";
 import { spectrum } from "@/theme";
 import capitalize from "@/utils/capitalize";
@@ -103,14 +103,16 @@ function FlatListItem({ item }: { item: CategoryLocation }) {
 }
 
 function CategoryResults({ categoryName = "", id = "" }: { categoryName: string; id: string }) {
-  const { lat, lng, refreshLocation } = useLocation();
+  const { lat, lng, refreshGeoLocation } = useGeoLocation();
+
+  const searchParams =
+    typeof lat === "number" && typeof lng === "number" ? { lat, lng } : undefined;
 
   const { data, isLoading, error, refetch } = useQuery<CategoryLocation[]>({
+    enabled: !!searchParams,
     queryKey: ["category", { id, lat, lng }],
     queryFn: () => {
-      return api
-        .get<CategoryLocation[]>(`user/location/category/${id}`, { searchParams: { lat, lng } })
-        .json();
+      return api.get<CategoryLocation[]>(`user/location/category/${id}`, { searchParams }).json();
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
@@ -118,12 +120,12 @@ function CategoryResults({ categoryName = "", id = "" }: { categoryName: string;
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refreshLocation()
+    refreshGeoLocation()
       .then(() => {
         refetch();
       })
       .then(() => setRefreshing(false));
-  }, [refreshLocation, refetch]);
+  }, [refreshGeoLocation, refetch]);
 
   if (isLoading) {
     return (

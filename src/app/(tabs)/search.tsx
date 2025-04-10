@@ -27,7 +27,7 @@ import FormErrorsMessage from "@/components/form-errors-message";
 import Icon from "@/components/icon";
 import Input from "@/components/input";
 import Picture from "@/components/picture";
-import { useLocation } from "@/context/location";
+import { useGeoLocation } from "@/context/location";
 import api from "@/lib/api";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
@@ -51,7 +51,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function SearchTab() {
   const showPageInfo = useDevStore((s) => s.showPageInfo);
-  const { hasPermission } = useLocation();
+  const { hasPermission } = useGeoLocation();
 
   const {
     control,
@@ -169,7 +169,8 @@ function FlatListItem({ item }: { item: Location }) {
 }
 
 function SearchResults({ query = "" }: { query: string }) {
-  const { hasPermission, isRequesting, lat, lng, refreshLocation, retryPermission } = useLocation();
+  const { hasPermission, isRequesting, lat, lng, refreshGeoLocation, retryGeoLocationPermission } =
+    useGeoLocation();
   const [refreshing, setRefreshing] = useState(false);
 
   const searchParams =
@@ -186,12 +187,12 @@ function SearchResults({ query = "" }: { query: string }) {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refreshLocation()
+    refreshGeoLocation()
       .then(() => {
         refetch();
       })
       .then(() => setRefreshing(false));
-  }, [refreshLocation, refetch]);
+  }, [refreshGeoLocation, refetch]);
 
   // If location permission is not granted or lat/lng are undefined, show a message
   if (!hasPermission || !lat || !lng) {
@@ -212,7 +213,7 @@ function SearchResults({ query = "" }: { query: string }) {
           activityIndicator={isRequesting}
           activityIndicatorProps={{ color: spectrum.primary, size: "small" }}
           label="Enable Location"
-          onPress={retryPermission}
+          onPress={retryGeoLocationPermission}
           buttonStyle={styles.locationPermissionButton}
         />
       </View>
@@ -239,7 +240,7 @@ function SearchResults({ query = "" }: { query: string }) {
         <ErrorMessage error={errorMessage} />
         <Button
           label="Retry with Location"
-          onPress={refreshLocation}
+          onPress={refreshGeoLocation}
           buttonStyle={styles.retryButton}
         />
       </View>
