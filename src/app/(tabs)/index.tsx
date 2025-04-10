@@ -27,28 +27,31 @@ export default function DashboardTab() {
 
   useFocusEffect(
     useCallback(() => {
+      if (isRequesting) return;
       if (lat === undefined || lng === undefined) {
         setShowLocationPermissionDialog(true);
         setDisabled(true);
       } else {
         setDisabled(false);
       }
-    }, [lat, lng, setShowLocationPermissionDialog])
+    }, [isRequesting, lat, lng, setShowLocationPermissionDialog])
   );
 
   // Refetch Favorites, Suggested, Categories when user pulls down to refresh
   // TODO: Also useFocusEffect to refetch when returning from, say, Settings?
-  const onRefresh = useCallback(() => {
+
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    queryClient
-      .refetchQueries({
+    try {
+      await refreshGeoLocation();
+      await queryClient.refetchQueries({
         queryKey: ["dashboard"],
         type: "active",
-      })
-      .then(() => {
-        setRefreshing(false);
       });
-  }, [queryClient]);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [queryClient, refreshGeoLocation]);
 
   // useFocusEffect(
   //   useCallback(() => {

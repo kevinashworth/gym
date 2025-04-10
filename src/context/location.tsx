@@ -1,66 +1,111 @@
+// We call it GeoLocation to avoid confusion with our own locations from our
+// API, and to avoid naming conflicts with `location` on the window object.
+
+// There is a useFocusEffect in src/app/(tabs)/index.tsx that is the first code
+// to use  this context when the app is first loaded.
+
 import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 
-import * as Location from "expo-location";
+import * as GeoLocation from "expo-location";
 import Toast from "react-native-toast-message";
 
 import { useDevStore } from "@/store";
 
-const mockLocation = {
+const mockGeoLocation = {
   coords: {
     latitude: Number(process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT),
     longitude: Number(process.env.EXPO_PUBLIC_MOCK_LOCATION_LNG),
   },
-} as Location.LocationObject;
+} as GeoLocation.LocationObject;
 
-interface LocationContextType {
+interface GeoLocationContextType {
   errorMsg: string | null;
   hasPermission: boolean;
   isRequesting: boolean;
   lat: number | undefined;
   lng: number | undefined;
-  location: Location.LocationObject | null;
-  refreshLocation: () => Promise<void>;
-  retryPermission: () => Promise<void>;
-  setLocation: React.Dispatch<React.SetStateAction<Location.LocationObject | null>>;
+  geoLocation: GeoLocation.LocationObject | null;
+  refreshGeoLocation: () => Promise<void>;
+  retryGeoLocationPermission: () => Promise<void>;
+  setGeoLocation: React.Dispatch<React.SetStateAction<GeoLocation.LocationObject | null>>;
+  setLocation: React.Dispatch<React.SetStateAction<GeoLocation.LocationObject | null>>;
 }
 
-const LocationContext = createContext<LocationContextType | null>(null);
+const GeoLocationContext = createContext<GeoLocationContextType | null>(null);
 
 // This hook can be used to access the location info.
-export function useLocation() {
-  const value = useContext(LocationContext);
+export function useGeoLocation() {
+  const value = useContext(GeoLocationContext);
   if (value === null) {
-    throw new Error("useLocation must be wrapped in a <LocationProvider />");
+    throw new Error("useGeoLocation must be wrapped in a <GeoLocationProvider />");
   }
 
   return value;
 }
 
-const LocationProvider = ({ children }: PropsWithChildren) => {
-  const { enableMockLocation } = useDevStore();
+const GeoLocationProvider = ({ children }: PropsWithChildren) => {
+  const { enableMockGeoLocation } = useDevStore();
 
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [geoLocation, setGeoLocation] = useState<GeoLocation.LocationObject | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isRequesting, setIsRequesting] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false); // initial value of true helps us not rely on lat/lng too soon
   const [hasPermission, setHasPermission] = useState(false);
 
-  const lat = location?.coords.latitude;
-  const lng = location?.coords.longitude;
+  const lat = geoLocation?.coords.latitude;
+  const lng = geoLocation?.coords.longitude;
+
+  // run once on mount
+  useEffect(() => {
+    requestGeoLocation();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // run on mount
+  // useEffect(() => {
+  //   refreshGeoLocation();
+  // }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (enableMockLocation && !location) {
-      setLocation(mockLocation);
-    }
-  }, [enableMockLocation, location]);
-
-  const requestLocation = async () => {
-    try {
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Balanced,
+    if (enableMockGeoLocation && !isRequesting && !hasPermission && !geoLocation) {
+      setGeoLocation(mockGeoLocation);
+      setHasPermission(true);
+      Toast.show({
+        type: "success",
+        text1: "Mock Location",
+        text2: "Mock location is enabled",
       });
-      setLocation(location);
+    }
+  }, [enableMockGeoLocation, geoLocation, hasPermission, isRequesting]);
+
+  // see https://stackoverflow.com/a/76037136/7082724
+  function getCurrentGeoLocation() {
+    const timeout = 10000;
+    return new Promise<GeoLocation.LocationObject | null>(async (resolve, reject) => {
+      setTimeout(() => {
+        reject(new Error(`Error getting gps location after ${(timeout * 2) / 1000} s`));
+      }, timeout * 2);
+      setTimeout(async () => {
+        resolve(await GeoLocation.getLastKnownPositionAsync());
+      }, timeout);
+      resolve(
+        await GeoLocation.getCurrentPositionAsync({
+          accuracy: GeoLocation.Accuracy.Balanced,
+        })
+      );
+    });
+  }
+
+  async function requestGeoLocation() {
+    setIsRequesting(true);
+    const permissionGranted = await checkGeoLocationPermission();
+    if (!permissionGranted) {
+      setIsRequesting(false);
+      return;
+    }
+
+    try {
+      let location = await getCurrentGeoLocation();
+      setGeoLocation(location);
       setErrorMsg(null);
-      return location;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to get location";
       setErrorMsg(errorMessage);
@@ -69,20 +114,29 @@ const LocationProvider = ({ children }: PropsWithChildren) => {
         text1: "Location Error",
         text2: errorMessage,
       });
-      return null;
+    } finally {
+      setIsRequesting(false);
     }
-  };
+  }
 
-  const retryPermission = async () => {
-    setIsRequesting(true);
+  async function checkGeoLocationPermission(): Promise<boolean> {
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      setHasPermission(status === "granted");
-      if (status === "granted") {
-        await requestLocation();
+      const { status } = await GeoLocation.requestForegroundPermissionsAsync();
+      const permissionGranted = status === "granted";
+      setHasPermission(permissionGranted);
+
+      if (!permissionGranted) {
+        const errorMessage = "Location permission is required to find stores near you";
+        setErrorMsg(errorMessage);
+        Toast.show({
+          type: "error",
+          text1: "Permission Error",
+          text2: errorMessage,
+        });
       } else {
-        setErrorMsg("Location permission is required to find stores near you");
+        setErrorMsg(null);
       }
+      return permissionGranted;
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to request location permission";
@@ -92,50 +146,52 @@ const LocationProvider = ({ children }: PropsWithChildren) => {
         text1: "Permission Error",
         text2: errorMessage,
       });
-    } finally {
-      setIsRequesting(false);
+      return false;
     }
-  };
-
-  async function refreshLocation() {
-    if (isRequesting) return;
+  }
+  async function retryGeoLocationPermission() {
     setIsRequesting(true);
-
     try {
-      const { status } = await Location.getForegroundPermissionsAsync();
-      setHasPermission(status === "granted");
-
-      if (status !== "granted") {
-        await retryPermission();
-        return;
+      const permissionGranted = await checkGeoLocationPermission();
+      if (permissionGranted) {
+        await requestGeoLocation();
       }
-
-      await requestLocation();
     } finally {
       setIsRequesting(false);
     }
   }
 
-  useEffect(() => {
-    refreshLocation();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  async function refreshGeoLocation() {
+    if (isRequesting) return;
+    setIsRequesting(true);
+
+    try {
+      const permissionGranted = await checkGeoLocationPermission();
+      if (!permissionGranted) return;
+
+      await requestGeoLocation();
+    } finally {
+      setIsRequesting(false);
+    }
+  }
 
   return (
-    <LocationContext.Provider
+    <GeoLocationContext.Provider
       value={{
         errorMsg,
         hasPermission,
         isRequesting,
         lat,
         lng,
-        location,
-        refreshLocation,
-        retryPermission,
-        setLocation,
+        geoLocation,
+        refreshGeoLocation,
+        retryGeoLocationPermission,
+        setGeoLocation,
+        setLocation: setGeoLocation,
       }}>
       {children}
-    </LocationContext.Provider>
+    </GeoLocationContext.Provider>
   );
 };
 
-export { LocationContext, LocationProvider };
+export { GeoLocationContext, GeoLocationProvider };
