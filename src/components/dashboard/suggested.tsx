@@ -65,7 +65,7 @@ export default function SuggestedLocations({ disabled }: SuggestedProps) {
     return (
       <View style={[styles.container]}>
         <Empty
-          icon="map-o"
+          icon="map"
           text="As you use the app, suggestions will appear here."
           textStyle={styles.emptyText}
         />
