@@ -9,15 +9,6 @@ import React, { createContext, PropsWithChildren, useContext, useEffect, useStat
 import * as GeoLocation from "expo-location";
 import Toast from "react-native-toast-message";
 
-import { useDevStore } from "@/store";
-
-const mockGeoLocation = {
-  coords: {
-    latitude: Number(process.env.EXPO_PUBLIC_MOCK_LOCATION_LAT),
-    longitude: Number(process.env.EXPO_PUBLIC_MOCK_LOCATION_LNG),
-  },
-} as GeoLocation.LocationObject;
-
 interface GeoLocationContextType {
   errorMsg: string | null;
   hasPermission: boolean;
@@ -44,8 +35,6 @@ export function useGeoLocation() {
 }
 
 const GeoLocationProvider = ({ children }: PropsWithChildren) => {
-  const { enableMockGeoLocation } = useDevStore();
-
   const [geoLocation, setGeoLocation] = useState<GeoLocation.LocationObject | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isRequesting, setIsRequesting] = useState(false); // initial value of true helps us not rely on lat/lng too soon
@@ -63,18 +52,6 @@ const GeoLocationProvider = ({ children }: PropsWithChildren) => {
   // useEffect(() => {
   //   refreshGeoLocation();
   // }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (enableMockGeoLocation && !isRequesting && !hasPermission && !geoLocation) {
-      setGeoLocation(mockGeoLocation);
-      setHasPermission(true);
-      Toast.show({
-        type: "success",
-        text1: "Mock Location",
-        text2: "Mock location is enabled",
-      });
-    }
-  }, [enableMockGeoLocation, geoLocation, hasPermission, isRequesting]);
 
   // see https://stackoverflow.com/a/76037136/7082724
   function getCurrentGeoLocation() {

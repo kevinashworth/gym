@@ -9,12 +9,10 @@ const width = 150;
 
 export default function DevSettings() {
   const {
-    enableMockGeoLocation: enableMockLocation,
     showApiConsoleLogs,
     showDevToolbox,
     showPageInfo,
     showPathnameLog,
-    toggleEnableMockGeoLocation,
     toggleShowApiConsoleLogs,
     toggleShowDevToolbox,
     toggleShowPageInfo,
@@ -31,18 +29,6 @@ export default function DevSettings() {
       <View style={styles.table}>
         <View style={styles.tableHead}>
           <Text style={styles.headerText}>Click icon to toggle</Text>
-        </View>
-        <View style={styles.tableRow}>
-          <Text style={[styles.tableCell, { textAlign: "right", width }]} numberOfLines={1}>
-            Use mock geo location
-          </Text>
-          <Pressable onPress={toggleEnableMockGeoLocation} style={styles.tableCell}>
-            <Icon
-              color={enableMockLocation ? spectrum.primary : spectrum.warning}
-              name={enableMockLocation ? "square-check" : "square"}
-              size={24}
-            />
-          </Pressable>
         </View>
         <View style={styles.tableRow}>
           <Text style={[styles.tableCell, { textAlign: "right", width }]}>Dev toolbox</Text>
