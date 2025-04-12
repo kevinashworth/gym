@@ -13,9 +13,6 @@
     "prettier:write": "prettier --write .",
     "prepare": "husky"
   },
-  "jest": {
-    "preset": "jest-expo"
-  },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
   },
