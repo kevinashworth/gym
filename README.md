@@ -4,6 +4,38 @@ This is an [Expo](https://expo.dev) project
 
 # GYM
 
+## Sitemap
+
+```bash
+npx expo-router-sitemap
+```
+
+```txt
+/
+/+html
+/+not-found
+/action
+/category/[id]
+/dashboard
+/entry/recovery/apply
+/entry/recovery/submit
+/entry/sign-in
+/entry/sign-up/collect-account
+/entry/sign-up/collect-info
+/entry/sign-up/success
+/entry/sign-up/verify-account
+/location/[uuid]
+/notifications
+/search
+/settings/
+/settings/dev
+/settings/help
+/settings/profile/
+/wallet
+
+✅ No route collisions detected.
+```
+
 ## Notes to self
 
 These notes are a little sloppy, a WIP, not a introduction to the codebase

@@ -104,7 +104,14 @@ export default function SettingsTab() {
           icon="users-round"
           iconColor={spectrum.primary}
           label="Invite Friends"
-          onPress={() => console.log("Invite")}
+          onPress={() =>
+            Toast.show({
+              position: "bottom",
+              type: "primary",
+              text1: "Invite Friends",
+              text2: "This feature is not yet implemented",
+            })
+          }
         />
         <SettingItem
           icon="circle-help"

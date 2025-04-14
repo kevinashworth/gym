@@ -15,7 +15,7 @@ import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
 import InputPasswordControlled from "@/components/input-password-controlled";
 import { inputWidth } from "@/constants/constants";
-import { useAuthStore } from "@/store";
+import { useAuthStore, useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 // import { CognitoUser } from "@/types/auth";
 import { isValidEmail } from "@/utils/email";
@@ -43,6 +43,7 @@ type FormValues = z.infer<typeof schema>;
 
 function SignUpWithEmailScreen() {
   const setAccount = useAuthStore((s) => s.setAccount);
+  const showDevToolbox = useDevStore((s) => s.showDevToolbox);
 
   const router = useRouter();
 
@@ -212,88 +213,90 @@ function SignUpWithEmailScreen() {
           </View>
         </View>
 
-        <View style={styles.toolbox}>
-          <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
-          <Button
-            iconName="arrow-right"
-            label="verify-account.tsx"
-            onPress={() => router.push("/entry/sign-up/verify-account")}
-            size="sm"
-            variant="primary"
-          />
-          <Button
-            buttonStyle={{ width: 200 }}
-            iconName="refresh"
-            label="Toggle Overall Error State"
-            onPress={() =>
-              setSignUpError(
-                signUpError ? null : new Error("An overall error message from Auth.signUp")
-              )
-            }
-            size="sm"
-            variant="black"
-          />
-          <Button
-            iconName="refresh"
-            label="Toggle Error State (account)"
-            onPress={() => {
-              if (!errors.account) {
-                setError("account", {
-                  type: "custom",
-                  message: "A form-based `account` error message.",
-                });
-              } else {
-                clearErrors("account");
+        {showDevToolbox && (
+          <View style={styles.toolbox}>
+            <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
+            <Button
+              iconName="arrow-right"
+              label="verify-account.tsx"
+              onPress={() => router.push("/entry/sign-up/verify-account")}
+              size="sm"
+              variant="primary"
+            />
+            <Button
+              buttonStyle={{ width: 200 }}
+              iconName="refresh"
+              label="Toggle Overall Error State"
+              onPress={() =>
+                setSignUpError(
+                  signUpError ? null : new Error("An overall error message from Auth.signUp")
+                )
               }
-            }}
-            size="sm"
-            variant="black"
-          />
-          <Button
-            iconName="refresh"
-            label="Toggle Error State (password)"
-            onPress={() => {
-              if (!errors.password) {
-                setError("password", {
-                  type: "custom",
-                  message:
-                    "A form-based `password` error message. This one is a little longer. It's designed to test the error message length.",
-                });
-              } else {
-                clearErrors("password");
-              }
-            }}
-            size="sm"
-            variant="black"
-          />
-          <Button
-            iconName="refresh"
-            label="Toggle Error State (confirm)"
-            onPress={() => {
-              if (!errors.confirm) {
-                setError("confirm", {
-                  type: "custom",
-                  message: "Passwords don’t match.",
-                });
-              } else {
-                clearErrors("confirm");
-              }
-            }}
-            size="sm"
-            variant="black"
-          />
-          <Button
-            iconName="circle-x"
-            label="Clear Errors"
-            onPress={() => {
-              clearErrors();
-              setSignUpError(null);
-            }}
-            size="sm"
-            variant="black"
-          />
-          <DisplayJSON json={{ errors, signUpError }} />
-        </View>
+              size="sm"
+              variant="black"
+            />
+            <Button
+              iconName="refresh"
+              label="Toggle Error State (account)"
+              onPress={() => {
+                if (!errors.account) {
+                  setError("account", {
+                    type: "custom",
+                    message: "A form-based `account` error message.",
+                  });
+                } else {
+                  clearErrors("account");
+                }
+              }}
+              size="sm"
+              variant="black"
+            />
+            <Button
+              iconName="refresh"
+              label="Toggle Error State (password)"
+              onPress={() => {
+                if (!errors.password) {
+                  setError("password", {
+                    type: "custom",
+                    message:
+                      "A form-based `password` error message. This one is a little longer. It's designed to test the error message length.",
+                  });
+                } else {
+                  clearErrors("password");
+                }
+              }}
+              size="sm"
+              variant="black"
+            />
+            <Button
+              iconName="refresh"
+              label="Toggle Error State (confirm)"
+              onPress={() => {
+                if (!errors.confirm) {
+                  setError("confirm", {
+                    type: "custom",
+                    message: "Passwords don’t match.",
+                  });
+                } else {
+                  clearErrors("confirm");
+                }
+              }}
+              size="sm"
+              variant="black"
+            />
+            <Button
+              iconName="circle-x"
+              label="Clear Errors"
+              onPress={() => {
+                clearErrors();
+                setSignUpError(null);
+              }}
+              size="sm"
+              variant="black"
+            />
+            <DisplayJSON json={{ errors, signUpError }} />
+          </View>
+        )}
       </View>
     </>
   );

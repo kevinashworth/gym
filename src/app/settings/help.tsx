@@ -18,9 +18,10 @@ export default function Help() {
         <View style={styles.searchContainer}>
           <Icon color={spectrum.base1Content} name="search" size={24} style={styles.searchIcon} />
           <InputWithClearButton
+            disabled
             value={filter}
             onChangeText={(f) => setFilter(f)}
-            placeholder="Search"
+            placeholder="Search Help - Not Available"
             style={styles.searchInput}
           />
         </View>
