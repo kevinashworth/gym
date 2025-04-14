@@ -16,7 +16,7 @@ export default function TabLayout() {
         tabBarShowLabel: false,
       }}>
       <Tabs.Screen
-        name="index"
+        name="dashboard"
         options={{
           title: "Dashboard",
           tabBarAccessibilityLabel: "Dashboard",
