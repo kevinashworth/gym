@@ -24,8 +24,6 @@ import ErrorMessage from "@/components/error-message";
 import FavoriteLocation from "@/components/favorite-location";
 import CustomHeader from "@/components/header";
 import Picture from "@/components/picture";
-import XStack from "@/components/x-stack";
-import YStack from "@/components/y-stack";
 import { photoKeys } from "@/constants/photoKeys";
 import api from "@/lib/api";
 import { useDevStore } from "@/store";
@@ -162,18 +160,19 @@ export default function LocationScreen() {
           header: () => <CustomHeader />,
         }}
       />
-      <XStack style={styles.titleRow}>
+      <View style={styles.titleRow}>
         <TouchableOpacity onPress={handleGoBack}>
           <Ionicons name="chevron-back" size={32} color={spectrum.primary} />
         </TouchableOpacity>
         <Text style={styles.h3}>{location.name}</Text>
-      </XStack>
+      </View>
       <ScrollView>
-        <YStack style={{ paddingHorizontal: 16 }}>
-          <YStack>
-            <XStack
+        <View style={{ paddingHorizontal: 16 }}>
+          <View>
+            <View
               style={{
                 alignItems: "center",
+                flexDirection: "row",
                 gap: 8,
               }}>
               <Picture
@@ -191,18 +190,18 @@ export default function LocationScreen() {
                 fallbackStyle={styles.fallback}
                 imageStyle={styles.image}
               />
-              <YStack>
-                <XStack style={{ gap: 2 }}>
+              <View>
+                <View style={{ flexDirection: "row", gap: 2 }}>
                   <Text>Review Score:</Text>
                   <Text style={{ fontWeight: 500 }}>
                     {location.average_rating ? Number(location.average_rating).toFixed(1) : "—"}
                   </Text>
-                </XStack>
-              </YStack>
-            </XStack>
-            <YStack>
-              <XStack style={{ paddingVertical: 8 }}>
-                <YStack>
+                </View>
+              </View>
+            </View>
+            <View>
+              <View style={{ flexDirection: "row", paddingVertical: 8 }}>
+                <View style={{ flex: 1 }}>
                   <Pressable
                     onPress={() =>
                       showLocation({
@@ -248,17 +247,17 @@ export default function LocationScreen() {
                       {phoneFormatter(location.business_phone || "")}
                     </Text>
                   </TouchableOpacity>
-                </YStack>
+                </View>
                 <FavoriteLocation uuid={uuid} enableText />
-              </XStack>
+              </View>
               <Text style={styles.description}>{location.description || "(No description)"}</Text>
-            </YStack>
-          </YStack>
-          <YStack style={{ alignItems: "center", gap: 8 }}>
+            </View>
+          </View>
+          <View style={{ alignItems: "center", gap: 8 }}>
             <Text style={styles.h6}>Earn Rewards From This Business</Text>
             <CampaignActions location={location} />
-          </YStack>
-        </YStack>
+          </View>
+        </View>
         <View
           style={{
             flexDirection: "row",
@@ -352,18 +351,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 8,
     gap: 8,
-    marginVertical: 8,
+    margin: 8,
     padding: 8,
-  },
-  toolboxButton: {
-    borderColor: spectrum.gray8,
-    borderWidth: 2,
-    borderRadius: 8,
   },
   toolboxHeader: {
     color: spectrum.primaryLight,
-    fontSize: 14,
-    fontWeight: 700,
+    fontSize: 12,
+    fontWeight: 400,
     textAlign: "center",
   },
   pageInfo: {
