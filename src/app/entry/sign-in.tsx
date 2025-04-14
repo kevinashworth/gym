@@ -11,7 +11,6 @@ import { z } from "zod";
 
 import LogoDark from "@/assets/svg/logo-dark";
 import Button from "@/components/button";
-import DisplayJSON from "@/components/display-json";
 import ErrorMessage from "@/components/error-message";
 import FormErrorsMessage from "@/components/form-errors-message";
 import Input from "@/components/input";
@@ -45,6 +44,7 @@ export default function SignInScreen() {
   const setToken = useAuthStore((s) => s.setToken);
   const tempMessage = useAuthStore((s) => s.tempMessage); // this message would be from some error
   const showDevToolbox = useDevStore((s) => s.showDevToolbox);
+  const showPageInfo = useDevStore((s) => s.showPageInfo);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | Error | FieldError | undefined>(undefined);
@@ -130,7 +130,7 @@ export default function SignInScreen() {
     setToken(token);
     setLoading(false);
 
-    router.replace("/(tabs)");
+    router.replace("/(tabs)/dashboard");
   });
 
   return (
@@ -224,7 +224,6 @@ export default function SignInScreen() {
         {showDevToolbox && (
           <View style={styles.toolbox}>
             <Text style={styles.toolboxHeader}>Dev Toolbox</Text>
-            <DisplayJSON json={{ error, errors, loading }} />
             <Button
               buttonStyle={{ width: 200 }}
               iconName="refresh"
@@ -268,7 +267,7 @@ export default function SignInScreen() {
             />
             <Button
               buttonStyle={{ width: 200 }}
-              iconName="times-circle"
+              iconName="circle-x"
               label="Clear Errors"
               onPress={() => {
                 clearErrors();
@@ -279,6 +278,7 @@ export default function SignInScreen() {
             />
           </View>
         )}
+        {showPageInfo && <Text style={styles.pageInfo}>src/app/entry/sign-in.tsx</Text>}
       </View>
     </ScrollView>
   );
@@ -288,7 +288,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     gap: 20,
-    justifyContent: "center",
   },
   explanationText: {
     fontSize: 16,
@@ -328,6 +327,16 @@ const styles = StyleSheet.create({
     color: spectrum.primaryLight,
     fontSize: 12,
     fontWeight: 400,
+    textAlign: "center",
+  },
+  pageInfo: {
+    borderTopColor: spectrum.base3Content,
+    borderTopWidth: 1,
+    color: spectrum.base1Content,
+    fontSize: 11,
+    fontWeight: 300,
+    marginTop: 4,
+    paddingTop: 12,
     textAlign: "center",
   },
 });

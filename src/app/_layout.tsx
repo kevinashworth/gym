@@ -11,6 +11,7 @@ import { Amplify } from "aws-amplify";
 import * as Network from "expo-network";
 import { Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { AppState, Platform } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -18,13 +19,14 @@ import Toast from "react-native-toast-message";
 import CustomHeader from "@/components/header";
 import EntryHeader from "@/components/header-entry";
 import { SessionProvider } from "@/context/auth";
-import { LocationProvider } from "@/context/location";
+import { GeoLocationProvider } from "@/context/location";
 import { toastConfig } from "@/utils/toast";
 
 import type { AppStateStatus } from "react-native";
 
 // Keep the splash screen visible while we prepare
 SplashScreen.preventAutoHideAsync();
+SystemUI.setBackgroundColorAsync("transparent");
 
 const queryClient = new QueryClient();
 
@@ -101,7 +103,7 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
-          <LocationProvider>
+          <GeoLocationProvider>
             <Stack>
               <Stack.Screen
                 name="(tabs)"
@@ -121,9 +123,8 @@ export default function RootLayout() {
                   header: () => <EntryHeader />,
                 }}
               />
-              <Stack.Screen name="welcome" />
             </Stack>
-          </LocationProvider>
+          </GeoLocationProvider>
         </SessionProvider>
       </QueryClientProvider>
       <Toast config={toastConfig} topOffset={insets.top} />

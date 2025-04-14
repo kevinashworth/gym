@@ -26,7 +26,10 @@ export default function Empty({
   const gap = vertical ? 4 : 8;
 
   return (
-    <View style={[styles.container, style, { flexDirection, gap }]}>
+    <View
+      style={[styles.container, style, { flexDirection, gap }]}
+      accessibilityRole="alert"
+      testID="the-empty-component">
       <Icon name={icon} color={iconColor || spectrum.base3Content} size={iconSize} />
       <Text style={[styles.text, textStyle]}>{text}</Text>
     </View>

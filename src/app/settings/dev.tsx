@@ -5,16 +5,14 @@ import Icon from "@/components/icon";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
-const width = 120;
+const width = 150;
 
 export default function DevSettings() {
   const {
-    enableMockLocation,
     showApiConsoleLogs,
     showDevToolbox,
     showPageInfo,
     showPathnameLog,
-    toggleEnableMockLocation,
     toggleShowApiConsoleLogs,
     toggleShowDevToolbox,
     toggleShowPageInfo,
@@ -31,16 +29,6 @@ export default function DevSettings() {
       <View style={styles.table}>
         <View style={styles.tableHead}>
           <Text style={styles.headerText}>Click icon to toggle</Text>
-        </View>
-        <View style={styles.tableRow}>
-          <Text style={[styles.tableCell, { textAlign: "right", width }]}>Use mock location</Text>
-          <Pressable onPress={toggleEnableMockLocation} style={styles.tableCell}>
-            <Icon
-              color={enableMockLocation ? spectrum.primary : spectrum.warning}
-              name={enableMockLocation ? "square-check" : "square"}
-              size={24}
-            />
-          </Pressable>
         </View>
         <View style={styles.tableRow}>
           <Text style={[styles.tableCell, { textAlign: "right", width }]}>Dev toolbox</Text>
@@ -111,5 +99,7 @@ const styles = StyleSheet.create({
   tableHead: {
     justifyContent: "center",
     alignItems: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: spectrum.base1Content,
   },
 });

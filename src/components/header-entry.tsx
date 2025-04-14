@@ -33,7 +33,7 @@ function PageTitleDisplay({ pathname }: { pathname: string }) {
 
 function LogoDisplay() {
   return (
-    <Link href="/welcome" asChild>
+    <Link href="/" asChild>
       <TouchableOpacity>
         <LogoLightSmall />
       </TouchableOpacity>
@@ -70,7 +70,7 @@ export default function EntryHeader() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.navigate("/(tabs)");
+      router.replace("/(tabs)/dashboard");
     }
   };
 

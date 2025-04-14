@@ -1,6 +1,6 @@
 import React from "react";
 
-import { render } from "@testing-library/react-native";
+import { render, screen } from "@testing-library/react-native";
 
 import Empty from "../empty";
 
@@ -11,17 +11,21 @@ describe("Empty Component", () => {
 
   test("renders with default and custom text", () => {
     // Test with default props
-    const { getByText, rerender } = render(<Empty />);
-    expect(getByText("No Data")).toBeTruthy();
+    render(<Empty />);
+    expect(screen.getByText("No Data")).toBeTruthy();
 
     // Test with custom text
-    rerender(<Empty text="Custom Empty Message" />);
-    expect(getByText("Custom Empty Message")).toBeTruthy();
+    render(<Empty text="Custom Empty Message" />);
+    expect(screen.getByText("Custom Empty Message")).toBeTruthy();
   });
 
   test("applies style prop correctly", () => {
-    const { getByText } = render(<Empty style={{ backgroundColor: "red" }} />);
-    const textElement = getByText("No Data");
-    expect(textElement.props.style.backgroundColor).toBe("red");
+    render(<Empty style={{ backgroundColor: "red" }} />);
+    expect(screen.getByTestId("the-empty-component")).toHaveStyle({ backgroundColor: "red" });
+  });
+
+  test("applies textStyle prop correctly", () => {
+    render(<Empty textStyle={{ fontSize: 32 }} text="Custom Empty Message" />);
+    expect(screen.getByText("Custom Empty Message")).toHaveStyle({ fontSize: 32 });
   });
 });

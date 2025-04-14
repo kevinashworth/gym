@@ -152,7 +152,8 @@ export default function LocationScreen() {
     Linking.openURL(url).catch((e) => console.error(e));
   };
 
-  const handleGoBack = () => (router.canGoBack() ? router.back() : router.replace("/(tabs)"));
+  const handleGoBack = () =>
+    router.canGoBack() ? router.back() : router.replace("/(tabs)/dashboard");
 
   return (
     <View style={styles.container}>

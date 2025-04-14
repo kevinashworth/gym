@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   Bell,
   ChevronLeft,
   ChevronRight,
@@ -11,8 +12,10 @@ import {
   Heart,
   Image,
   Inbox,
+  Map,
   MapPinOff,
   OctagonAlert,
+  RefreshCw,
   Search,
   SearchX,
   Square,
@@ -40,6 +43,7 @@ const localIcons = {
 };
 
 const lucideIcons = {
+  "arrow-right": ArrowRight,
   bell: Bell,
   "chevron-left": ChevronLeft,
   "chevron-right": ChevronRight,
@@ -52,9 +56,11 @@ const lucideIcons = {
   heart: Heart,
   image: Image,
   inbox: Inbox,
+  map: Map,
   "map-pin-off": MapPinOff,
   notifications: Bell,
   "octagon-alert": OctagonAlert,
+  refresh: RefreshCw,
   search: Search,
   "search-x": SearchX,
   square: Square,
@@ -69,7 +75,7 @@ export type IconName = keyof typeof localIcons | keyof typeof lucideIcons;
 
 export type HistoryIconName = keyof typeof localIcons;
 
-interface IconProps {
+export interface IconProps {
   color?: string;
   fill?: string;
   name: IconName;
@@ -77,7 +83,7 @@ interface IconProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export default function MyIcon({
+export default function Icon({
   color = spectrum.base1Content,
   fill,
   name = "inbox",

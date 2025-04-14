@@ -25,7 +25,9 @@ export function useSession() {
 }
 
 // List of route prefixes that will not be protected
-const unprotectedPrefixes = ["/welcome", "/entry"];
+const unprotectedPaths = ["/"];
+const unprotectedPrefixes = ["/entry"];
+
 const unhandledPaths = ["/settings/dev"];
 
 // This hook runs on every route change and will protect the route access based on user authentication.
@@ -36,7 +38,9 @@ function useProtectedRoute(isUserAuthenticated: boolean) {
   const router = useRouter();
 
   useEffect(() => {
-    const isUnprotectedPath = unprotectedPrefixes.some((path) => pathname.startsWith(path));
+    const isUnprotectedPath =
+      unprotectedPaths.some((path) => pathname === path) ||
+      unprotectedPrefixes.some((path) => pathname.startsWith(path));
     const isUnhandledPath = unhandledPaths.some((path) => pathname === path);
 
     // If the path is unhandled, just log it. This is for debugging purposes.
@@ -49,7 +53,7 @@ function useProtectedRoute(isUserAuthenticated: boolean) {
       if (router.canDismiss()) {
         router.dismissAll();
       }
-      router.replace("/welcome");
+      router.replace("/");
     }
     // If the user is signed in and the path is unprotected, we still redirect to dashboard page. TODO: Just show the current page?
     else if (isUserAuthenticated && isUnprotectedPath) {
@@ -57,7 +61,7 @@ function useProtectedRoute(isUserAuthenticated: boolean) {
       if (router.canDismiss()) {
         router.dismissAll();
       }
-      router.replace("/(tabs)");
+      router.replace("/(tabs)/dashboard");
     }
     // Otherwise, do nothing.
     else {

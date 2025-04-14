@@ -141,7 +141,7 @@ function SubmitRecoveryScreen() {
     setToken(token);
 
     setLoading(false);
-    router.replace("/(tabs)");
+    router.replace("/(tabs)/dashboard");
   });
 
   const handleGoBack = () => {

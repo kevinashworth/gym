@@ -11,12 +11,13 @@ import Favorites from "@/components/dashboard/favorites";
 import Suggested from "@/components/dashboard/suggested";
 import Dialog from "@/components/dialog";
 import Icon from "@/components/icon";
-import { useLocation } from "@/context/location";
+import { useGeoLocation } from "@/context/location";
 import { useDevStore } from "@/store";
 import { spectrum } from "@/theme";
 
 export default function DashboardTab() {
-  const { lat, lng, retryPermission, isRequesting } = useLocation();
+  const { lat, lng, refreshGeoLocation, retryGeoLocationPermission, isRequesting } =
+    useGeoLocation();
   const showPageInfo = useDevStore((state) => state.showPageInfo);
   const queryClient = useQueryClient();
 
@@ -26,28 +27,31 @@ export default function DashboardTab() {
 
   useFocusEffect(
     useCallback(() => {
+      if (isRequesting) return;
       if (lat === undefined || lng === undefined) {
         setShowLocationPermissionDialog(true);
         setDisabled(true);
       } else {
         setDisabled(false);
       }
-    }, [lat, lng, setShowLocationPermissionDialog])
+    }, [isRequesting, lat, lng, setShowLocationPermissionDialog])
   );
 
   // Refetch Favorites, Suggested, Categories when user pulls down to refresh
   // TODO: Also useFocusEffect to refetch when returning from, say, Settings?
-  const onRefresh = useCallback(() => {
+
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    queryClient
-      .refetchQueries({
+    try {
+      await refreshGeoLocation();
+      await queryClient.refetchQueries({
         queryKey: ["dashboard"],
         type: "active",
-      })
-      .then(() => {
-        setRefreshing(false);
       });
-  }, [queryClient]);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [queryClient, refreshGeoLocation]);
 
   // useFocusEffect(
   //   useCallback(() => {
@@ -89,7 +93,7 @@ export default function DashboardTab() {
           activityIndicator={isRequesting}
           activityIndicatorProps={{ color: spectrum.primary, size: "small" }}
           label="Allow Location Permission"
-          onPress={retryPermission}
+          onPress={retryGeoLocationPermission}
         />
       </Dialog>
       <View style={styles.container}>
@@ -113,7 +117,7 @@ export default function DashboardTab() {
           <Text style={styles.heading}>Communities - Coming Soon</Text>
           <Communities />
         </View>
-        {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/index.tsx</Text>}
+        {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/dashboard.tsx</Text>}
       </View>
     </ScrollView>
   );
