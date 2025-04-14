@@ -11,6 +11,7 @@ import { Amplify } from "aws-amplify";
 import * as Network from "expo-network";
 import { Stack, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import * as SystemUI from "expo-system-ui";
 import { AppState, Platform } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
@@ -25,6 +26,7 @@ import type { AppStateStatus } from "react-native";
 
 // Keep the splash screen visible while we prepare
 SplashScreen.preventAutoHideAsync();
+SystemUI.setBackgroundColorAsync("transparent");
 
 const queryClient = new QueryClient();
 
