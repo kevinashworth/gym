@@ -117,7 +117,7 @@ export default function DashboardTab() {
           <Text style={styles.heading}>Communities - Coming Soon</Text>
           <Communities />
         </View>
-        {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/index.tsx</Text>}
+        {showPageInfo && <Text style={styles.pageInfo}>src/app/(tabs)/dashboard.tsx</Text>}
       </View>
     </ScrollView>
   );

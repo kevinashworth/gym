@@ -70,7 +70,7 @@ export default function EntryHeader() {
     if (router.canGoBack()) {
       router.back();
     } else {
-      router.navigate("/(tabs)");
+      router.replace("/(tabs)/dashboard");
     }
   };
 

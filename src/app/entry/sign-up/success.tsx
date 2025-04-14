@@ -21,7 +21,7 @@ export default function SignUpSuccess() {
       return;
     }
 
-    router.replace("/(tabs)");
+    router.replace("/(tabs)/dashboard");
   };
 
   return (

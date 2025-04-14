@@ -42,7 +42,7 @@ function WalletDisplay() {
 
 function LogoDisplay() {
   return (
-    <Link href="/(tabs)" asChild>
+    <Link href="/(tabs)/dashboard" asChild>
       <TouchableOpacity>
         <LogoLightSmall />
       </TouchableOpacity>

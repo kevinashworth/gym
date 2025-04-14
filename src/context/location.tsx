@@ -1,8 +1,8 @@
 // We call it GeoLocation to avoid confusion with our own locations from our
 // API, and to avoid naming conflicts with `location` on the window object.
 
-// There is a useFocusEffect in src/app/(tabs)/index.tsx that is the first code
-// to use  this context when the app is first loaded.
+// There is a useFocusEffect in src/app/(tabs)/dashboard.tsx that is the first
+// code to use this context when our app is first loaded.
 
 import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 

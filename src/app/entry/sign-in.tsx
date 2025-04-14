@@ -130,7 +130,7 @@ export default function SignInScreen() {
     setToken(token);
     setLoading(false);
 
-    router.replace("/(tabs)");
+    router.replace("/(tabs)/dashboard");
   });
 
   return (

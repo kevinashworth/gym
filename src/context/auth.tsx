@@ -61,7 +61,7 @@ function useProtectedRoute(isUserAuthenticated: boolean) {
       if (router.canDismiss()) {
         router.dismissAll();
       }
-      router.replace("/(tabs)");
+      router.replace("/(tabs)/dashboard");
     }
     // Otherwise, do nothing.
     else {

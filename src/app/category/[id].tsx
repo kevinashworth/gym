@@ -46,7 +46,8 @@ export default function CategoriesScreen() {
 
   const router = useRouter();
 
-  const handleGoBack = () => (router.canGoBack() ? router.back() : router.replace("/(tabs)"));
+  const handleGoBack = () =>
+    router.canGoBack() ? router.back() : router.replace("/(tabs)/dashboard");
 
   return (
     <View style={styles.container}>
