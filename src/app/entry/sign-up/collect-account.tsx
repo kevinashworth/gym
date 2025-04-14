@@ -283,7 +283,7 @@ function SignUpWithEmailScreen() {
             variant="black"
           />
           <Button
-            iconName="times-circle"
+            iconName="circle-x"
             label="Clear Errors"
             onPress={() => {
               clearErrors();

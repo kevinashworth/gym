@@ -268,7 +268,7 @@ export default function SignInScreen() {
             />
             <Button
               buttonStyle={{ width: 200 }}
-              iconName="times-circle"
+              iconName="circle-x"
               label="Clear Errors"
               onPress={() => {
                 clearErrors();

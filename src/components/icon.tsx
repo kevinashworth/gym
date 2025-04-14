@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   Bell,
   ChevronLeft,
   ChevronRight,
@@ -14,6 +15,7 @@ import {
   Map,
   MapPinOff,
   OctagonAlert,
+  RefreshCw,
   Search,
   SearchX,
   Square,
@@ -41,6 +43,7 @@ const localIcons = {
 };
 
 const lucideIcons = {
+  "arrow-right": ArrowRight,
   bell: Bell,
   "chevron-left": ChevronLeft,
   "chevron-right": ChevronRight,
@@ -57,6 +60,7 @@ const lucideIcons = {
   "map-pin-off": MapPinOff,
   notifications: Bell,
   "octagon-alert": OctagonAlert,
+  refresh: RefreshCw,
   search: Search,
   "search-x": SearchX,
   square: Square,
