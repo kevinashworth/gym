@@ -2,7 +2,7 @@ import { render, fireEvent, screen } from "@testing-library/react-native";
 import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
 
-import WelcomeScreen from "@/app/welcome";
+import WelcomeScreen from "@/app";
 
 jest.mock("expo-router", () => ({
   useRouter: jest.fn(),

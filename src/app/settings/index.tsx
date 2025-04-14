@@ -56,7 +56,7 @@ export default function SettingsTab() {
           if (router.canDismiss()) {
             router.dismissAll();
           }
-          router.replace("/welcome");
+          router.replace("/");
         },
       },
     ]);

@@ -46,7 +46,6 @@ describe("GeoLocation Context", () => {
 
     // Wait for the initial location request to complete
     await act(async () => {
-      // await new Promise((resolve) => setTimeout(resolve, 0));
       jest.runAllTimers();
     });
 
@@ -69,9 +68,7 @@ describe("GeoLocation Context", () => {
 
     const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
-    // Wait for the initial location request to complete
     await act(async () => {
-      // await new Promise((resolve) => setTimeout(resolve, 0));
       jest.runAllTimers();
     });
 
@@ -97,9 +94,7 @@ describe("GeoLocation Context", () => {
 
     const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
-    // Wait for the initial location request to complete
     await act(async () => {
-      // await new Promise((resolve) => setTimeout(resolve, 0));
       jest.runAllTimers();
     });
 
@@ -119,9 +114,7 @@ describe("GeoLocation Context", () => {
 
     const { result } = renderHook(() => useGeoLocation(), { wrapper });
 
-    // Wait for the initial location request to complete
     await act(async () => {
-      // await new Promise((resolve) => setTimeout(resolve, 0));
       jest.runAllTimers();
     });
 
@@ -135,20 +128,6 @@ describe("GeoLocation Context", () => {
     expect(result.current.lng).toBe(mockLocation.coords.longitude);
     expect(result.current.isRequesting).toBe(false);
   });
-
-  // it("should throw error when useGeoLocation is used outside provider", () => {
-  //   const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-  //   let error: Error | undefined;
-
-  //   try {
-  //     renderHook(() => useGeoLocation());
-  //   } catch (e) {
-  //     error = e as Error;
-  //   }
-
-  //   expect(error?.message).toBe("useGeoLocation must be wrapped in a <GeoLocationProvider />");
-  //   consoleSpy.mockRestore();
-  // });
 
   it("should throw error when useGeoLocation is used outside provider", () => {
     const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {}); // https://github.com/facebook/react/issues/11098#issuecomment-653208411

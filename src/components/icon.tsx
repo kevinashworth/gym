@@ -71,7 +71,7 @@ export type IconName = keyof typeof localIcons | keyof typeof lucideIcons;
 
 export type HistoryIconName = keyof typeof localIcons;
 
-interface IconProps {
+export interface IconProps {
   color?: string;
   fill?: string;
   name: IconName;
@@ -79,7 +79,7 @@ interface IconProps {
   style?: StyleProp<ViewStyle>;
 }
 
-export default function MyIcon({
+export default function Icon({
   color = spectrum.base1Content,
   fill,
   name = "inbox",

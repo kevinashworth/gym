@@ -58,7 +58,7 @@ export default function NotificationsTab() {
             <Button
               iconName="arrow-right"
               label="Welcome Screen"
-              onPress={() => router.push("/welcome")}
+              onPress={() => router.push("/")}
               size="sm"
               variant="black"
             />

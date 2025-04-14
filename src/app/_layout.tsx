@@ -123,7 +123,6 @@ export default function RootLayout() {
                   header: () => <EntryHeader />,
                 }}
               />
-              <Stack.Screen name="welcome" />
             </Stack>
           </GeoLocationProvider>
         </SessionProvider>
