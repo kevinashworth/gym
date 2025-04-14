@@ -112,6 +112,8 @@ const SignUpVerifyScreen = () => {
             name="confirmCode"
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
+                autoCapitalize="none"
+                autoCorrect={false}
                 keyboardType="numeric"
                 onBlur={onBlur}
                 onChangeText={onChange}
