@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import api from "@/lib/api";
@@ -21,31 +19,27 @@ const removeFavorite = async (uuid: string) => {
 
 export const useFavoriteLocation = (uuid: string) => {
   const queryClient = useQueryClient();
-  const [isUpdating, setIsUpdating] = useState(false);
+
   const { data: favorites, refetch } = useQuery({
-    queryKey: ["bamboo"],
+    queryKey: ["favorites"],
     queryFn: () => fetchFavorites(),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
   const isFavorite = favorites?.some((favorite) => favorite === uuid);
 
-  const { mutate: addMutate } = useMutation({
-    mutationFn: async () => {
-      setIsUpdating(true);
-      await addFavorite(uuid);
+  const { mutate: addMutate, isPending: isAdding } = useMutation({
+    mutationFn: () => addFavorite(uuid),
+    onSettled: async () => {
       await refetch();
       queryClient.invalidateQueries({ queryKey: ["dashboard", "location", "favorites"] });
-      setIsUpdating(false);
     },
   });
 
-  const { mutate: removeMutate } = useMutation({
-    mutationFn: async () => {
-      setIsUpdating(true);
-      await removeFavorite(uuid);
+  const { mutate: removeMutate, isPending: isRemoving } = useMutation({
+    mutationFn: () => removeFavorite(uuid),
+    onSettled: async () => {
       await refetch();
       queryClient.invalidateQueries({ queryKey: ["dashboard", "location", "favorites"] });
-      setIsUpdating(false);
     },
   });
 
@@ -56,6 +50,8 @@ export const useFavoriteLocation = (uuid: string) => {
       addMutate();
     }
   };
+
+  const isUpdating = isAdding || isRemoving;
 
   return {
     isFavorite,
