@@ -22,12 +22,15 @@ export default function CampaignButton({
   onPress,
 }: CampaignButtonProps) {
   return (
-    <Pressable style={styles.container} onPress={onPress} disabled={disabled}>
-      <View style={[styles.button, disabled && styles.containerDisabled]}>
+    <Pressable
+      disabled={disabled}
+      onPress={onPress}
+      style={[styles.container, disabled && styles.containerDisabled]}>
+      <View style={styles.button}>
         <Icon
+          color={disabled ? spectrum.base2Content : spectrum.primary}
           name={iconName}
           size={14}
-          color={disabled ? spectrum.base2Content : spectrum.primary}
         />
         <Text style={[styles.buttonLabel, disabled && styles.buttonLabelDisabled]}>{label}</Text>
         {coins && <IconCoins quantity={coins} size={16} />}
