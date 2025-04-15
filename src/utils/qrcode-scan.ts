@@ -44,9 +44,7 @@ const getPayload = {
     }
   },
   checkin(url: ParsedURL): CheckInResult | undefined {
-    const payload = url.path?.match(
-      /checkin\/([^/]+)\/?$/,
-    ) as RegExpMatchArray | null;
+    const payload = url.path?.match(/checkin\/([^/]+)\/?$/) as RegExpMatchArray | null;
     if (!payload || !payload[1]) {
       throw new UriValidatorError("Missing data [checkin]");
     }
@@ -66,9 +64,7 @@ export function uriValidator(url: any): UriValidator {
   try {
     const pathname = url.path.replace(/\/$/, ""); // <-- removes any trailing slash
     if (ALLOW_PATHNAME.some((pathPrefix) => pathname.startsWith(pathPrefix))) {
-      const type: "referral" | "checkin" = pathname.match(
-        /\/?(referral|checkin)\/?/,
-      )?.[1];
+      const type: "referral" | "checkin" = pathname.match(/\/?(referral|checkin)\/?/)?.[1];
       const result = {
         result: {
           type,
