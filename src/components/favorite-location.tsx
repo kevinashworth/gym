@@ -17,6 +17,12 @@ export default function FavoriteLocation({
 }: FavoriteLocationProps) {
   const { isFavorite, isUpdating, toggleFavorite } = useFavoriteLocation(uuid);
 
+  const color = isUpdating
+    ? spectrum.base3Content
+    : isFavorite
+      ? spectrum.primary
+      : spectrum.secondary;
+
   const handleChange = () => {
     toggleFavorite();
   };
@@ -43,19 +49,26 @@ export default function FavoriteLocation({
           </>
         )}
         {enableText && (
-          <Text
-            style={[
-              { fontSize: 12, textAlign: "center" },
-              {
-                color: isUpdating
-                  ? spectrum.base3Content
+          <View style={{ alignItems: "center", flexDirection: "column" }}>
+            <Text
+              adjustsFontSizeToFit
+              numberOfLines={1}
+              style={{ color, fontSize: 12, textAlign: "center" }}>
+              {isUpdating && isFavorite
+                ? "Removing"
+                : isUpdating
+                  ? "Adding to"
                   : isFavorite
-                    ? spectrum.primary
-                    : spectrum.secondary,
-              },
-            ]}>
-            {isFavorite ? "Added" : "Add"} to Favorites
-          </Text>
+                    ? "Added to"
+                    : "Add to"}{" "}
+            </Text>
+            <Text
+              adjustsFontSizeToFit
+              numberOfLines={1}
+              style={{ color, fontSize: 12, textAlign: "center" }}>
+              {isUpdating && isFavorite ? "from" : "Favorites"}
+            </Text>
+          </View>
         )}
       </View>
     </Pressable>

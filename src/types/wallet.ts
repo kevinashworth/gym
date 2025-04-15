@@ -19,13 +19,7 @@ type HistoryItem = {
   recentOperations: any[];
   rewardGetToken: number;
   status: string;
-  type:
-    | "transfer"
-    | "CheckIn"
-    | "CheckInQRCode"
-    | "Referral"
-    | "Review"
-    | "Survey";
+  type: "transfer" | "CheckIn" | "CheckInQRCode" | "Referral" | "Review" | "Survey";
   updateTimestamp: string;
   uuid: string;
   location_name?: string;

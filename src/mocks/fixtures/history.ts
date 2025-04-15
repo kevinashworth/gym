@@ -10,13 +10,7 @@ type HistoryItem = {
   recentOperations: any[];
   rewardGetToken: number;
   status: string;
-  type:
-    | "transfer"
-    | "CheckIn"
-    | "CheckInQRCode"
-    | "Referral"
-    | "Review"
-    | "Survey";
+  type: "transfer" | "CheckIn" | "CheckInQRCode" | "Referral" | "Review" | "Survey";
   updateTimestamp: string;
   uuid: string;
   location_name?: string;
@@ -816,8 +810,7 @@ const walletHistoryData4: History = {
       uuid: "3ec0ba38-c17f-4a44-ad2f-d4c49fee291e",
       createdTimestamp: "2024-02-01T00:13:23.124+00:00",
       updateTimestamp: "2024-02-01T00:13:23.124+00:00",
-      actionDescription:
-        "Check in at (-111.728853, 40.336471) for Location R K Cycle Center",
+      actionDescription: "Check in at (-111.728853, 40.336471) for Location R K Cycle Center",
       merchantUUID: "3a9896c8-db7d-491d-b88c-256195850d23",
       merchantLocationUUID: "7bf25c72-abc0-4d38-a55f-8269c6a99064",
       fromCustomerUUID: null,
@@ -834,8 +827,7 @@ const walletHistoryData4: History = {
       uuid: "1e5462ba-bc6c-4ffc-9d61-421ffd0ddd89",
       createdTimestamp: "2024-01-30T03:41:05.733+00:00",
       updateTimestamp: "2024-01-30T03:41:05.733+00:00",
-      actionDescription:
-        "Check in at (-111.728853, 40.336471) for Location R K Cycle Center",
+      actionDescription: "Check in at (-111.728853, 40.336471) for Location R K Cycle Center",
       merchantUUID: "3a9896c8-db7d-491d-b88c-256195850d23",
       merchantLocationUUID: "7bf25c72-abc0-4d38-a55f-8269c6a99064",
       fromCustomerUUID: null,
@@ -852,8 +844,7 @@ const walletHistoryData4: History = {
       uuid: "63c5b063-0f2d-40e8-b3a0-11b458881c17",
       createdTimestamp: "2024-01-25T03:46:12.937+00:00",
       updateTimestamp: "2024-01-25T03:46:12.937+00:00",
-      actionDescription:
-        "Check in at (-111.728853, 40.336471) for Location R K Cycle Center",
+      actionDescription: "Check in at (-111.728853, 40.336471) for Location R K Cycle Center",
       merchantUUID: "3a9896c8-db7d-491d-b88c-256195850d23",
       merchantLocationUUID: "7bf25c72-abc0-4d38-a55f-8269c6a99064",
       fromCustomerUUID: null,
@@ -905,8 +896,7 @@ const walletHistoryData4: History = {
       uuid: "a12ff55b-f9cb-4fd2-9290-716cb125f2f0",
       createdTimestamp: "2023-10-31T04:04:38.218+00:00",
       updateTimestamp: "2023-10-31T04:04:38.218+00:00",
-      actionDescription:
-        "Check in at (-111.7241798, 40.3354349) for Location R K Cycle Center",
+      actionDescription: "Check in at (-111.7241798, 40.3354349) for Location R K Cycle Center",
       merchantUUID: "3a9896c8-db7d-491d-b88c-256195850d23",
       merchantLocationUUID: "7bf25c72-abc0-4d38-a55f-8269c6a99064",
       fromCustomerUUID: null,
@@ -923,8 +913,7 @@ const walletHistoryData4: History = {
       uuid: "fc2a0e9e-5e28-4757-8530-34faed45477e",
       createdTimestamp: "2023-10-31T04:04:32.138+00:00",
       updateTimestamp: "2023-10-31T04:04:32.138+00:00",
-      actionDescription:
-        "Check in at (-111.7241798, 40.3354349) for Location R K Cycle Center",
+      actionDescription: "Check in at (-111.7241798, 40.3354349) for Location R K Cycle Center",
       merchantUUID: "3a9896c8-db7d-491d-b88c-256195850d23",
       merchantLocationUUID: "7bf25c72-abc0-4d38-a55f-8269c6a99064",
       fromCustomerUUID: null,
@@ -958,8 +947,7 @@ const walletHistoryData4: History = {
       uuid: "756f6dd6-f77c-4059-a601-c159622b4f66",
       createdTimestamp: "2023-10-31T03:29:30.543+00:00",
       updateTimestamp: "2023-10-31T03:29:30.543+00:00",
-      actionDescription:
-        "Check in at (-111.7241798, 40.3354349) for Location R K Cycle Center",
+      actionDescription: "Check in at (-111.7241798, 40.3354349) for Location R K Cycle Center",
       merchantUUID: "3a9896c8-db7d-491d-b88c-256195850d23",
       merchantLocationUUID: "7bf25c72-abc0-4d38-a55f-8269c6a99064",
       fromCustomerUUID: null,
